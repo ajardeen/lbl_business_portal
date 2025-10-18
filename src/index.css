@@ -1,0 +1,60 @@
+@import "tailwindcss";
+:root{
+  background-color: #ffffff;
+}
+/* --- 1. Define all @font-face rules --- */
+
+@font-face {
+  font-family: 'OpenRunde';
+  src: url('/fonts/OpenRunde-Regular.woff2') format('woff2'),
+       url('/fonts/OpenRunde-Regular.woff') format('woff');
+  font-weight: 400; /* Regular */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenRunde';
+  src: url('/fonts/OpenRunde-Medium.woff2') format('woff2'),
+       url('/fonts/OpenRunde-Medium.woff') format('woff');
+  font-weight: 500; /* Medium */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenRunde';
+  src: url('/fonts/OpenRunde-Semibold.woff2') format('woff2'),
+       url('/fonts/OpenRunde-Semibold.woff') format('woff');
+  font-weight: 600; /* Semibold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenRunde';
+  src: url('/fonts/OpenRunde-Bold.woff2') format('woff2'),
+       url('/fonts/OpenRunde-Bold.woff') format('woff');
+  font-weight: 700; /* Bold */
+  font-style: normal;
+  font-display: swap;
+}
+
+@import "tailwindcss";
+
+
+@theme {
+ 
+  --font-runde: 'OpenRunde', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "OpenRunde", sans-serif; 
+  --font-body: "OpenRunde", sans-serif;
+
+  
+
+
+}
+
+/* 🌙 Dark theme override (manual class) */
+.dark {
+  
+}

@@ -1,0 +1,70 @@
+/* Scrollable table with fixed header */
+.table-container.scrollable-table {
+  max-height: 400px; /* adjust height as needed */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.lead-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.lead-table thead {
+  background-color: rgba(194, 212, 236, 0.31);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.lead-table th,
+.lead-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  /* background-color: white; */
+}
+
+.lead-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+  padding: 16px 0;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.pagination select {
+  margin-left: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.page-controls button {
+  padding: 4px 8px;
+  margin: 0 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.page-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
