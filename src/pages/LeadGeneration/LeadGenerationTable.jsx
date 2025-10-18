@@ -8,7 +8,6 @@ import {
 import * as XLSX from "xlsx";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 
-
 function LeadGenerationTable({ data }) {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(data);
@@ -28,21 +27,21 @@ function LeadGenerationTable({ data }) {
     () => [
       columnHelper.accessor("name", {
         header: "Name",
-        cell: (info) => info.getValue() || "-",
+        cell: (info) => info.getValue() || "",
       }),
       columnHelper.accessor("email", {
         header: "Email",
-        cell: (info) => info.getValue() || "-",
+        cell: (info) => info.getValue() || "",
       }),
       columnHelper.accessor("phoneNumber", {
         header: "Phone Number",
-        cell: (info) => info.getValue() || "—",
+        cell: (info) => info.getValue() || "",
       }),
       columnHelper.accessor("createdAt", {
         header: "Created At",
         cell: (info) => {
           const ts = info.getValue();
-          if (!ts) return "—";
+          if (!ts) return "";
           const date = ts.toDate ? ts.toDate() : new Date(ts);
           return date.toLocaleString();
         },
@@ -58,7 +57,19 @@ function LeadGenerationTable({ data }) {
   });
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const dataToExport = filteredData.map((lead) => {
+      const ts = lead.createdAt;
+      const createdAt = ts
+        ? (ts.toDate ? ts.toDate() : new Date(ts)).toLocaleString()
+        : "";
+      return {
+        Name: lead.name,
+        Email: lead.email,
+        "Phone Number": lead.phoneNumber,
+        "Created At": createdAt,
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Leads");
     XLSX.writeFile(workbook, "Lunchbox_Leads.xlsx");
@@ -107,7 +118,10 @@ function LeadGenerationTable({ data }) {
                 <tr key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                 </tr>
