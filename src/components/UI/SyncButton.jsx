@@ -33,7 +33,7 @@ function SyncButton({
     <button
       onClick={onClick}
       disabled={isAnimating}
-      className={`p-1 rounded-full border transition duration-150 ${
+      className={`p-1 px-2 flex items-center justify-center rounded-full border transition duration-150 ${
         !isAnimating
           ? "text-gray-800 border-gray-200/50 hover:border-gray-400"
           : "text-green-500 border-transparent"
@@ -41,9 +41,9 @@ function SyncButton({
         isAnimating ? "cursor-not-allowed" : ""
       }`}
     >
-      <div className="text-sm flex justify-center items-center gap-2 px-1 capitalize transition-all duration-150 ">
+      <div className="text-xs md:text-sm flex justify-center items-center gap-2 px-1 capitalize transition-all duration-150 ">
         {textState && `${animationClass?"syncing":"sync"}`}
-        <IoSyncCircleOutline className={`${animationClass && "animate-spin"   }`} size={25} />
+        <IoSyncCircleOutline className={`${animationClass && "animate-spin"   }`} size={20} />
       </div>
     </button>
   );

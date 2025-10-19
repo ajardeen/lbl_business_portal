@@ -2,13 +2,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
+  getPaginationRowModel,
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
 import * as XLSX from "xlsx";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+import { FiSearch } from "react-icons/fi";
+import * as Select from "@radix-ui/react-select";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-function LeadGenerationTable({ data }) {
+
+function LeadGenerationTable({ data  }) {
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState(data);
 
@@ -25,18 +30,9 @@ function LeadGenerationTable({ data }) {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("name", {
-        header: "Name",
-        cell: (info) => info.getValue() || "",
-      }),
-      columnHelper.accessor("email", {
-        header: "Email",
-        cell: (info) => info.getValue() || "",
-      }),
-      columnHelper.accessor("phoneNumber", {
-        header: "Phone Number",
-        cell: (info) => info.getValue() || "",
-      }),
+      columnHelper.accessor("name", { header: "Name" }),
+      columnHelper.accessor("email", { header: "Email" }),
+      columnHelper.accessor("phoneNumber", { header: "Phone" }),
       columnHelper.accessor("createdAt", {
         header: "Created At",
         cell: (info) => {
@@ -54,6 +50,7 @@ function LeadGenerationTable({ data }) {
     data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const exportToExcel = () => {
@@ -72,31 +69,34 @@ function LeadGenerationTable({ data }) {
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Leads");
-    XLSX.writeFile(workbook, "Lunchbox_Leads.xlsx");
+    XLSX.writeFile(workbook, "Leads.xlsx");
   };
 
   return (
-    <div className="card-style p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Lead Table</h2>
-        <div className="flex items-center gap-3">
-          <input
-            type="text"
-            placeholder="Search leads..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-md px-2 py-1 text-sm"
-          />
-          <button
-            onClick={exportToExcel}
-            className="flex items-center gap-2 text-green-500 border border-green-500 hover:bg-green-500 hover:text-white px-3 py-1 rounded-md text-sm"
-          >
-            <PiMicrosoftExcelLogoFill /> Export
+    <div className="lead-card">
+      {/* Header */}
+      <div className="lead-header">
+        <h2>Registered Users </h2>
+
+        <div className="lead-controls">
+          <div className="search-box">
+            <FiSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search leads..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <button onClick={exportToExcel} className="export-btn">
+            <PiMicrosoftExcelLogoFill size={18} /> Export
           </button>
         </div>
       </div>
 
-      <div className="table-container">
+      {/* Table */}
+      <div className="table-container overflow-x-auto">
         <table className="lead-table">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -135,6 +135,77 @@ function LeadGenerationTable({ data }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="pagination-container">
+        <div className="page-controls">
+          <button
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<"}
+          </button>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            {">>"}
+          </button>
+          <span>
+            Page{" "}
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </strong>
+          </span>
+        </div>
+
+        <Select.Root
+          value={String(table.getState().pagination.pageSize)}
+          onValueChange={(value) => table.setPageSize(Number(value))}
+        >
+          <Select.Trigger className="page-size-trigger">
+            <Select.Value placeholder="Rows per page" />
+            <Select.Icon>
+              <ChevronDown size={16} />
+            </Select.Icon>
+          </Select.Trigger>
+
+          <Select.Portal>
+            <Select.Content className="page-size-content" position="popper">
+              <Select.ScrollUpButton className="scroll-btn">
+                <ChevronUp size={16} />
+              </Select.ScrollUpButton>
+              <Select.Viewport className="page-size-viewport">
+                {[10, 20, 50, 100].map((size) => (
+                  <Select.Item
+                    key={size}
+                    value={String(size)}
+                    className="page-size-item"
+                  >
+                    <Select.ItemText>Show {size}</Select.ItemText>
+                  </Select.Item>
+                ))}
+              </Select.Viewport>
+              <Select.ScrollDownButton className="scroll-btn">
+                <ChevronDown size={16} />
+              </Select.ScrollDownButton>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
       </div>
     </div>
   );

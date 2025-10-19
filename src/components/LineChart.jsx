@@ -59,8 +59,26 @@ function LineChart({ data, width = "100%", height, className }) {
       legend: { display: false },
     },
     scales: {
-      x: { grid: { display: false } },
-      y: { grid: { color: "#f3f4f6" } },
+      x: {
+        grid: { display: false },
+        title: {
+          display: true,
+          text: "Days",
+        },
+      },
+      y: {
+        grid: { color: "#f3f4f6" },
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1,
+          callback: function (value) {
+            if (value % 1 === 0) {
+              return value;
+            }
+          },
+        },
+        title: { display: true, text: "No of Registered" },
+      },
     },
   };
 

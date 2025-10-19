@@ -1,70 +1,248 @@
-/* Scrollable table with fixed header */
-.table-container.scrollable-table {
-  max-height: 400px; /* adjust height as needed */
-  overflow-y: auto;
-  border: 1px solid #ddd;
+/* Card container */
+.lead-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-family: "Inter", sans-serif;
+}
+
+/* Header */
+.lead-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lead-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.lead-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Search */
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding: 8px 10px 8px 32px;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+/* Export button */
+.export-btn {
+  color: #22c55e;
+  border: 1px solid #22c55e;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #22c55e;
+  color: #fff;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid #f1f3f5;
+  border-radius: 10px;
 }
 
 .lead-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  font-size: 0.9rem;
 }
 
 .lead-table thead {
-  background-color: rgba(194, 212, 236, 0.31);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  border-radius: 6px;
-  overflow: hidden;
+  background: #f9fafb;
+  color: #4b5563;
+
 }
 
-.lead-table th,
-.lead-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
+.lead-table th {
   text-align: left;
-  /* background-color: white; */
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.lead-table td {
+  padding: 10px 14px;
+  color: #111827;
+  border-top: 1px solid #f1f3f5;
 }
 
 .lead-table tbody tr:hover {
-  background-color: #f5f5f5;
+  background-color: #f9fafb;
+  transition: background 0.2s ease;
 }
 
 .no-data {
   text-align: center;
-  color: #888;
+  color: #9ca3af;
   padding: 16px 0;
 }
 
 /* Pagination */
-.pagination {
+.pagination-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #374151;
+  gap: 10px;
 }
 
-.pagination select {
-  margin-left: 6px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.page-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .page-controls button {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
   padding: 4px 8px;
-  margin: 0 4px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background: white;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-controls button:hover:not(:disabled) {
+  background: #f3f4f6;
 }
 
 .page-controls button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Radix UI Select */
+.page-size-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-size-trigger:hover {
+  background: #f9fafb;
+}
+
+.page-size-content {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.page-size-viewport {
+  padding: 4px;
+}
+
+.page-size-item {
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.page-size-item:hover,
+.page-size-item[data-state="checked"] {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.scroll-btn {
+  display: flex;
+  justify-content: center;
+  color: #9ca3af;
+  padding: 4px;
+}
+
+/* Ensure responsive horizontal scroll on small screens */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent table from shrinking inside flex containers */
+.lead-table {
+  min-width: 600px; /* or 700px depending on column count */
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .lead-card {
+    padding: 14px;
+    width: 90vw;
+  }
+
+  .lead-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .lead-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+
+  .table-container {
+    border-radius: 8px;
+  }
+
+  .lead-table th,
+  .lead-table td {
+    white-space: nowrap; /* prevent breaking */
+  }
 }

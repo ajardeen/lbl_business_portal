@@ -31,13 +31,13 @@ function TopNav() {
       name: "Profile",
       icon: <FaUser className="text-gray-500" />,
       className: "text-gray-700",
-      onClick: () => console.log("Profile clicked"),
+      // onClick: () => console.log("Profile clicked"),
     },
     {
       name: "Settings",
       icon: <FaCog className="text-gray-500" />,
       className: "text-gray-700",
-      onClick: () => console.log("Settings clicked"),
+      // onClick: () => console.log("Settings clicked"),
     },
     {
       type: "separator",
@@ -52,9 +52,42 @@ function TopNav() {
 
   return (
     <div className="top-0 z-50 flex items-center justify-between bg-white shadow-md px-6 py-3">
-      <h4 className="text-2xl font-bold text-gray-600">
-        Hi <span className="text-xl text-black tracking-widest">{user && user}</span>{" "}
-      </h4>
+      <div className="text-xl md:text-2xl font-bold text-gray-600 flex items-center">
+        {/* Navigation Toggle */}
+        <div className="lg:hidden me-4">
+          <button
+            type="button"
+            className="p-2 inline-flex justify-center items-center gap-x-2 text-start bg-white  text-sm font-medium rounded-full shadow-sm align-middle hover:bg-gray-950 "
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="hs-sidebar-content-push-to-mini-sidebar"
+            aria-label="Toggle navigation"
+            data-hs-overlay="#hs-sidebar-content-push-to-mini-sidebar"
+          >
+            <svg
+              className="hs-overlay-minified:hidden shrink-0 size-4 "
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M15 3v18" />
+              <path d="m10 15-3-3 3-3" />
+            </svg>
+            <span className="sr-only">Toggle Navigation</span>
+          </button>
+        </div>
+        Hi &nbsp;
+        <span className="text-lg md:text-xl text-end text-black tracking-widest">
+          {user && user}
+        </span>{" "}
+      </div>
       {/* Avatar Dropdown */}
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>

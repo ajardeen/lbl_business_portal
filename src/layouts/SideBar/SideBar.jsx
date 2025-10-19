@@ -39,33 +39,20 @@ const sidebarLinks = [
 ];
 
 function SideBar() {
-  const [name,setName]=useState("admin")
-  const [email,setEmail]=useState("admin@example.com")
-  useEffect(()=>{
+  const [name, setName] = useState("admin");
+  const [email, setEmail] = useState("admin@example.com");
+  useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const user = JSON.parse(storedUser);
-      setName(user.name)
-      setEmail(user.email)
+      setName(user.name);
+      setEmail(user.email);
     }
-  },[])
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-l-md shadow-md">
-      {/* Navigation Toggle */}
-      <div className="lg:hidden py-16 text-center">
-        <button
-          type="button"
-          className="py-2 px-3 inline-flex justify-center items-center gap-x-2 text-start bg-gray-800 border border-gray-800 text-white text-sm font-medium rounded-lg shadow-2xs align-middle hover:bg-gray-950 focus:outline-hidden focus:bg-gray-900"
-          aria-haspopup="dialog"
-          aria-expanded="false"
-          aria-controls="hs-sidebar-content-push-to-mini-sidebar"
-          aria-label="Toggle navigation"
-          data-hs-overlay="#hs-sidebar-content-push-to-mini-sidebar"
-        >
-          Open
-        </button>
-      </div>
+      
       {/* End Navigation Toggle */}
 
       {/* Sidebar */}
@@ -84,7 +71,7 @@ hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 tran
               className="flex-none font-semibold text-2xl ml-3 text-black focus:outline-hidden focus:opacity-80 hs-overlay-minified:hidden"
               aria-label="Brand"
             >
-              Biz Portal <Badge text="Beta v0.1" />
+              LBL Portal <Badge text="Beta v0.1" />
             </p>
 
             <div className="lg:hidden">
@@ -164,7 +151,7 @@ hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 tran
           {/* End Header */}
 
           {/* Profile Section */}
-          <div className="p-1 px-2  border-b border-t border-gray-300 hs-overlay-minified:hidden">
+          <div className="p-1  border-b border-t border-gray-300">
             <div className="hs-dropdown [--strategy:absolute] [--auto-close:inside] relative w-full inline-flex">
               <button
                 id="hs-sidebar-header-example-with-dropdown"
@@ -172,30 +159,14 @@ hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 tran
                 className="w-full inline-flex shrink-0 items-center gap-x-2 p-2 text-start text-sm text-gray-800 rounded-md hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100"
               >
                 <img
-                  className="shrink-0 size-8 rounded-full"
+                  className="shrink-0 size-7 rounded-full min-w-fit"
                   src="/images/profilepic.webp"
                   alt="Avatar"
                 />
-                <div className="grow">
-                  <p className="text-sm font-semibold text-gray-800">
-                    {name}
-                  </p>
+                <div className="grow hs-overlay-minified:hidden">
+                  <p className="text-sm font-semibold text-gray-800">{name}</p>
                   <p className="text-xs text-gray-500">{email}</p>
                 </div>
-                {/* <svg
-                  className="shrink-0 size-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m18 15-6-6-6 6" />
-                </svg> */}
               </button>
             </div>
           </div>
