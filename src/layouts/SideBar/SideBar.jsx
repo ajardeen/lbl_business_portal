@@ -52,7 +52,6 @@ function SideBar() {
 
   return (
     <div className="overflow-hidden rounded-l-md shadow-md">
-      
       {/* End Navigation Toggle */}
 
       {/* Sidebar */}
@@ -68,10 +67,15 @@ hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 tran
           {/* Header */}
           <header className="py-4 px-2 flex justify-between items-center gap-x-2">
             <p
-              className="flex-none font-semibold text-2xl ml-3 text-black focus:outline-hidden focus:opacity-80 hs-overlay-minified:hidden"
+              className="flex justify-start w-full font-semibold text-2xl ml-3 text-black focus:outline-hidden focus:opacity-80 hs-overlay-minified:hidden"
               aria-label="Brand"
             >
-              LBL Portal <Badge text="Beta v0.1" />
+              <img
+                src="./images/LunchBoxLegends.svg"
+                alt="logo"
+                className="w-30"
+              />{" "}
+              
             </p>
 
             <div className="lg:hidden">
@@ -187,12 +191,13 @@ hs-overlay-open:translate-x-0 -translate-x-full transition-all duration-300 tran
           </nav>
           {/* End Body */}
           {/* botton logo  */}
-          <div className="flex justify-center items-center p-5 hs-overlay-minified:hidden">
-            <img
-              src="./images/LunchBoxLegends.svg"
-              alt="logo"
-              className="w-40"
-            />
+          <div className="flex flex-col justify-center items-center p-5 hs-overlay-minified:hidden">
+
+            <img src="./images/vabooklogo.svg" alt="logo" className="w-40" />
+            <span className="place-self-end mr-7">
+
+            <Badge text="Beta v0.1" />
+            </span>
           </div>
         </div>
       </div>

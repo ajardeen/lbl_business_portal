@@ -107,8 +107,8 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#2C2638]">
-      <div className="hidden lg:flex w-1/2 bg-[#2C2638] items-center justify-center p-4 relative">
+    <div className="flex min-h-screen bg-[#0F0F0F]">
+      <div className="hidden lg:flex w-1/2 items-center justify-center p-4 relative">
         <img
           src="./images/loginScreenimg.webp"
           alt="Business Portal"
@@ -120,9 +120,7 @@ function LoginPage() {
       <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-6 sm:p-12 text-white">
         <div className="w-full max-w-md rounded-2xl p-8">
          
-          <h1 className="text-5xl font-semibold text-left mb-10">
-            Business Portal
-          </h1>
+          <img src="./images/vabooknobg.svg" alt="valogo" className="w-80 place-self-center mb-10" />
 
           <form onSubmit={handleSubmit} className="space-y-5 mb-20">
             {/* Username */}

@@ -84,7 +84,7 @@ function TopNav() {
           </button>
         </div>
         Hi &nbsp;
-        <span className="text-lg md:text-xl text-end text-black tracking-widest">
+        <span className="text-lg md:text-xl text-end text-black tracking">
           {user && user}
         </span>{" "}
       </div>
