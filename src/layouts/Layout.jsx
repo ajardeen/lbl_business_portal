@@ -1,40 +1,24 @@
-import React, { useEffect } from "react";
-import SideBar from "./SideBar/SideBar";
-import { IStaticMethods } from "preline/preline";
-import TopNav from "./TopNav/TopNav";
+"use client";
 
-window.HSStaticMethods = IStaticMethods;
+import React from "react";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import VA_Sidebar from "./VA_Sidebar";
+import VA_TopNavigation from "./VA_TopNavigation";
 
-function Layout({ children }) {
-  useEffect(() => {
-    setTimeout(() => {
-      window.HSStaticMethods.autoInit();
-    }, 100);
-  }, []);
-
+export default function Layout({ children }) {
   return (
-    <div className="font-runde bg-gray-50 h-screen flex overflow-hidden">
-      {/* Sidebar */}
-      <SideBar />
+    <SidebarProvider>
 
-      {/* Main content area */}
-      <div
-        className="
-          flex flex-col flex-1
-          transition-all duration-300
-          lg:ml-0                     /* default sidebar width on large screens */
-          hs-overlay-minified:lg:ml-0 /* when sidebar minimized */
-        "
-      >
-        <TopNav />
+      <VA_Sidebar />
 
-        {/* Scrollable main section */}
-        <main className="flex-1 overflow-y-auto bg-white p-5">
+      {/* Content layout remains unaffected */}
+      <SidebarInset className="flex flex-col min-h-screen overflow-hidden">
+        <VA_TopNavigation />
+
+        <main className="flex-1 overflow-auto p-6">
           {children}
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
-
-export default Layout;

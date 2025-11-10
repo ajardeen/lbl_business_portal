@@ -5,18 +5,16 @@ import { db } from "../../configs/firebase";
 import LineChart from "../../components/LineChart";
 import LeadGenerationTable from "./LeadGenerationTable";
 import { SiGoogleadsense } from "react-icons/si";
-import SyncButton from "../../components/UI/SyncButton";
+import SyncButton from "../../components/ui/SyncButton";
 import { dummyLeads } from "./dummyLeads";
 
 const fetchLeads = async () => {
-
-
   const querySnapshot = await getDocs(collection(db, "lunchboxleads"));
   return querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
-  // testing api below 
+  // testing api below
   // return dummyLeads;
 };
 
