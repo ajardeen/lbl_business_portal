@@ -1,13 +1,11 @@
-"use client";
-
 import { Textarea } from "@/components/ui/textarea";
 
-export function VA_Textarea({
+const  VA_TextArea=({
   value,
   onChange,
   placeholder = "Type your message here...",
   ...props
-}) {
+})=> {
   const handleChange = (e) => {
     if (onChange) onChange(e.target.value);
   };
@@ -21,3 +19,5 @@ export function VA_Textarea({
     />
   );
 }
+
+export default VA_TextArea;
