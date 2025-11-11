@@ -166,7 +166,7 @@ export default function VA_SidebarFooter() {
         </SidebarMenuItem>
       </SidebarMenu>
       <Separator className="opacity-50" />
-      <div className="h-fit justify-center items-center flex  rounded-sm overflow-hidden">
+      <div className="h-fit max-h-30 justify-center items-center flex  rounded-sm overflow-hidden">
         {open ? (
           <>
           <img
@@ -184,7 +184,7 @@ export default function VA_SidebarFooter() {
           <img
             src="/images/vabookicon.svg"
             alt="Vision Action Logo"
-            className="object-cover w-40"
+            className="object-contain w-40"
           />
         )}
       </div>

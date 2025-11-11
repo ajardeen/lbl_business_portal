@@ -1,5 +1,5 @@
 import React from "react";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar.jsx";
 import VA_Sidebar from "./VA_Sidebar";
 import VA_TopNavigation from "./VA_TopNavigation";
 
