@@ -1,7 +1,9 @@
-import { useTheme } from "next-themes";
+"use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -13,14 +15,22 @@ export default function ThemeToggle() {
 
   if (!mounted) return null;
 
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
     <Button
       variant="outline"
       size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
       className="transition-all duration-300"
     >
-      {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      {theme === "dark" ? (
+        <Sun className="h-5 w-5" />
+      ) : (
+        <Moon className="h-5 w-5" />
+      )}
     </Button>
   );
 }
