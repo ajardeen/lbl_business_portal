@@ -7,23 +7,15 @@ import {
   LayoutDashboard,
   FolderOpen,
 } from "lucide-react";
+import { SiGoogleadsense } from "react-icons/si";
 
 export const suggestedSearch = [
   {
-    searchName: "Home",
-    link: "/",
-    icon: Home,
-  },
-  {
-    searchName: "Report",
-    link: "/reports",
-    icon: FileText,
-  },
-//   {
-//     searchName: "Settings",
-//     link: "/settings",
-//     icon: Settings,
-//   },
+    searchName: "Leads",
+    link: "/leads",
+    icon: SiGoogleadsense,
+  }, 
+ 
 ];
 
 export const pagesSearch = [
@@ -32,34 +24,40 @@ export const pagesSearch = [
     link: "/dashboard",
     icon: LayoutDashboard,
   },
-  {
-    searchName: "Reports",
-    link: "/reports",
-    icon: BarChart,
-  },
-  {
-    searchName: "Quick Access",
-    link: "/quick-access",
-    icon: FolderOpen,
-  },
-  {
-    searchName: "Management",
-    link: "/management",
-    icon: FileText,
-  },
-  {
-    searchName: "Documents",
-    link: "/documents",
-    icon: FileText,
-  },
+  //  {
+  //   searchName: "Leads",
+  //   link: "/Leads",
+  //   icon: SiGoogleadsense,
+  // }, 
   {
     searchName: "Settings",
     link: "/settings",
     icon: Settings,
   },
-  {
-    searchName: "Help",
-    link: "/help",
-    icon: HelpCircle,
-  },
+  // {
+  //   searchName: "Reports",
+  //   link: "/reports",
+  //   icon: BarChart,
+  // },
+  // {
+  //   searchName: "Quick Access",
+  //   link: "/quick-access",
+  //   icon: FolderOpen,
+  // },
+  // {
+  //   searchName: "Management",
+  //   link: "/management",
+  //   icon: FileText,
+  // },
+  // {
+  //   searchName: "Documents",
+  //   link: "/documents",
+  //   icon: FileText,
+  // },
+ 
+  // {
+  //   searchName: "Help",
+  //   link: "/help",
+  //   icon: HelpCircle,
+  // },
 ];

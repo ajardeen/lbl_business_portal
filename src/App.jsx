@@ -1,7 +1,7 @@
 import "./App.css";
 import "./styles/defaultStyles.css";
 import "./styles/UIStyles.css";
-import './styles/tableStyles.css'
+import "./styles/tableStyles.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import LeadGeneration from "./pages/LeadGeneration/LeadGeneration";
@@ -10,6 +10,7 @@ import LoginPage from "./pages/Auth/LoginPage/LoginPage";
 
 import PrivateRoute from "./Routes/PrivateRoute";
 import Settings from "./pages/Settings/Settings";
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
           }
         />
       </Routes>
+      <Toaster richColors expand={true} />
     </Router>
   );
 }

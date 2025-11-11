@@ -27,11 +27,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +37,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import VA_FeedbackDialog from "../VAComponents/VA_FeedbackDialog";
+import { Link } from "react-router-dom";
 
 export default function VA_SidebarFooter() {
   const { open, isMobile } = useSidebar();
@@ -54,11 +52,8 @@ export default function VA_SidebarFooter() {
 
   return (
     <div className="w-full space-y-3 bg-sidebar pb-3">
-   
-   
-
       {/* 🌟 Upgrade Section */}
-      <div className="px-3">
+      <div className="px-3 hidden">
         {open ? (
           <Card className="border-none bg-gradient-to-br from-primary/10 via-primary/5 to-transparent shadow-sm py-1">
             <CardContent className="p-4 flex flex-col gap-3">
@@ -115,15 +110,15 @@ export default function VA_SidebarFooter() {
                   tooltip="Settings"
                   className="w-full flex items-center"
                 >
-                  <a
-                    href="/settings"
+                  <Link
+                      to={'/settings'}
                     className={`flex items-center ${
                       open ? "justify-start px-2 gap-2" : "justify-center px-0"
                     }`}
                   >
-                    <Settings className="h-4 w-4 text-muted-foreground" />
+                    <Settings className="h-4 w-4" />
                     {open && <span className="text-sm">Settings</span>}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </TooltipTrigger>
               {!open && (
@@ -140,107 +135,59 @@ export default function VA_SidebarFooter() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <SidebarMenuButton
-                  asChild
-                  tooltip="Feedback"
-                  className="w-full flex items-center"
-                >
-                  <a
-                    href="/feedback"
-                    className={`flex items-center ${
-                      open ? "justify-start px-2 gap-2" : "justify-center px-0"
-                    }`}
+                <VA_FeedbackDialog>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip="Feedback"
+                    className="w-full flex items-center"
                   >
-                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    {open && <span className="text-sm">Feedback</span>}
-                  </a>
-                </SidebarMenuButton>
+                    <Link
+                      className={`flex items-center ${
+                        open
+                          ? "justify-start px-2 gap-2"
+                          : "justify-center px-0"
+                      }`}
+                    >
+                      <MessageSquare className="h-4 w-4 " />
+                      {open && <span className="text-sm">Feedback</span>}
+                    </Link>
+                  </SidebarMenuButton>
+                </VA_FeedbackDialog>
               </TooltipTrigger>
               {!open && (
-                <TooltipContent side="right" className="text-xs">
-                  Feedback
-                </TooltipContent>
+                <VA_FeedbackDialog>
+                  <TooltipContent side="right" className="text-xs">
+                    Feedback
+                  </TooltipContent>
+                </VA_FeedbackDialog>
               )}
             </Tooltip>
           </TooltipProvider>
         </SidebarMenuItem>
       </SidebarMenu>
-            {/* Divider */}
-      {/* <Separator className="opacity-50" /> */}
-      {/* 👤 Profile Section */}
-      {/* <SidebarMenu>
-        <SidebarMenuItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                <Avatar className="h-8 w-8 rounded-lg grayscale">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">AC</AvatarFallback>
-                </Avatar>
-                {open && (
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {user.email}
-                    </span>
-                  </div>
-                )}
-                <MoreVertical className="ml-auto size-4" />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              side={isMobile ? "bottom" : "right"}
-              align="end"
-              sideOffset={4}
-            >
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">AC</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      {user.email}
-                    </span>
-                  </div>
-                </div>
-              </DropdownMenuLabel>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <User className="h-4 w-4" />
-                  Account
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard className="h-4 w-4" />
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell className="h-4 w-4" />
-                  Notifications
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem>
-                <LogOut className="h-4 w-4" />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SidebarMenuItem>
-      </SidebarMenu> */}
-
+      <Separator className="opacity-50" />
+      <div className="h-fit justify-center items-center flex  rounded-sm overflow-hidden">
+        {open ? (
+          <>
+          <img
+            src="/images/vabooknobg.svg"
+            alt="Vision Action Logo"
+            className="object-cover w-40 hidden dark:block"
+            />
+          <img
+            src="/images/vabookdarkversion.svg"
+            alt="Vision Action Logo"
+            className="object-cover w-40 dark:hidden"
+            />
+            </>
+        ) : (
+          <img
+            src="/images/vabookicon.svg"
+            alt="Vision Action Logo"
+            className="object-cover w-40"
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,27 +1,74 @@
-import React from "react";
+"use client";
+
+import React, { useMemo, useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../configs/firebase";
-import LineChart from "../../components/LineChart";
-import LeadGenerationTable from "./LeadGenerationTable";
 import { SiGoogleadsense } from "react-icons/si";
-import SyncButton from "../../components/ui/SyncButton";
-import { dummyLeads } from "./dummyLeads";
+import SyncButton from "@/components/VAComponents/SyncButton";
+import VA_DataTable from "@/components/VAComponents/VA_DataTable";
+import { createColumnHelper } from "@tanstack/react-table";
+import VA_AreaChart from "@/components/VAComponents/VA_AreaChart";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { ChartSpline } from "lucide-react";
 
+// ✅ Fetch Firestore Leads
 const fetchLeads = async () => {
   const querySnapshot = await getDocs(collection(db, "lunchboxleads"));
   return querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
-  // testing api below
-  // return dummyLeads;
 };
 
-function LeadGeneration() {
+// ✅ Helper: generate chart data for given days
+const generateChartData = (leads, days) => {
+  if (!Array.isArray(leads) || leads.length === 0) return [];
+
+  const formatDate = (date) => date.toISOString().split("T")[0];
+
+  const parsed = leads.map((lead) => {
+    const ts = lead.createdAt;
+    const date =
+      ts?.seconds && typeof ts.seconds === "number"
+        ? new Date(ts.seconds * 1000)
+        : ts?.toDate
+        ? ts.toDate()
+        : new Date();
+    return { ...lead, createdAt: date };
+  });
+
+  const end = new Date();
+  const start = new Date();
+  start.setDate(end.getDate() - days + 1);
+
+  const countsByDate = {};
+  parsed.forEach((lead) => {
+    const created = lead.createdAt;
+    if (created >= start && created <= end) {
+      const key = formatDate(created);
+      countsByDate[key] = (countsByDate[key] || 0) + 1;
+    }
+  });
+
+  const chartData = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const key = formatDate(new Date(d));
+    chartData.push({ date: key, count: countsByDate[key] || 0 });
+  }
+
+  return chartData;
+};
+
+export default function LeadGeneration() {
   const queryClient = useQueryClient();
 
-  // 🧠 TanStack Query to fetch once
   const { data = [], isFetching } = useQuery({
     queryKey: ["leads"],
     queryFn: fetchLeads,
@@ -30,17 +77,16 @@ function LeadGeneration() {
     refetchOnWindowFocus: false,
   });
 
-  // 🧩 Sync button click → refetch manually
   const handleLeadGeneration = async () => {
     await queryClient.invalidateQueries(["leads"]);
   };
 
-  // 🧮 Overview Cards
+  // Stats
   const totalLeads = data.length;
   const todayLeads = data.filter((lead) => {
     const created = lead.createdAt?.toDate
       ? lead.createdAt.toDate()
-      : new Date(lead.createdAt);
+      : new Date(lead.createdAt?.seconds * 1000);
     return created.toDateString() === new Date().toDateString();
   }).length;
 
@@ -49,15 +95,41 @@ function LeadGeneration() {
   const weekLeads = data.filter((lead) => {
     const created = lead.createdAt?.toDate
       ? lead.createdAt.toDate()
-      : new Date(lead.createdAt);
+      : new Date(lead.createdAt?.seconds * 1000);
     return created >= weekStart;
   }).length;
 
+  // Chart datasets
+  const weekData = generateChartData(data, 7);
+  const monthData = generateChartData(data, 30);
+  const yearData = generateChartData(data, 365);
+
+  // Table
+  const columnHelper = createColumnHelper();
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("name", { header: "Name" }),
+      columnHelper.accessor("email", { header: "Email" }),
+      columnHelper.accessor("phoneNumber", { header: "Phone" }),
+      columnHelper.accessor("createdAt", {
+        header: "Created At",
+        cell: (info) => {
+          const ts = info.getValue();
+          if (!ts) return "";
+          const date = ts.toDate ? ts.toDate() : new Date(ts.seconds * 1000);
+          return date.toLocaleString();
+        },
+      }),
+    ],
+    []
+  );
+
   return (
-    <div className="w-full overflow-auto">
-      <header className="flex  sm:flex-row w-full mb-6 justify-between items-start sm:items-center gap-4">
-        <h1 className="text-lg md:text-2xl font-semibold flex gap-2">
-          <SiGoogleadsense color="rgb(0 118 255)" /> Leads Dashboard
+    <div className="w-full space-y-8">
+      {/* Header */}
+      <header className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center gap-4">
+        <h1 className="text-lg md:text-2xl font-semibold flex items-center gap-2">
+          <ChartSpline className="text-primary" /> Leads Dashboard
         </h1>
         <SyncButton
           loading={isFetching}
@@ -66,67 +138,114 @@ function LeadGeneration() {
         />
       </header>
 
-      {/* Overview Cards */}
-      <div className="card-style grid grid-cols-1 lg:grid-cols-7 gap-4 mb-6 lg:h-80 p-4">
+      {/* Cards Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+        {/* Left Card */}
         <div className="lg:col-span-2">
-          <div className="card-styles h-fit p-6  rounded-2xl shadow-md bg-gradient-to-b from-blue-50 to-white">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-gray-700 font-semibold text-lg">
-                Lead Statistics
-              </h2>
-              <span className="text-xs bg-black text-white px-3 py-1 rounded-full hidden sm:block">
-                29 Days
-              </span>
-            </div>
-
-            <div className="mb-8">
-              <p className="text-5xl md:text-6xl font-bold text-gray-800">
-                {totalLeads}
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                Total Leads in a Month
-              </p>
-            </div>
-
-            <div className="space-y-4 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                  This Week
-                </span>
-                <span className="font-semibold text-gray-700">{weekLeads}</span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  Today
-                </span>
-                <span className="font-semibold text-gray-700">
-                  {todayLeads}
+          <Card className="     h-fit 
+    border border-border 
+    shadow-sm 
+    transition-colors 
+    text-card-foreground
+    bg-gradient-to-br from-blue-500/20 via-transparent/10 to-white
+    dark:from-blue-500/30 dark:via-transparent/10 dark:to-[#0B0B0B]
+  ">
+            <CardHeader>
+              <div className="flex justify-between items-center mb-2">
+                <CardTitle className="text-base font-semibold">
+                  Lead Statistics
+                </CardTitle>
+                <span className="text-xs bg-primary text-primary-foreground px-3 py-1 rounded-full">
+                  30 Days
                 </span>
               </div>
-            </div>
-          </div>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <div>
+                <p className="text-5xl md:text-6xl font-bold">{totalLeads}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Total Leads in a Month
+                </p>
+              </div>
+
+              <div className="space-y-4 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    This Week
+                  </span>
+                  <span className="font-semibold">{weekLeads}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    Today
+                  </span>
+                  <span className="font-semibold">{todayLeads}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Info Card */}
+          <Card className="mt-4 border border-border bg-muted/40 text-muted-foreground shadow-none transition-colors">
+            <CardContent className="text-sm py-3">
+              Tip: Switch between{" "}
+              <span className="text-primary font-medium">7d</span>,{" "}
+              <span className="text-primary font-medium">30d</span>, or{" "}
+              <span className="text-primary font-medium">year</span> views to
+              spot lead trends.
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Chart */}
-        <div className="lg:col-span-5">
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-gray-700 font-semibold text-lg">
-                Lead Generation Graph
-              </h2>
-            </div>
-            <LineChart data={data} height="220px" />
-          </div>
-        </div>
+        {/* Chart Section */}
+        <Card className="lg:col-span-5 p-0  border-0  bg-card text-card-foreground shadow-none transition-colors">
+          {data.length > 0 ? (
+            <VA_AreaChart
+              datasets={{
+                week: weekData,
+                month: monthData,
+                year: yearData,
+              }}
+              chartConfig={{
+                count: { label: "Leads", color: "#2563EB" },
+              }}
+              title="Lead Generation Trend"
+              description="Leads grouped by selected period"
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No data available for chart
+            </p>
+          )}
+        </Card>
       </div>
 
-      {/* Table */}
-      <LeadGenerationTable data={data} />
+      {/* Table Section */}
+      <Card className="border border-border bg-card text-card-foreground shadow-sm transition-colors">
+        {/* <CardHeader>
+          <CardTitle className="text-base font-semibold">Lead Records</CardTitle>
+        </CardHeader> */}
+        <CardContent>
+          <VA_DataTable
+            title="Lead Records"
+            description="All Registered customer table"
+            data={data}
+            columns={columns}
+            // selectedRowData,
+            // onSelectedRowsChange,
+            rowSelectingOption={false}
+            showSno={true}
+            footerText = "Table generated using Vision Action UI"
+            footerConfig = {true}
+            footerCalcColumns = {["name","email"]}
+            // addONActions = <></>
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }
-
-export default LeadGeneration;

@@ -34,9 +34,9 @@ export default function VA_SidebarHeader() {
                 {/* ✅ Logo instead of icon */}
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent">
                   <img
-                    src={react}
-                    alt="Vision Action Logo"
-                    className="h-7 w-7 object-contain"
+                    src={"./images/lbl_icon.png" ||react}
+                    alt="Lunchbox Legends Logo"
+                    className=" object-contain"
                   />
                 </div>
 

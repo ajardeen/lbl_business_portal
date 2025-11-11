@@ -1,7 +1,4 @@
-import { Home, Settings, BarChart } from "lucide-react";
-import { SiGoogleadsense } from "react-icons/si";
-import { GoHomeFill } from "react-icons/go";
-import { RiSettings3Fill } from "react-icons/ri"
+import { Home, Settings, BarChart, ChartSpline } from "lucide-react";
 
 export const sidebarConfig = [
   {
@@ -9,7 +6,7 @@ export const sidebarConfig = [
     menus: [
       {
         menuTitle: "Dashboard",
-        icon: GoHomeFill,
+        icon: Home,
         url: "/dashboard",
         // submenu: [
         //   { submenuTitle: "Overview", url: "/dashboard/overview" },
@@ -18,37 +15,20 @@ export const sidebarConfig = [
       },
       {
         menuTitle: "Leads",
-        icon: SiGoogleadsense,
+        icon: ChartSpline,
         url: "/leads",
         // submenu: [
         //   { submenuTitle: "Sales", url: "/reports/sales" },
         //   { submenuTitle: "Customers", url: "/reports/customers" },
         // ],
       },
-      
     ],
   },
-  {
-    groupTitle: "Others",
-    menus: [
-      {
-        menuTitle: "Settings",
-        icon: RiSettings3Fill,
-        url: "/settings",
-        // submenu: [
-        //   { submenuTitle: "Profile", url: "/settings/profile" },
-        //   { submenuTitle: "Billing", url: "/settings/billing" },
-        // ],
-      },
-    ],
-  },
- 
 ];
-
 
 // 🧠 Dynamic header configuration
 export const sidebarHeaderConfig = {
-  title: "Vision Action",
+  title: "Lunchbox Legends",
   options: [
     // one option is static if more it become dropdown
     { label: "User", value: "user" },

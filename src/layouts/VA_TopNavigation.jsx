@@ -44,7 +44,7 @@ export default function VA_TopNavigation() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between border-b bg-background px-4 py-2">
+    <nav className="sticky w-full top-0 z-50 flex items-center justify-between border-b bg-background px-4 py-2">
       {/* ✅ Left section: Sidebar trigger + Breadcrumb */}
       <div className="flex items-center gap-2 min-w-0">
         <SidebarTrigger className="" />
@@ -56,7 +56,7 @@ export default function VA_TopNavigation() {
         {/* ✅ Dynamic Breadcrumb */}
 
         <VA_Breadcrumb />
-      </div>
+      </div>  
 
       {/* ✅ Right side tools */}
       <div className="flex items-center gap-3">

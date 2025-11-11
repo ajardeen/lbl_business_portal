@@ -1,14 +1,24 @@
+
 import { useEffect, useState } from "react";
-import * as Label from "@radix-ui/react-label";
-import * as Select from "@radix-ui/react-select";
-import { ChevronDownIcon, CheckIcon } from "@radix-ui/react-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../../../configs/firebase";
 import { useNavigate } from "react-router-dom";
-import "preline";
-import { showToast } from "../../../components/toast";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { toast } from "sonner";
+
+import VA_FieldWrapper from "@/components/VAComponents/VA_FieldWrapper";
+import VA_Input from "@/components/VAComponents/VA_Input";
+import VA_Button from "@/components/VAComponents/VA_Button";
+import VA_Select from "@/components/VAComponents/VA_Select";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Lock, User } from "lucide-react";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -20,6 +30,7 @@ function LoginPage() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Redirect if already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -40,8 +51,8 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setLoading(true);
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -57,25 +68,13 @@ function LoginPage() {
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
 
-        // Check role from Firestore
         if (userData.role !== "admin" || formData.role !== "admin") {
           setErrors({ role: "Only admin users can access this portal" });
-          showToast({
-            text: "Only admin users can access this portal",
-            duration: 3000,
-            newWindow: true,
-            close: true,
-            gravity: "top",
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            type: "error",
-          });
-
+          toast.error("Currently Only admin users can access this portal");
           setLoading(false);
           return;
         }
 
-        // Store user
         const userDataToStore = {
           uid: user.uid,
           email: user.email,
@@ -83,14 +82,9 @@ function LoginPage() {
           name: userData.name,
         };
         localStorage.setItem("user", JSON.stringify(userDataToStore));
-
-        // Show Preline toast
-        showToast({ text: "Login successful! Redirecting..." });
-
-        // Wait 1.5 seconds then navigate
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+     toast.success("Login successful!");
+  
+        setTimeout(() => navigate("/dashboard"), 1500);
       } else {
         setErrors({ username: "No matching user found in database" });
       }
@@ -107,150 +101,102 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0F0F0F]">
-      <div className="hidden lg:flex w-1/2 items-center justify-center p-4 relative">
+    <div className="flex min-h-screen bg-muted dark:bg-background text-foreground">
+      {/* Left Banner */}
+      <div className="hidden lg:flex w-1/2 items-center justify-center relative">
         <img
           src="./images/loginScreenimg.webp"
           alt="Business Portal"
           className="object-cover w-full h-full"
         />
-        <img src="./images/LunchBoxLegends.svg" alt="logo" className="absolute top-[50%] left-[50%] w-40 -translate-1/2" />
+        <img
+          src="./images/LunchBoxLegends.svg"
+          alt="logo"
+          className="absolute top-[50%] left-[50%] w-40 -translate-1/2"
+        />
       </div>
 
-      <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-6 sm:p-12 text-white">
-        <div className="w-full max-w-md rounded-2xl p-8">
-         
-          <img src="./images/vabooknobg.svg" alt="valogo" className="w-80 place-self-center mb-10" />
+      {/* Right: Login Card */}
+      <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-6 sm:p-12">
+        <Card className="w-full max-w-md bg-background   border border-border shadow-sm backdrop-blur-sm">
+          <CardHeader className="space-y-2 text-center">
+            <img
+              src="./images/vabooknobg.svg"
+              alt="valogo"
+              className="w-44 mx-auto mb-2 bg-accent-foreground dark:bg-accent rounded-sm px-2"
+            />
+            {/* <CardTitle className="text-xl font-semibold">VA BOOK</CardTitle> */}
+            <CardDescription className="text-sm text-muted-foreground">
+              Sign in to access 
+            </CardDescription>
+          </CardHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-5 mb-20">
-            {/* Username */}
-            <div>
-              <Label.Root
-                htmlFor="username"
-                className="block text-sm font-medium mb-1"
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Username */}
+              <VA_FieldWrapper
+                label="Username (Email)"
+                required
+                error={errors.username}
               >
-                Username (Email)
-              </Label.Root>
-              <input
-                id="username"
-                type="email"
-                placeholder="Enter email"
-                value={formData.username}
-                onChange={(e) =>
-                  setFormData({ ...formData, username: e.target.value })
-                }
-                className={`w-full border rounded-lg px-4 py-3 bg-[#3C364C] text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.username ? "border-red-500" : "border-transparent"
-                }`}
-              />
-              {errors.username && (
-                <p className="text-xs text-red-500 mt-1">{errors.username}</p>
-              )}
-            </div>
+                <VA_Input
+                  type="email"
+                  placeholder="Enter your email"
+                  icon={<User/>}
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData({ ...formData, username: e.target.value })
+                  }
+                />
+              </VA_FieldWrapper>
 
-            {/* Password */}
-            <div>
-              <Label.Root
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
+              {/* Password */}
+              <VA_FieldWrapper
+                label="Password"
+                required
+                error={errors.password}
               >
-                Password
-              </Label.Root>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter password"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className={`w-full border rounded-lg px-4 py-3 bg-[#3C364C] text-sm text-white placeholder-gray-400 outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.password ? "border-red-500" : "border-transparent"
-                }`}
-              />
-              {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-              )}
-            </div>
+                <VA_Input
+                  type="password"
+                  icon={<Lock/>}
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
+              </VA_FieldWrapper>
 
-            {/* Role Dropdown */}
-            <div>
-              <Label.Root
-                htmlFor="role"
-                className="block text-sm font-medium mb-1"
+              {/* Role Select */}
+              <VA_FieldWrapper label="Role" required error={errors.role}>
+                <VA_Select
+                  options={[
+                    { label: "Admin", value: "admin" },
+                    { label: "Staff", value: "staff" },
+                  ]}
+                  value={formData.role}
+                  onSelect={(val) => setFormData({ ...formData, role: val })}
+                  placeholder="Select role"
+                />
+              </VA_FieldWrapper>
+
+              {/* Submit */}
+              <VA_Button
+                type="submit"
+                loading={loading}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                Role
-              </Label.Root>
+                {loading ? "Logging in..." : "Login"}
+              </VA_Button>
+            </form>
+          </CardContent>
 
-              <Select.Root
-                value={formData.role}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, role: value })
-                }
-              >
-                <Select.Trigger
-                  className={`w-full flex items-center justify-between border rounded-lg px-4 py-3 bg-[#3C364C] text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none ${
-                    errors.role ? "border-red-500" : "border-transparent"
-                  }`}
-                >
-                  <Select.Value placeholder="Select role" />
-                  <Select.Icon>
-                    <ChevronDownIcon />
-                  </Select.Icon>
-                </Select.Trigger>
-
-                <Select.Portal>
-                  <Select.Content
-                    className="overflow-hidden bg-[#3C364C] border border-gray-600 rounded-lg shadow-lg w-[var(--radix-select-trigger-width)]"
-                    position="popper"
-                    sideOffset={4}
-                  >
-                    <Select.Viewport className="p-1">
-                      {["admin", "staff"].map((role) => (
-                        <Select.Item
-                          key={role}
-                          value={role}
-                          className="relative flex items-center select-none px-3 py-2 text-sm rounded-md text-white hover:bg-blue-600 cursor-pointer focus:bg-blue-600"
-                        >
-                          <Select.ItemText className="capitalize">
-                            {role}
-                          </Select.ItemText>
-                          <Select.ItemIndicator className="absolute right-2">
-                            <CheckIcon />
-                          </Select.ItemIndicator>
-                        </Select.Item>
-                      ))}
-                    </Select.Viewport>
-                  </Select.Content>
-                </Select.Portal>
-              </Select.Root>
-
-              {errors.role && (
-                <p className="text-xs text-red-500 mt-1">{errors.role}</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-3 rounded-lg font-medium text-sm transition ${
-                loading
-                  ? "bg-blue-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
-            >
-              {loading ? (
-                <div className="flex items-center justify-center gap-2 ">
-                  <AiOutlineLoading3Quarters className="animate-spin" />
-                  Logging in...
-                </div>
-              ) : (
-                "Login"
-              )}
-            </button>
-          </form>
-        </div>
+            {/* <CardFooter className="text-center text-xs text-muted-foreground">
+              <p>
+                © {new Date().getFullYear()} LunchBox Legends. All rights reserved.
+              </p>
+            </CardFooter> */}
+        </Card>
       </div>
     </div>
   );
