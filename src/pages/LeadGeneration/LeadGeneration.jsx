@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/_UItemp/card";
+} from "@/components/ui/card";
 import { ChartSpline } from "lucide-react";
 
 // ✅ Fetch Firestore Leads

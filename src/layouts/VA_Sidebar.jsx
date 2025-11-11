@@ -5,7 +5,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/_UItemp/collapsible";
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +19,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/_UItemp/sidebar";
+} from "@/components/ui/sidebar";
 
 import VA_SidebarHeader from "@/components/SidebarComponents/VA_SidebarHeader";
 import VA_SidebarFooter from "@/components/SidebarComponents/VA_SidebarFooter";

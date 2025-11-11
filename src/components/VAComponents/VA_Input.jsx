@@ -6,7 +6,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "../_UItemp/input-group";
+} from "../ui/input-group";
 
 /**
  * VA_Input — wrapped inside ShadCN ButtonGroup layout

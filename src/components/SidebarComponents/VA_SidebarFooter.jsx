@@ -12,26 +12,22 @@ import {
   MoreVertical,
 } from "lucide-react";
 
-import { Button } from "@/components/_UItemp/button";
-import { Card, CardContent } from "@/components/_UItemp/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
-} from "@/components/_UItemp/sidebar";
+} from "@/components/ui/sidebar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/components/_UItemp/tooltip";
-import { Separator } from "@/components/_UItemp/separator";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/_UItemp/avatar";
+} from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,7 +36,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/_UItemp/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import VA_FeedbackDialog from "../VAComponents/VA_FeedbackDialog";
 import { Link } from "react-router-dom";
 

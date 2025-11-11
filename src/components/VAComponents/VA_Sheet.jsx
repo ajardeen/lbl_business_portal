@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../_UItemp/sheet";
+} from "../ui/sheet";
 import { ExternalLink } from "lucide-react";
 
 export default function VA_Sheet({

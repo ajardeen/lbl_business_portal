@@ -1,6 +1,6 @@
 "use client";
 
-import { Textarea } from "@/components/_UItemp/textarea";
+import { Textarea } from "@/components/ui/textarea";
 
 export function VA_Textarea({
   value,

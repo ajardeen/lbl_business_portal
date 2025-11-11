@@ -10,16 +10,16 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "../_UItemp/command";
-import { Button } from "../_UItemp/button";
+} from "../ui/command";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogTrigger,
-} from "../_UItemp/dialog";
+} from "../ui/dialog";
 import { CornerDownLeft, Search } from "lucide-react";
-import { Kbd, KbdGroup } from "../_UItemp/kbd";
+import { Kbd, KbdGroup } from "../ui/kbd";
 
 /**
  * VA_GlobalSearchModel

@@ -20,10 +20,10 @@ import {
   TableHeader,
   TableRow,
   TableFooter,
-} from "@/components/_UItemp/table";
+} from "@/components/ui/table";
 
-import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
-import { Button } from "../_UItemp/button";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import { Button } from "../ui/button";
 import { Check, ChevronDown, ChevronUp, Eye, X, FileDown } from "lucide-react";
 import {
   Command,
@@ -32,19 +32,19 @@ import {
   CommandList,
   CommandEmpty,
   CommandInput,
-} from "../_UItemp/command";
+} from "../ui/command";
 
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "../_UItemp/input-group";
+} from "../ui/input-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/_UItemp/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import {
   Pagination,
   PaginationContent,
@@ -53,9 +53,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/_UItemp/pagination";
+} from "@/components/ui/pagination";
 import { toast } from "sonner";
-import { Checkbox } from "../_UItemp/checkbox";
+import { Checkbox } from "../ui/checkbox";
 
 const isNumeric = (value) =>
   typeof value === "number" || (!isNaN(value) && value !== "");

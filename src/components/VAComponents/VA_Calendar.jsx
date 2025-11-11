@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 
-import { Calendar } from "../_UItemp/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
-import { Button } from "../_UItemp/button";
-import { Label } from "../_UItemp/label";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 

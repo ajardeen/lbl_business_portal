@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/_UItemp/breadcrumb";
+} from "@/components/ui/breadcrumb";
 import { Home, ChevronRight } from "lucide-react";
 import { breadcrumbConfig } from "@/configs/breadcrumbConfig";
 

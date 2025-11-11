@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SidebarTrigger } from "@/components/_UItemp/sidebar";
-import { Separator } from "@/components/_UItemp/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import VA_GlobalSearchModel from "@/components/VAComponents/VA_GlobalSearchModel";
-import ThemeToggle from "@/components/_UItemp/theme-toggle";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/_UItemp/avatar";
+import ThemeToggle from "@/components/ui/theme-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,9 +12,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/_UItemp/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { User, CreditCard, Bell, LogOut, Settings } from "lucide-react";
-import { Button } from "@/components/_UItemp/button";
+import { Button } from "@/components/ui/button";
 
 // --- Sample global search config imports ---
 import { suggestedSearch, pagesSearch } from "@/configs/globalSearchConfig.js";

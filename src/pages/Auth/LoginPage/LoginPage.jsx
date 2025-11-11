@@ -16,7 +16,7 @@ import {
   CardFooter,
   CardTitle,
   CardDescription,
-} from "@/components/_UItemp/card";
+} from "@/components/ui/card";
 import { Lock, User } from "lucide-react";
 
 function LoginPage() {

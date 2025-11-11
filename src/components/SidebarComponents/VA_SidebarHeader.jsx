@@ -6,13 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/_UItemp/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/_UItemp/sidebar";
+} from "@/components/ui/sidebar";
 
 import react from "@/assets/react.svg"; // ✅ Import your logo
 import { sidebarHeaderConfig as headerConfig } from "@/configs/sidebarConfig";

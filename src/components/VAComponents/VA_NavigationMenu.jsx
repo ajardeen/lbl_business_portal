@@ -9,7 +9,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/_UItemp/navigation-menu";
+} from "@/components/ui/navigation-menu";
 
 const components = [
   {

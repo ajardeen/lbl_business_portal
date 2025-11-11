@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button } from "../_UItemp/button";
-import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
+import { Button } from "../ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import {
   Command,
   CommandInput,
@@ -9,9 +9,9 @@ import {
   CommandGroup,
   CommandItem,
   CommandEmpty,
-} from "../_UItemp/command";
+} from "../ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { InputGroup, InputGroupInput } from "../_UItemp/input-group";
+import { InputGroup, InputGroupInput } from "../ui/input-group";
 
 // Utility for className merge
 const cn = (...classes) => classes.filter(Boolean).join(" ");
