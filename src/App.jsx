@@ -10,7 +10,8 @@ import LoginPage from "./pages/Auth/LoginPage/LoginPage";
 
 import PrivateRoute from "./Routes/PrivateRoute";
 import Settings from "./pages/Settings/Settings";
-import { Toaster } from "./components/ui/sonner.jsx";
+import { Toaster } from "sonner";
+
 
 function App() {
   return (
