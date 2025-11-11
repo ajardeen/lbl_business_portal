@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import VA_FieldWrapper from "@/components/VAComponents/VA_FieldWrapper";
-import { VA_Textarea } from "@/components/VAComponents/VA_Textarea";
+import { VA_TextArea } from "@/components/VAComponents/VA_TextArea";
 import VA_Button from "@/components/VAComponents/VA_Button";
 import { MessageSquare } from "lucide-react";
 import { db } from "@/configs/firebase"; // ✅ import Firestore instance
@@ -86,7 +86,7 @@ export default function VA_FeedbackDialog({ children }) {
         </DialogHeader>
 
         <VA_FieldWrapper label="Feedback" required>
-          <VA_Textarea
+          <VA_TextArea
             placeholder="Type your feedback here..."
             onChange={setFeedback}
             value={feedback}
