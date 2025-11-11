@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/components/_UItemp/breadcrumb";
 import { Home, ChevronRight } from "lucide-react";
 import { breadcrumbConfig } from "@/configs/breadcrumbConfig";
 
@@ -23,7 +23,9 @@ export default function VA_Breadcrumb() {
 
   // Split and rebuild path hierarchy
   const pathSegments = pathname.split("/").filter(Boolean);
-  const paths = pathSegments.map((_, idx) => "/" + pathSegments.slice(0, idx + 1).join("/"));
+  const paths = pathSegments.map(
+    (_, idx) => "/" + pathSegments.slice(0, idx + 1).join("/")
+  );
 
   // Generate breadcrumbs using config
   const crumbs = paths
@@ -39,7 +41,10 @@ export default function VA_Breadcrumb() {
         {/* 🏠 Always start with Home */}
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link to="/" className="flex items-center gap-1 hover:text-foreground">
+            <Link
+              to="/"
+              className="flex items-center gap-1 hover:text-foreground"
+            >
               <Home className="h-4 w-4" />
             </Link>
           </BreadcrumbLink>
@@ -58,7 +63,10 @@ export default function VA_Breadcrumb() {
                 </BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
-                  <Link to={crumb.path} className="hover:text-foreground truncate">
+                  <Link
+                    to={crumb.path}
+                    className="hover:text-foreground truncate"
+                  >
                     {crumb.label}
                   </Link>
                 </BreadcrumbLink>

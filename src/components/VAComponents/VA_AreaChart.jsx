@@ -8,21 +8,21 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/_UItemp/card";
 import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/components/_UItemp/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/_UItemp/select";
 
 const VA_AreaChart = ({
   datasets = {
@@ -72,12 +72,23 @@ const VA_AreaChart = ({
       </CardHeader>
 
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 !bg-transparent">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
           <AreaChart data={chartData}>
             <defs>
               <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={chartConfig.count.color} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={chartConfig.count.color} stopOpacity={0.1} />
+                <stop
+                  offset="5%"
+                  stopColor={chartConfig.count.color}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={chartConfig.count.color}
+                  stopOpacity={0.1}
+                />
               </linearGradient>
             </defs>
 
@@ -94,7 +105,10 @@ const VA_AreaChart = ({
                 if (timeRange === "year")
                   return d.toLocaleDateString("en-US", { month: "short" });
                 if (timeRange === "month")
-                  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                  return d.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
                 return d.toLocaleDateString("en-US", { weekday: "short" });
               }}
             />

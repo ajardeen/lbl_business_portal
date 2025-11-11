@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button } from "../ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "../ui/popover";
+import { Button } from "../_UItemp/button";
+import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
 import {
   Command,
   CommandInput,
@@ -13,7 +9,7 @@ import {
   CommandGroup,
   CommandItem,
   CommandEmpty,
-} from "../ui/command";
+} from "../_UItemp/command";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 // Small helper to merge classNames (since Vite setup doesn't use cn() from ShadCN)

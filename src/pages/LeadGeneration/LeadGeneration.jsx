@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/components/_UItemp/card";
 import { ChartSpline } from "lucide-react";
 
 // ✅ Fetch Firestore Leads
@@ -142,14 +142,16 @@ export default function LeadGeneration() {
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
         {/* Left Card */}
         <div className="lg:col-span-2">
-          <Card className="     h-fit 
+          <Card
+            className="     h-fit 
     border border-border 
     shadow-sm 
     transition-colors 
     text-card-foreground
     bg-gradient-to-br from-blue-500/20 via-transparent/10 to-white
     dark:from-blue-500/30 dark:via-transparent/10 dark:to-[#0B0B0B]
-  ">
+  "
+          >
             <CardHeader>
               <div className="flex justify-between items-center mb-2">
                 <CardTitle className="text-base font-semibold">
@@ -239,9 +241,9 @@ export default function LeadGeneration() {
             // onSelectedRowsChange,
             rowSelectingOption={false}
             showSno={true}
-            footerText = "Table generated using Vision Action UI"
-            footerConfig = {true}
-            footerCalcColumns = {["name","email"]}
+            footerText="Table generated using Vision Action UI"
+            footerConfig={true}
+            footerCalcColumns={["name", "email"]}
             // addONActions = <></>
           />
         </CardContent>

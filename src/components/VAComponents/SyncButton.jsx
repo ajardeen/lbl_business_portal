@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/_UItemp/button";
 
 const SyncButton = ({
   loading = false,

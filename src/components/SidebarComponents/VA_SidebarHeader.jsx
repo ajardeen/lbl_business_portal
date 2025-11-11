@@ -6,13 +6,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/_UItemp/dropdown-menu";
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@/components/_UItemp/sidebar";
 
 import react from "@/assets/react.svg"; // ✅ Import your logo
 import { sidebarHeaderConfig as headerConfig } from "@/configs/sidebarConfig";
@@ -34,7 +34,7 @@ export default function VA_SidebarHeader() {
                 {/* ✅ Logo instead of icon */}
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-transparent">
                   <img
-                    src={"./images/lbl_icon.png" ||react}
+                    src={"./images/lbl_icon.png" || react}
                     alt="Lunchbox Legends Logo"
                     className=" object-contain"
                   />
@@ -90,7 +90,6 @@ export default function VA_SidebarHeader() {
           </SidebarMenuButton>
         )}
       </SidebarMenuItem>
-   
     </SidebarMenu>
   );
 }

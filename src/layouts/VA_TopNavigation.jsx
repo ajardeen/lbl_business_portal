@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/_UItemp/sidebar";
+import { Separator } from "@/components/_UItemp/separator";
 import VA_GlobalSearchModel from "@/components/VAComponents/VA_GlobalSearchModel";
-import ThemeToggle from "@/components/ui/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ThemeToggle from "@/components/_UItemp/theme-toggle";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/_UItemp/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +16,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/_UItemp/dropdown-menu";
 import { User, CreditCard, Bell, LogOut, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/_UItemp/button";
 
 // --- Sample global search config imports ---
 import { suggestedSearch, pagesSearch } from "@/configs/globalSearchConfig.js";
@@ -56,7 +60,7 @@ export default function VA_TopNavigation() {
         {/* ✅ Dynamic Breadcrumb */}
 
         <VA_Breadcrumb />
-      </div>  
+      </div>
 
       {/* ✅ Right side tools */}
       <div className="flex items-center gap-3">

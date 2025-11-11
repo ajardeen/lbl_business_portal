@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button } from "../ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "../ui/popover";
+import { Button } from "../_UItemp/button";
+import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
 import {
   Command,
   CommandInput,
@@ -13,9 +9,9 @@ import {
   CommandGroup,
   CommandItem,
   CommandEmpty,
-} from "../ui/command";
+} from "../_UItemp/command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { InputGroup, InputGroupInput } from "../ui/input-group";
+import { InputGroup, InputGroupInput } from "../_UItemp/input-group";
 
 // Utility for className merge
 const cn = (...classes) => classes.filter(Boolean).join(" ");
@@ -89,9 +85,7 @@ export default function VA_InputAndSelect({
                     <Check
                       className={cn(
                         "h-4 w-4 text-primary transition-opacity",
-                        selectValue === opt.value
-                          ? "opacity-100"
-                          : "opacity-0"
+                        selectValue === opt.value ? "opacity-100" : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -109,10 +103,7 @@ export default function VA_InputAndSelect({
         onChange={onInputChange}
         placeholder={inputPlaceholder}
         disabled={disabled}
-        className={cn(
-          "",
-          inputClassName
-        )}
+        className={cn("", inputClassName)}
       />
     </InputGroup>
   );

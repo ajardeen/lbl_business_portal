@@ -10,16 +10,16 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "../ui/command";
-import { Button } from "../ui/button";
+} from "../_UItemp/command";
+import { Button } from "../_UItemp/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../_UItemp/dialog";
 import { CornerDownLeft, Search } from "lucide-react";
-import { Kbd, KbdGroup } from "../ui/kbd";
+import { Kbd, KbdGroup } from "../_UItemp/kbd";
 
 /**
  * VA_GlobalSearchModel
@@ -32,9 +32,8 @@ function VA_GlobalSearchModel({
   pagesSearch = [],
 }) {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
-
 
   // Handle Ctrl + /
   useEffect(() => {
@@ -58,21 +57,20 @@ function VA_GlobalSearchModel({
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Trigger Button */}
       <DialogTrigger asChild>
-       {isMobile ? (
-  <Button variant="outline" className="p-2">
-    <Search className="h-4 w-4" />
-  </Button>
-) : (
-  <Button variant="outline" className="flex items-center gap-3">
-    <Search className="h-4 w-4" />
-    {searchBtnText}
-    <KbdGroup>
-      <Kbd>Ctrl</Kbd>
-      <Kbd>/</Kbd>
-    </KbdGroup>
-  </Button>
-)}
-
+        {isMobile ? (
+          <Button variant="outline" className="p-2">
+            <Search className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button variant="outline" className="flex items-center gap-3">
+            <Search className="h-4 w-4" />
+            {searchBtnText}
+            <KbdGroup>
+              <Kbd>Ctrl</Kbd>
+              <Kbd>/</Kbd>
+            </KbdGroup>
+          </Button>
+        )}
       </DialogTrigger>
 
       {/* Dialog Content */}

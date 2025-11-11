@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HardHat } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/_UItemp/button";
 import {
   Empty,
   EmptyContent,
@@ -9,7 +9,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@/components/_UItemp/empty";
 import { toast } from "sonner";
 
 const Dashboard = () => {

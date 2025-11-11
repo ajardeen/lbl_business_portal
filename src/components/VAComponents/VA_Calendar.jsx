@@ -5,10 +5,10 @@ import PropTypes from "prop-types";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 
-import { Calendar } from "../ui/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { Calendar } from "../_UItemp/calendar";
+import { Popover, PopoverTrigger, PopoverContent } from "../_UItemp/popover";
+import { Button } from "../_UItemp/button";
+import { Label } from "../_UItemp/label";
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
@@ -30,16 +30,18 @@ export default function VA_Calendar({
     if (!value) return placeholder;
 
     if (mode === "single") {
-      return value ? toDisplay(new Date(value.split("/").reverse().join("-"))) : placeholder;
+      return value
+        ? toDisplay(new Date(value.split("/").reverse().join("-")))
+        : placeholder;
     }
 
     const from = value?.from;
     const to = value?.to;
 
     if (from && to)
-      return `${toDisplay(new Date(from.split("/").reverse().join("-")))} → ${toDisplay(
-        new Date(to.split("/").reverse().join("-"))
-      )}`;
+      return `${toDisplay(
+        new Date(from.split("/").reverse().join("-"))
+      )} → ${toDisplay(new Date(to.split("/").reverse().join("-")))}`;
     if (from && !to)
       return `${toDisplay(new Date(from.split("/").reverse().join("-")))} →`;
     if (!from && to)
@@ -61,7 +63,7 @@ export default function VA_Calendar({
       });
 
       // ✅ Close popover when both dates (from & to) are selected
-    //   if (val?.from && val?.to) setOpen(false);
+      //   if (val?.from && val?.to) setOpen(false);
     } else {
       onChange(null);
     }
@@ -84,7 +86,6 @@ export default function VA_Calendar({
 
   return (
     <div className={cn("w-full", className)}>
-
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -107,7 +108,11 @@ export default function VA_Calendar({
         <PopoverContent align="start" sideOffset={8} className="w-auto p-0">
           <div className="p-3">
             {mode === "single" ? (
-              <Calendar mode="single" selected={selectedValue} onSelect={handleSelect} />
+              <Calendar
+                mode="single"
+                selected={selectedValue}
+                onSelect={handleSelect}
+              />
             ) : (
               <Calendar
                 mode="range"

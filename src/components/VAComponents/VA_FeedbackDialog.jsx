@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/_UItemp/dialog";
 import VA_FieldWrapper from "@/components/VAComponents/VA_FieldWrapper";
 import { VA_Textarea } from "@/components/VAComponents/VA_Textarea";
 import VA_Button from "@/components/VAComponents/VA_Button";

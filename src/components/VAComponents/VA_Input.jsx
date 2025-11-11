@@ -6,7 +6,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "../ui/input-group";
+} from "../_UItemp/input-group";
 
 /**
  * VA_Input — wrapped inside ShadCN ButtonGroup layout
@@ -62,7 +62,7 @@ export default function VA_Input({
 
       {/* Loader or Right Icon */}
       {loading && (
-        <InputGroupAddon  align="inline-end" variant="outline" disabled>
+        <InputGroupAddon align="inline-end" variant="outline" disabled>
           <Loader className="animate-spin" />
         </InputGroupAddon>
       )}

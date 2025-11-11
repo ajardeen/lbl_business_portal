@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -17,7 +16,7 @@ import {
   CardFooter,
   CardTitle,
   CardDescription,
-} from "@/components/ui/card";
+} from "@/components/_UItemp/card";
 import { Lock, User } from "lucide-react";
 
 function LoginPage() {
@@ -82,8 +81,8 @@ function LoginPage() {
           name: userData.name,
         };
         localStorage.setItem("user", JSON.stringify(userDataToStore));
-     toast.success("Login successful!");
-  
+        toast.success("Login successful!");
+
         setTimeout(() => navigate("/dashboard"), 1500);
       } else {
         setErrors({ username: "No matching user found in database" });
@@ -127,7 +126,7 @@ function LoginPage() {
             />
             {/* <CardTitle className="text-xl font-semibold">VA BOOK</CardTitle> */}
             <CardDescription className="text-sm text-muted-foreground">
-              Sign in to access 
+              Sign in to access
             </CardDescription>
           </CardHeader>
 
@@ -142,7 +141,7 @@ function LoginPage() {
                 <VA_Input
                   type="email"
                   placeholder="Enter your email"
-                  icon={<User/>}
+                  icon={<User />}
                   value={formData.username}
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
@@ -158,7 +157,7 @@ function LoginPage() {
               >
                 <VA_Input
                   type="password"
-                  icon={<Lock/>}
+                  icon={<Lock />}
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={(e) =>
@@ -191,7 +190,7 @@ function LoginPage() {
             </form>
           </CardContent>
 
-            {/* <CardFooter className="text-center text-xs text-muted-foreground">
+          {/* <CardFooter className="text-center text-xs text-muted-foreground">
               <p>
                 © {new Date().getFullYear()} LunchBox Legends. All rights reserved.
               </p>

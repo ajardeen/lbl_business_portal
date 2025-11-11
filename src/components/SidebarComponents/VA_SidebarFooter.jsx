@@ -12,22 +12,26 @@ import {
   MoreVertical,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/_UItemp/button";
+import { Card, CardContent } from "@/components/_UItemp/card";
 import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components/_UItemp/sidebar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from "@/components/_UItemp/tooltip";
+import { Separator } from "@/components/_UItemp/separator";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/_UItemp/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +40,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/_UItemp/dropdown-menu";
 import VA_FeedbackDialog from "../VAComponents/VA_FeedbackDialog";
 import { Link } from "react-router-dom";
 
@@ -111,7 +115,7 @@ export default function VA_SidebarFooter() {
                   className="w-full flex items-center"
                 >
                   <Link
-                      to={'/settings'}
+                    to={"/settings"}
                     className={`flex items-center ${
                       open ? "justify-start px-2 gap-2" : "justify-center px-0"
                     }`}
@@ -169,17 +173,17 @@ export default function VA_SidebarFooter() {
       <div className="h-fit max-h-30 justify-center items-center flex  rounded-sm overflow-hidden">
         {open ? (
           <>
-          <img
-            src="/images/vabooknobg.svg"
-            alt="Vision Action Logo"
-            className="object-cover w-40 hidden dark:block"
+            <img
+              src="/images/vabooknobg.svg"
+              alt="Vision Action Logo"
+              className="object-cover w-40 hidden dark:block"
             />
-          <img
-            src="/images/vabookdarkversion.svg"
-            alt="Vision Action Logo"
-            className="object-cover w-40 dark:hidden"
+            <img
+              src="/images/vabookdarkversion.svg"
+              alt="Vision Action Logo"
+              className="object-cover w-40 dark:hidden"
             />
-            </>
+          </>
         ) : (
           <img
             src="/images/vabookicon.svg"

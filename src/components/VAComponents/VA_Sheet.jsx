@@ -8,7 +8,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
+} from "../_UItemp/sheet";
 import { ExternalLink } from "lucide-react";
 
 export default function VA_Sheet({
@@ -35,12 +35,7 @@ export default function VA_Sheet({
 
         {children}
 
-        
-        <SheetFooter>
-          {sheetFooterComponent}
-
-          
-        </SheetFooter>
+        <SheetFooter>{sheetFooterComponent}</SheetFooter>
       </SheetContent>
     </Sheet>
   );

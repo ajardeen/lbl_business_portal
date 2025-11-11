@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "../ui/button";
+import { Button } from "../_UItemp/button";
 import { Loader } from "lucide-react";
 
 function VA_Button({
@@ -51,11 +51,7 @@ function VA_Button({
 
   try {
     return (
-      <Button
-        {...props}
-        disabled={loading || disabled}
-        onClick={handleClick}
-      >
+      <Button {...props} disabled={loading || disabled} onClick={handleClick}>
         {renderContent()}
       </Button>
     );
