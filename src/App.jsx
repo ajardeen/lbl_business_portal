@@ -11,7 +11,8 @@ import LoginPage from "./pages/Auth/LoginPage/LoginPage";
 import PrivateRoute from "./Routes/PrivateRoute";
 import Settings from "./pages/Settings/Settings";
 import { Toaster } from "sonner";
-
+import BranchMaster from "./pages/Master/Branch/BranchMaster";
+import CategoryMaster from "./pages/Master/Category/CategoryMaster";
 
 function App() {
   return (
@@ -51,6 +52,28 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/master/branch"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <BranchMaster />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+       
+        <Route
+          path="/master/category"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <CategoryMaster />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+       
       </Routes>
       <Toaster richColors expand={true} />
     </Router>

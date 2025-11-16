@@ -32,7 +32,7 @@ function VA_Button({
     // Default: icon on left
     return (
       <>
-        {iconElement && <span>{iconElement}</span>}
+        {iconElement && <span className="">{iconElement}</span>}
         {safeChildren}
       </>
     );
@@ -51,7 +51,7 @@ function VA_Button({
 
   try {
     return (
-      <Button {...props} disabled={loading || disabled} onClick={handleClick}>
+      <Button {...props} disabled={loading || disabled} onClick={handleClick} className={"leading-0"}>
         {renderContent()}
       </Button>
     );

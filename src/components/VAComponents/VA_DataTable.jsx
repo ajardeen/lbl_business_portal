@@ -24,7 +24,7 @@ import {
 
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Check, ChevronDown, ChevronUp, Eye, X, FileDown } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Eye, X, FileDown, Loader } from "lucide-react";
 import {
   Command,
   CommandGroup,
@@ -63,6 +63,8 @@ const isNumeric = (value) =>
 function VA_DataTable({
   data = [],
   columns = [],
+  icon = null,
+  isLoading = false,
   selectedRowData,
   onSelectedRowsChange,
   rowSelectingOption = false,
@@ -297,9 +299,20 @@ function VA_DataTable({
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm text-muted-foreground">{description}</p>
+        <div className="flex justify-center items-center">
+          {icon && (
+            <span className="mr-2 p-2 rounded-md text-primary bg-primary/5">
+              {isLoading ? (
+                <Loader size={20} className="animate-spin text-primary" />
+              ) : (
+                 icon 
+              )}
+            </span>
+          )}
+          <div>
+            <h2 className="text-lg font-semibold">{title}</h2>
+            <p className="text-sm text-muted-foreground">{description}</p>
+          </div>
         </div>
         {addONActions}
       </div>

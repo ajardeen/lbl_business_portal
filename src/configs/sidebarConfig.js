@@ -1,4 +1,4 @@
-import { Home, Settings, BarChart, ChartSpline } from "lucide-react";
+import { Home, ChartSpline, Pen } from "lucide-react";
 
 export const sidebarConfig = [
   {
@@ -12,6 +12,16 @@ export const sidebarConfig = [
         //   { submenuTitle: "Overview", url: "/dashboard/overview" },
         //   { submenuTitle: "Stats", url: "/dashboard/stats" },
         // ],
+      },
+      {
+        menuTitle: "Master",
+        icon: Pen,
+        url: "/leads",
+        submenu: [
+          { submenuTitle: "Branch", url: "/master/branch" },
+          { submenuTitle: "Category", url: "/master/category" },
+          { submenuTitle: "Product", url: "/master/product" },
+        ],
       },
       {
         menuTitle: "Leads",

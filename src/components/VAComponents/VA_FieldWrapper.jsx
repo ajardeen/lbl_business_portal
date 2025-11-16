@@ -33,13 +33,13 @@ export default function VA_FieldWrapper({
     <Field
       orientation={orientation}
       data-invalid={hasError}
-      className={`w-full ${className}`}
+      className={`w-full gap-2 ${className}`}
     >
       {/* Label */}
       {label && (
-        <FieldLabel className="text-sm font-medium">
+        <FieldLabel className="text-sm gap-1  font-medium text-muted-foreground">
           {label}
-          {required && <span className="text-red-500 ml-0.5">*</span>}
+          {required && <span className="text-red-500 ml-0">*</span>}
         </FieldLabel>
       )}
       {description && descriptionPosition === "top" && (

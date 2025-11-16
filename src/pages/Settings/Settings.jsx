@@ -1,47 +1,90 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { HardHat } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { User, Shield, Bell, CreditCard } from "lucide-react";
+
+const tabs = [
+  {
+    name: "Profile",
+    value: "profile",
+    icon: User,
+    content: (
+      <>
+        Manage your <span className="text-foreground font-semibold">profile details</span> and personal information.
+      </>
+    ),
+  },
+  {
+    name: "Security",
+    value: "security",
+    icon: Shield,
+    content: (
+      <>
+        Strengthen your account by updating your{" "}
+        <span className="text-foreground font-semibold">security settings</span>.
+      </>
+    ),
+  },
+  {
+    name: "Notifications",
+    value: "notifications",
+    icon: Bell,
+    content: (
+      <>
+        Choose how you receive{" "}
+        <span className="text-foreground font-semibold">alerts & updates</span> from the system.
+      </>
+    ),
+  },
+  {
+    name: "Billing",
+    value: "billing",
+    icon: CreditCard,
+    content: (
+      <>
+        Manage your <span className="text-foreground font-semibold">billing details</span> and invoices.
+      </>
+    ),
+  },
+];
 
 const Settings = () => {
-  const navigate = useNavigate();
-
-  const handleRedirect = () => {
-    navigate("/leads");
-  };
-
   return (
-    <Empty className={"min-h-[85vh]"}>
-      <EmptyHeader>
-        <EmptyMedia>
-          <div className="flex flex-col items-center justify-center space-y-3">
-            {/* Icon and avatars */}
-            <HardHat className="w-12 h-12 text-yellow-500 mb-2" />
+    <div className="w-full ">
+      {/* IMPORTANT: Wrap TabsList + Content inside a flex container */}
+      <Tabs defaultValue="profile" orientation="vertical" className="">
+        <div className="flex w-full">
+          {/* LEFT SIDE — EXACT SAME STYLE */}
+          <TabsList className="bg- h-full flex-col rounded-none gap-1  p-0 w-60">
+            {tabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="
+                 data-[state=active]:bg-accent
+                  data-[state=active]:border-primary
+                  dark:data-[state=active]:border-primary
+                  h-12 w-full
+                  justify-start gap-2 px-4
+                  rounded-none border-0 border-l-4 border-transparent
+                  flex items-center
+                "
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {/* RIGHT SIDE — CONTENT */}
+          <div className="flex-1 w-full h-full">
+            {tabs.map((tab) => (
+              <TabsContent key={tab.value} value={tab.value} className={"px-10  h-[80vh]  rounded-md"}>
+                <p className="text-muted-foreground text-sm">{tab.content}</p>
+              </TabsContent>
+            ))}
           </div>
-        </EmptyMedia>
-
-        <EmptyTitle>Settings Under Development</EmptyTitle>
-        <EmptyDescription className="max-w-md mx-auto">
-          We’re currently building an enhanced experience for your dashboard.
-          Please check back soon! In the meantime, you can view your leads
-          section.
-        </EmptyDescription>
-      </EmptyHeader>
-
-      <EmptyContent>
-        <Button size="sm" onClick={handleRedirect}>
-          Go to Leads
-        </Button>
-      </EmptyContent>
-    </Empty>
+        </div>
+      </Tabs>
+    </div>
   );
 };
 

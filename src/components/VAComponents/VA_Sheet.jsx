@@ -8,16 +8,21 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "../ui/sheet";
 import { ExternalLink } from "lucide-react";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
 
 export default function VA_Sheet({
   title = "Sheet Title",
   triggerComponent = <ExternalLink size={18} />,
-  description = "Add a short description here.",
+  description,
   onClose,
+  icon,
   side = "right",
   className = "",
+  sheetContentClassName = "",
   children,
   sheetFooterComponent,
 }) {
@@ -27,13 +32,18 @@ export default function VA_Sheet({
       <SheetTrigger asChild>{triggerComponent}</SheetTrigger>
 
       {/* === Sheet Content === */}
-      <SheetContent side={side} className={`${className}`}>
-        <SheetHeader>
-          <SheetTitle>{title}</SheetTitle>
+      <SheetContent side={side} className={`gap-0 ${className}`}>
+        <SheetHeader className={"border-b-accent"}>
+          <SheetTitle>
+            {icon && <span className="mr-2"> {icon}</span>}
+            {title}
+          </SheetTitle>
           <SheetDescription>{description}</SheetDescription>
+          <Separator />
         </SheetHeader>
-
-        {children}
+        <ScrollArea className="h-full max-h-[70vh]">
+          <div className={`mx-2 my-0 rounded-md ${sheetContentClassName}`}>{children}</div>
+        </ScrollArea>
 
         <SheetFooter>{sheetFooterComponent}</SheetFooter>
       </SheetContent>
