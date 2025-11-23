@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import PropTypes from "prop-types";
 import {
@@ -9,7 +7,12 @@ import {
   FieldError,
   FieldContent,
 } from "../ui/field";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 /**
  * VA_FieldWrapper
@@ -20,6 +23,7 @@ export default function VA_FieldWrapper({
   description,
   descriptionPosition = "bottom",
   error,
+  toolTipText,
   success,
   children,
   required = false,
@@ -37,11 +41,23 @@ export default function VA_FieldWrapper({
     >
       {/* Label */}
       {label && (
-        <FieldLabel className="text-sm gap-1  font-medium text-muted-foreground">
-          {label}
-          {required && <span className="text-red-500 ml-0">*</span>}
-        </FieldLabel>
+        <div className="flex items-center justify-between">
+          <FieldLabel className="text-sm gap-1 font-medium text-muted-foreground">
+            {label}
+            {required && <span className="text-red-500 ml-0">*</span>}
+             {toolTipText && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Info size={14} className="text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent>{toolTipText}</TooltipContent>
+            </Tooltip>
+          )}
+          </FieldLabel>
+         
+        </div>
       )}
+
       {description && descriptionPosition === "top" && (
         <FieldDescription className="text-xs text-muted-foreground mt-0">
           {description}
@@ -88,6 +104,7 @@ VA_FieldWrapper.propTypes = {
   label: PropTypes.string,
   description: PropTypes.string,
   error: PropTypes.string,
+  toolTipText: PropTypes.string,
   success: PropTypes.string, // ✅ new success message prop
   required: PropTypes.bool,
   orientation: PropTypes.oneOf(["vertical", "horizontal", "responsive"]),

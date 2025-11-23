@@ -1,15 +1,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, Shield, Bell, CreditCard } from "lucide-react";
+import { User, Shield, Bell, CreditCard,Building } from "lucide-react";
+import OrganizationSettings from "./Organization/OrganizationSettings";
+import AccountSettings from "./Account/AccountSettings";
+import SecuritySettings from "./Security/SecuritySettings";
+import NotificationSettings from "./Notification/NotificationSettings";
+import BillingSettings from "./Billing/BillingSettings";
 
 const tabs = [
   {
-    name: "Profile",
-    value: "profile",
+    name: "Account",
+    value: "account",
     icon: User,
     content: (
-      <>
-        Manage your <span className="text-foreground font-semibold">profile details</span> and personal information.
-      </>
+    <AccountSettings/>
+    ),
+  },
+  {
+    name: "Organization",
+    value: "organization",
+    icon: Building,
+    content: (
+     <OrganizationSettings/>
     ),
   },
   {
@@ -17,10 +28,7 @@ const tabs = [
     value: "security",
     icon: Shield,
     content: (
-      <>
-        Strengthen your account by updating your{" "}
-        <span className="text-foreground font-semibold">security settings</span>.
-      </>
+      <SecuritySettings/>
     ),
   },
   {
@@ -28,10 +36,7 @@ const tabs = [
     value: "notifications",
     icon: Bell,
     content: (
-      <>
-        Choose how you receive{" "}
-        <span className="text-foreground font-semibold">alerts & updates</span> from the system.
-      </>
+      <NotificationSettings/>
     ),
   },
   {
@@ -39,9 +44,7 @@ const tabs = [
     value: "billing",
     icon: CreditCard,
     content: (
-      <>
-        Manage your <span className="text-foreground font-semibold">billing details</span> and invoices.
-      </>
+    <BillingSettings/>
     ),
   },
 ];
@@ -50,7 +53,7 @@ const Settings = () => {
   return (
     <div className="w-full ">
       {/* IMPORTANT: Wrap TabsList + Content inside a flex container */}
-      <Tabs defaultValue="profile" orientation="vertical" className="">
+      <Tabs defaultValue="account" orientation="vertical" className="">
         <div className="flex w-full">
           {/* LEFT SIDE — EXACT SAME STYLE */}
           <TabsList className="bg- h-full flex-col rounded-none gap-1  p-0 w-60">

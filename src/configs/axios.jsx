@@ -4,14 +4,22 @@ const API = axios.create({
   baseURL: "http://localhost:3000/api", //backend url
 });
 
-//Add token to request headers
-API.interceptors.request.use((config) => {
-  const userData =JSON.parse(localStorage.getItem("userData"));
-  const token = userData?.token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+let interceptorId = null;
+
+export const setupAxiosInterceptor = ({ organizationId, branchId }) => {
+
+  // Eject the old interceptor to avoid duplicates
+  if (interceptorId !== null) {
+    API.interceptors.request.eject(interceptorId);
   }
-  return config;
-});
+
+  interceptorId = API.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (organizationId) config.headers["X-Organization-Id"] = organizationId;
+    if (branchId) config.headers["X-Branch-Id"] = branchId;
+    return config;
+  });
+};
 
 export default API;

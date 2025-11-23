@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Button } from "../ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -9,10 +9,10 @@ import {
   CommandGroup,
   CommandItem,
   CommandEmpty,
-} from "../ui/command";
+} from "@/components/ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-// Small helper to merge classNames (since Vite setup doesn't use cn() from ShadCN)
+// Helper for merging classNames
 const cn = (...classes) => classes.filter(Boolean).join(" ");
 
 export default function VA_Select({
@@ -22,9 +22,28 @@ export default function VA_Select({
   placeholder = "Select option",
   searchable = false,
   disabled = false,
+  multiSelect = false,
 }) {
   const [open, setOpen] = useState(false);
-  const selectedOption = options.find((opt) => opt.value === value);
+
+  const values = multiSelect ? value || [] : [value];
+
+  const handleSelect = (val) => {
+    if (multiSelect) {
+      const newValues = values.includes(val)
+        ? values.filter((v) => v !== val)
+        : [...values, val];
+      onSelect(newValues);
+    } else {
+      onSelect(val);
+      setOpen(false);
+    }
+  };
+
+  const selectedLabels = options
+    .filter((opt) => values.includes(opt.value))
+    .map((opt) => opt.label)
+    .join(", ");
 
   return (
     <div className="w-full space-y-1">
@@ -36,12 +55,15 @@ export default function VA_Select({
             disabled={disabled}
             className="w-full justify-between"
           >
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedLabels ? (
+              <span className="truncate">{selectedLabels}</span>
+            ) : (
+              <span className="text-muted-foreground">{placeholder}</span>
+            )}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
 
-        {/* ✅ Full-width fix (works in Vite too) */}
         <PopoverContent
           align="start"
           className="w-[var(--radix-popover-trigger-width)] p-0"
@@ -51,27 +73,23 @@ export default function VA_Select({
             {searchable && (
               <CommandInput placeholder="Search..." className="h-9" />
             )}
-
-            <CommandList>
+            <CommandList className="max-h-64 overflow-y-auto">
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 {options.map((opt) => (
                   <CommandItem
                     key={opt.value}
-                    value={opt.value}
-                    onSelect={() => {
-                      onSelect(opt.value);
-                      setOpen(false);
-                    }}
-                    className="flex justify-between"
+                    value={opt.label} // ✅ important: let ShadCN internal matcher work
+                    onSelect={() => handleSelect(opt.value)}
+                    className="flex justify-between capitalize"
                   >
                     <span>{opt.label}</span>
-
-                    {/* ✅ Checkmark on RIGHT SIDE */}
                     <Check
                       className={cn(
                         "h-4 w-4 text-primary transition-opacity",
-                        value === opt.value ? "opacity-100" : "opacity-0"
+                        values.includes(opt.value)
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                   </CommandItem>
@@ -93,9 +111,14 @@ VA_Select.propTypes = {
         .isRequired,
     })
   ),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.array,
+  ]),
   onSelect: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   searchable: PropTypes.bool,
   disabled: PropTypes.bool,
+  multiSelect: PropTypes.bool,
 };

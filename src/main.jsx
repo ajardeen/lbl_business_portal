@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="system">
+     <ThemeProvider defaultTheme="system" storageKey="app-theme">
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>

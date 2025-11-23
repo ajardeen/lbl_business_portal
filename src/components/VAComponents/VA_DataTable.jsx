@@ -81,7 +81,6 @@ function VA_DataTable({
   const [footerCalcs, setFooterCalcs] = useState({});
   const [sorting, setSorting] = useState([]);
   const [rowSelection, setRowSelection] = useState({});
-  console.log("data", data);
 
   const finalColumns = useMemo(() => {
     const dynamicCols = [...columns];
@@ -448,7 +447,7 @@ function VA_DataTable({
                   key={row.id}
                   data-state={row.getIsSelected() ? "selected" : ""}
                   className={cn(
-                    "transition-colors hover:bg-accent/30",
+                    "transition-colors hover:bg-accent/0",
                     row.getIsSelected() &&
                       "bg-accent/60 border-l-2 border-primary"
                   )}

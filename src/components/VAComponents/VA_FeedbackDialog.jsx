@@ -37,8 +37,6 @@ export default function VA_FeedbackDialog({ children }) {
         createdAt: serverTimestamp(),
       });
 
-      console.log("✅ Feedback saved to Firestore");
-
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);

@@ -19,6 +19,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import VA_SidebarHeader from "@/components/SidebarComponents/VA_SidebarHeader";
@@ -27,6 +28,7 @@ import { sidebarConfig } from "@/configs/sidebarConfig";
 
 export default function VA_Sidebar() {
   const location = useLocation();
+  const { toggleSidebar, open } = useSidebar();
 
   return (
     <Sidebar
@@ -64,6 +66,11 @@ export default function VA_Sidebar() {
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             tooltip={menu.menuTitle}
+                            onClick={() => {
+                            if(!open){
+                              toggleSidebar();
+                            }
+                          }}
                             className={`${
                               isActive
                                 ? "bg-primary/10 text-primary"
@@ -103,7 +110,7 @@ export default function VA_Sidebar() {
                     ) : (
                       <SidebarMenuButton
                         tooltip={menu.menuTitle}
-                        asChild
+                        asChild // The onClick will be passed to the Link component
                         className={`${
                           isActive
                             ? "bg-primary/10 text-primary"

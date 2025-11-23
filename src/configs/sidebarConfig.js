@@ -14,16 +14,6 @@ export const sidebarConfig = [
         // ],
       },
       {
-        menuTitle: "Master",
-        icon: Pen,
-        url: "/leads",
-        submenu: [
-          { submenuTitle: "Branch", url: "/master/branch" },
-          { submenuTitle: "Category", url: "/master/category" },
-          { submenuTitle: "Product", url: "/master/product" },
-        ],
-      },
-      {
         menuTitle: "Leads",
         icon: ChartSpline,
         url: "/leads",
@@ -32,16 +22,17 @@ export const sidebarConfig = [
         //   { submenuTitle: "Customers", url: "/reports/customers" },
         // ],
       },
+      {
+        menuTitle: "Master",
+        icon: Pen,
+        url: "/master",
+        submenu: [
+          { submenuTitle: "Category", url: "/master/category" },
+          { submenuTitle: "Items", url: "/master/items" },
+          { submenuTitle: "Menu", url: "/master/menus" },
+        ],
+      },
     ],
   },
 ];
 
-// 🧠 Dynamic header configuration
-export const sidebarHeaderConfig = {
-  title: "Lunchbox Legends",
-  options: [
-    // one option is static if more it become dropdown
-    { label: "User", value: "user" },
-    { label: "Admin", value: "admin" },
-  ],
-};

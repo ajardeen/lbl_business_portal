@@ -8,17 +8,17 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "../ui/sheet";
-import { ExternalLink } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
+import { ChevronsDown, ExternalLink } from "lucide-react";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 export default function VA_Sheet({
   title = "Sheet Title",
   triggerComponent = <ExternalLink size={18} />,
   description,
-  onClose,
+  open,
+  setOpen,
   icon,
   side = "right",
   className = "",
@@ -26,12 +26,54 @@ export default function VA_Sheet({
   children,
   sheetFooterComponent,
 }) {
+  const scrollViewportRef = React.useRef(null);
+  const [isScrollable, setIsScrollable] = React.useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = React.useState(false);
+
+  const checkScrollable = React.useCallback(() => {
+    // The actual scrolling element (viewport) inside the ScrollArea component
+    const viewport = scrollViewportRef.current?.getElementsByClassName('viewport')[0] || scrollViewportRef.current;
+    
+    if (viewport) {
+      const scrollable = viewport.scrollHeight > viewport.clientHeight;
+      setIsScrollable(scrollable);
+      
+      if (scrollable && viewport.scrollTop < 10) {
+        setShowScrollIndicator(true);
+      } else {
+        setShowScrollIndicator(false);
+      }
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (open) {
+        const timeout = setTimeout(checkScrollable, 50);
+
+        window.addEventListener("resize", checkScrollable);
+        
+        return () => {
+            clearTimeout(timeout);
+            window.removeEventListener("resize", checkScrollable);
+        };
+    } else {
+        setIsScrollable(false);
+        setShowScrollIndicator(false);
+    }
+  }, [open, children, checkScrollable]);
+
+  const handleScroll = (e) => {
+    if (e.target.scrollTop > 20) {
+      setShowScrollIndicator(false);
+    } else if (isScrollable && e.target.scrollTop <= 20) {
+      setShowScrollIndicator(true);
+    }
+  };
+
   return (
-    <Sheet>
-      {/* === Trigger Button === */}
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{triggerComponent}</SheetTrigger>
 
-      {/* === Sheet Content === */}
       <SheetContent side={side} className={`gap-0 ${className}`}>
         <SheetHeader className={"border-b-accent"}>
           <SheetTitle>
@@ -41,45 +83,47 @@ export default function VA_Sheet({
           <SheetDescription>{description}</SheetDescription>
           <Separator />
         </SheetHeader>
-        <ScrollArea className="h-full max-h-[70vh]">
-          <div className={`mx-2 my-0 rounded-md ${sheetContentClassName}`}>{children}</div>
-        </ScrollArea>
+        
+        <div className="relative flex-grow overflow-hidden">
+          <ScrollArea
+            className="h-full" 
+            onScroll={handleScroll}
+            ref={scrollViewportRef} 
+          >
+            <div
+              className={`mx-2 my-0 pb-10 px-4 rounded-md ${sheetContentClassName}`}
+            >
+              {children}
+            </div>
+            <ScrollBar orientation="vertical" /> 
+          </ScrollArea>
+          
+          {/* SCROLL INDICATOR ICON FIXED: Placed here, outside the ScrollArea, 
+          but inside the relative content wrapper (div above) to ensure 
+          it correctly positions at the bottom of the *visible* content area. */}
+        </div>
 
-        <SheetFooter>{sheetFooterComponent}</SheetFooter>
+        <SheetFooter className="border-t">
+          {showScrollIndicator && (
+            <ChevronsDown className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce w-6 h-6 text-muted-foreground pointer-events-none z-10" />
+          )}
+          {sheetFooterComponent}
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
 }
 
 VA_Sheet.propTypes = {
-  /** Text for the trigger button */
-  triggerText: PropTypes.string,
-  /** Sheet title text */
   title: PropTypes.string,
-  /** Description under the title */
-  description: PropTypes.string,
-  /** Array of field objects (label, type, placeholder, etc.) */
-  fields: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      type: PropTypes.string,
-      placeholder: PropTypes.string,
-      defaultValue: PropTypes.string,
-      onChange: PropTypes.func,
-      name: PropTypes.string,
-      disabled: PropTypes.bool,
-    })
-  ),
-  /** Function called when "Save changes" is clicked */
-  onSubmit: PropTypes.func,
-  /** Function called when "Close" is clicked */
-  onClose: PropTypes.func,
-  /** Save button text */
-  saveButtonText: PropTypes.string,
-  /** Close button text */
-  closeButtonText: PropTypes.string,
-  /** Which side the sheet slides in from */
+  triggerComponent: PropTypes.node,
+  description: PropTypes.node,
+  open: PropTypes.bool,
+  setOpen: PropTypes.func,
+  icon: PropTypes.node,
   side: PropTypes.oneOf(["top", "bottom", "left", "right"]),
-  /** Extra Tailwind classes */
   className: PropTypes.string,
+  sheetContentClassName: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  sheetFooterComponent: PropTypes.node,
 };

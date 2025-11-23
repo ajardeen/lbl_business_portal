@@ -184,7 +184,7 @@ export default function VA_SidebarFooter() {
           <img
             src="/images/vabookicon.svg"
             alt="Vision Action Logo"
-            className="object-contain w-40"
+            className="object-contain w-40 h-12"
           />
         )}
       </div>

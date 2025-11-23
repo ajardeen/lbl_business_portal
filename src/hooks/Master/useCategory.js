@@ -1,4 +1,3 @@
-// src/hooks/Master/useCategory.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -17,45 +16,69 @@ export const useCategorys = () =>
 
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: createCategory,
-    onSuccess: () => {
-      toast.success("Category created successfully!");
-      queryClient.invalidateQueries(["categorys"]);
+    mutationFn: (payload) => {
+      const promise = createCategory(payload);
+
+      toast.promise(promise, {
+        loading: "Creating category...",
+        success: "Category created successfully!",
+        error: (err) =>
+          err?.response?.data?.message || "Failed to create category",
+      });
+
+      return promise;
     },
-    onError: (err) => {
-      console.log(err);
-      toast.error(err?.response?.data?.message || "Failed to create category");
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["categorys"]);
     },
   });
 };
 
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: updateCategory,
-    onSuccess: () => {
-      toast.success("Category updated successfully!");
-      queryClient.invalidateQueries(["categorys"]);
+    mutationFn: ({ id, payload }) => {
+      const promise = updateCategory({ id, payload });
+
+      toast.promise(promise, {
+        loading: "Updating category...",
+        success: "Category updated successfully!",
+        error: (err) =>
+          err?.response?.data?.message || "Failed to update category",
+      });
+
+      return promise;
     },
-    onError: (err) => {
-      console.log(err);
-      toast.error(err?.response?.data?.message || "Failed to update category");
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["categorys"]);
     },
   });
 };
 
 export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: deleteCategory,
-    onSuccess: () => {
-      toast.success("Category deleted successfully!");
-      queryClient.invalidateQueries(["categorys"]);
+    mutationFn: (id) => {
+      const promise = deleteCategory(id);
+
+      toast.promise(promise, {
+        loading: "Deleting category...",
+        success: "Category deleted successfully!",
+        error: (err) =>
+          err?.response?.data?.message || "Failed to delete category",
+      });
+
+      return promise;
     },
-    onError: (err) => {
-      console.log(err);
-      toast.error(err?.response?.data?.message || "Failed to delete category");
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["categorys"]);
     },
   });
 };

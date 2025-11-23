@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import VA_GlobalSearchModel from "@/components/VAComponents/VA_GlobalSearchModel";
-import ThemeToggle from "@/components/ui/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,6 +21,8 @@ import VA_Breadcrumb from "@/components/VAComponents/VA_Breadcrumb";
 import { signOut } from "firebase/auth";
 import { auth } from "@/configs/firebase";
 import { useNavigate } from "react-router-dom";
+import VA_ThemeToggle from "@/components/VAComponents/VA_ThemeToggle";
+import VA_NetworkStatusBadge from "@/components/VAComponents/VA_NetworkStatusBadge";
 export default function VA_TopNavigation() {
   const navigate = useNavigate();
   const [name, setName] = useState("admin");
@@ -66,9 +67,9 @@ export default function VA_TopNavigation() {
           pagesSearch={pagesSearch}
         />
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
 
+        <VA_ThemeToggle/>
+        <VA_NetworkStatusBadge/>
         {/* 👤 Avatar Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

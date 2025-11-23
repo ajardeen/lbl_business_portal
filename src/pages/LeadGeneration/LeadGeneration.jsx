@@ -1,21 +1,12 @@
-"use client";
-
 import React, { useMemo, useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../configs/firebase";
-import { SiGoogleadsense } from "react-icons/si";
-import SyncButton from "@/components/VAComponents/SyncButton";
+import VA_SyncButton from "@/components/VAComponents/VA_SyncButton";
 import VA_DataTable from "@/components/VAComponents/VA_DataTable";
 import { createColumnHelper } from "@tanstack/react-table";
 import VA_AreaChart from "@/components/VAComponents/VA_AreaChart";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartSpline } from "lucide-react";
 
 // ✅ Fetch Firestore Leads
@@ -131,7 +122,7 @@ export default function LeadGeneration() {
         <h1 className="text-lg md:text-2xl font-semibold flex items-center gap-2">
           <ChartSpline className="text-primary" /> Leads Dashboard
         </h1>
-        <SyncButton
+        <VA_SyncButton
           loading={isFetching}
           textState={true}
           onClick={handleLeadGeneration}
@@ -167,7 +158,7 @@ export default function LeadGeneration() {
               <div>
                 <p className="text-5xl md:text-6xl font-bold">{totalLeads}</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Total Leads in a Month
+                  Total Leads
                 </p>
               </div>
 

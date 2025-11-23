@@ -6,76 +6,115 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./layouts/Layout";
 import LeadGeneration from "./pages/LeadGeneration/LeadGeneration";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import LoginPage from "./pages/Auth/LoginPage/LoginPage";
 
 import PrivateRoute from "./Routes/PrivateRoute";
 import Settings from "./pages/Settings/Settings";
 import { Toaster } from "sonner";
 import BranchMaster from "./pages/Master/Branch/BranchMaster";
 import CategoryMaster from "./pages/Master/Category/CategoryMaster";
+import AuthPage from "./pages/Auth/AuthPage";
+import LoginForm from "./pages/Auth/LoginForm";
+import SignupForm from "./pages/Auth/SignupForm";
+import OrganizationRegister from "./pages/Organization/OrganizationRegister";
+import { OrganizationProvider } from "./context/OrganizationContext";
+import ItemMaster from "./pages/Master/Item/ItemMaster";
+import MenuMaster from "./pages/Master/Menu/MenuMaster";
 
 function App() {
   return (
     <Router>
+        <OrganizationProvider>
       <Routes>
         {/* Login page (no layout) */}
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<AuthPage />}>
+          <Route index element={<LoginForm />} />
+          <Route path="login" element={<LoginForm />} />
+          <Route path="signup" element={<SignupForm />} />
+        </Route>
+          {/* Protected app routes with layout */}
+          <Route
+            path="/organization/register"
+            element={
+              <PrivateRoute>
+                <OrganizationRegister />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/leads"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <LeadGeneration />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <Settings />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/master/branch"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <BranchMaster />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
 
-        {/* Protected app routes with layout */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/leads"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <LeadGeneration />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <Settings />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/master/branch"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <BranchMaster />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-       
-        <Route
-          path="/master/category"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <CategoryMaster />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-       
+          <Route
+            path="/master/category"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <CategoryMaster />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/master/items"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <ItemMaster />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/master/menus"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <MenuMaster />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
       </Routes>
-      <Toaster richColors expand={true} />
+        </OrganizationProvider>
+
+      <Toaster richColors expand={true} position="top-right" />
     </Router>
   );
 }

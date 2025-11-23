@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 function PrivateRoute({ children }) {
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
       setChecking(false);
       return;
     }
 
-    const unsub = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsub = onAuthStateChanged(auth, (currentToken) => {
+      setToken(currentToken);
       setChecking(false);
     });
     return () => unsub();
@@ -24,7 +24,7 @@ function PrivateRoute({ children }) {
 
   if (checking) return null; // or loading spinner
 
-  return user ? children : <Navigate to="/" />;
+  return token ? children : <Navigate to="/" />;
 }
 
 export default PrivateRoute;

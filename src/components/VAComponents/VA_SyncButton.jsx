@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const SyncButton = ({
+const VA_SyncButton = ({
   loading = false,
   onClick,
   className = "",
@@ -57,4 +57,4 @@ const SyncButton = ({
     </Button>
   );
 };
-export default SyncButton;
+export default VA_SyncButton;
