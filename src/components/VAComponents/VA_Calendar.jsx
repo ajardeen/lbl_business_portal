@@ -15,7 +15,7 @@ const cn = (...classes) => classes.filter(Boolean).join(" ");
 export default function VA_Calendar({
   mode = "single",
   value = null,
-  onChange,
+  onSelect,
   placeholder = "Select date",
   disabled = false,
   className = "",

@@ -30,6 +30,7 @@ export const sidebarConfig = [
           { submenuTitle: "Category", url: "/master/category" },
           { submenuTitle: "Items", url: "/master/items" },
           { submenuTitle: "Menu", url: "/master/menus" },
+          { submenuTitle: "Bundles", url: "/master/bundles" },
         ],
       },
     ],

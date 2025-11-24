@@ -19,6 +19,8 @@ import OrganizationRegister from "./pages/Organization/OrganizationRegister";
 import { OrganizationProvider } from "./context/OrganizationContext";
 import ItemMaster from "./pages/Master/Item/ItemMaster";
 import MenuMaster from "./pages/Master/Menu/MenuMaster";
+import BundleMaster from "./pages/Master/Bundle/BundleMaster";
+import VA_BundleFormScreen from "./pages/Master/Bundle/VA_BundleFormScreen";
 
 function App() {
   return (
@@ -111,6 +113,27 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/master/bundles"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <BundleMaster />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/master/bundles/create"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <VA_BundleFormScreen />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+
       </Routes>
         </OrganizationProvider>
 

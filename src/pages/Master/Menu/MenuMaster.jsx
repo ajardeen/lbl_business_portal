@@ -40,7 +40,7 @@ const MenuMaster = () => {
   ];
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="">
       <VA_DataTable
         title="Menus"
         description="Manage your menu creation"
