@@ -1,15 +1,7 @@
-"use client";
-
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { toast, Toaster } from "sonner";
-import {
-  CheckCircle,
-  XCircle,
-  Info,
-  AlertTriangle,
-  Bell,
-} from "lucide-react";
+import { CheckCircle, XCircle, Info, AlertTriangle, Bell } from "lucide-react";
 
 /**
  * VA_Toast — Reusable toast component for Vision Action

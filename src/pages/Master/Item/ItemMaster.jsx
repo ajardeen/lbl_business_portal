@@ -23,7 +23,7 @@ const ItemMaster = () => {
     columnHelper.accessor("price", { header: "Price" }),
     columnHelper.accessor("uom", { header: "UOM" }),
     columnHelper.accessor("isActive", {
-      header: "Active",
+      header: "Status",
       cell: (info) => (info.getValue() ? "Active" : "inactive"),
     }),
     columnHelper.display({

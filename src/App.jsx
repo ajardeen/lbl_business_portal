@@ -21,6 +21,7 @@ import ItemMaster from "./pages/Master/Item/ItemMaster";
 import MenuMaster from "./pages/Master/Menu/MenuMaster";
 import BundleMaster from "./pages/Master/Bundle/BundleMaster";
 import VA_BundleFormScreen from "./pages/Master/Bundle/VA_BundleFormScreen";
+import OrderTracker from "./pages/CloudKitchen/OrderTracker";
 
 function App() {
   return (
@@ -48,6 +49,16 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <Dashboard />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cloud-kitchen/orders"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <OrderTracker  />
                 </Layout>
               </PrivateRoute>
             }

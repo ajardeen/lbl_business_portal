@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,31 +43,34 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
   const updateMutation = useUpdateMenu();
   const { data: items = [] } = useItems();
 
- const {
-  control,
-  handleSubmit,
-  reset,
-  formState: { errors, isSubmitting },
-} = useForm({
-  resolver: zodResolver(menuSchema),
-  defaultValues: {
-    name: initialData?.name || "",
-    description: initialData?.description || "",
-    dayOfWeek: initialData?.dayOfWeek || "",
-    status: initialData?.status || "active",
-    items:
-      initialData?.items?.map((i) =>
-        typeof i.itemId === "object" ? i.itemId._id : i.itemId
-      ) || [],
-  },
-});
-
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(menuSchema),
+    defaultValues: {
+      name: initialData?.name || "",
+      description: initialData?.description || "",
+      dayOfWeek: initialData?.dayOfWeek || "",
+      status: initialData?.status || "active",
+      items:
+        initialData?.items?.map((i) =>
+          typeof i.itemId === "object" ? i.itemId._id : i.itemId
+        ) || [],
+    },
+  });
+  // console.log("items",items);
+  
 
   const itemOptions =
-    items?.map((i) => ({
-      label: i.name,
-      value: i._id,
-    })) || [];
+    items
+      ?.filter((i) => i.isActive === true)
+      .map((i) => ({
+        label: i.name,
+        value: i._id,
+      })) || [];
 
   const onSubmit = async (data) => {
     const payload = {
@@ -83,12 +84,11 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
       })),
     };
 
-    console.log("update",payload);
+    console.log("update", payload);
     if (mode === "create") {
       await createMutation.mutateAsync(payload);
       reset();
     } else {
-      
       await updateMutation.mutateAsync({
         id: initialData._id,
         payload,

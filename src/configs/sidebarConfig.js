@@ -1,4 +1,4 @@
-import { Home, ChartSpline, Pen } from "lucide-react";
+import { Home, ChartSpline, Pen, ChefHat } from "lucide-react";
 
 export const sidebarConfig = [
   {
@@ -23,6 +23,12 @@ export const sidebarConfig = [
         // ],
       },
       {
+        menuTitle: "Cloud Kitchen",
+        icon: ChefHat,
+        url: "/cloud-kitchen",
+        submenu: [{ submenuTitle: "Orders", url: "/cloud-kitchen/orders" }],
+      },
+      {
         menuTitle: "Master",
         icon: Pen,
         url: "/master",
@@ -36,4 +42,3 @@ export const sidebarConfig = [
     ],
   },
 ];
-

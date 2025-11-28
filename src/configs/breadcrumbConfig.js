@@ -10,4 +10,9 @@ export const breadcrumbConfig = {
   "/dashboard": { label: "Dashboard" },
   "/leads": { label: "Leads" },
   "/settings": { label: "Settings" },
+  "/master/category":{label:"Category"},
+  "/master/menus":{label:"Menus"},
+  "/master/items":{label:"Items"},
+  "/master/bundles":{label:"Bundle"},
+  "/master/bundles/create":{label:"Bundle Create"}
 };

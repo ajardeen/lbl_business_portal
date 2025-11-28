@@ -50,24 +50,22 @@ const BundleMaster = () => {
   ];
 
   return (
-    <div className="p-4">
-      <VA_DataTable
-        title="Bundles"
-        description="Manage your bundle creation and publishing"
-        icon={<FileBox />}
-        columns={columns}
-        data={bundles}
-        loading={isLoading}
-        addONActions={
-          <VA_Button
-            icon={<PlusCircle />}
-            onClick={() => navigate("/master/bundles/create")}
-          >
-            Create Bundle
-          </VA_Button>
-        }
-      />
-    </div>
+    <VA_DataTable
+      title="Bundles"
+      description="Manage your bundle creation and publishing"
+      icon={<FileBox />}
+      columns={columns}
+      data={bundles}
+      loading={isLoading}
+      addONActions={
+        <VA_Button
+          icon={<PlusCircle />}
+          onClick={() => navigate("/master/bundles/create")}
+        >
+          Create Bundle
+        </VA_Button>
+      }
+    />
   );
 };
 

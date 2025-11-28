@@ -18,7 +18,7 @@ function Badge({
 
   return (
     <span
-      className={`inline-flex items-center cursor-auto gap-x-1.5 py-0.5 px-2 rounded-full text-[10px] font-medium border ${variants[variant]} ${badgeClassName}`}
+      className={`inline-flex items-center cursor-auto gap-x-1.5 py-0.5 px-2 rounded-full text-[10px]  font-medium border ${variants[variant]} ${badgeClassName}`}
     >
       {text}
     </span>

@@ -1,11 +1,11 @@
 import {
-  Home,
-  FileText,
   Settings,
-  BarChart,
-  HelpCircle,
-  LayoutDashboard,
-  FolderOpen,
+  FileBox,
+  Box,
+  LayoutTemplate,
+  FilePenLine,
+  ChartSpline,
+  Home,
 } from "lucide-react";
 
 export const suggestedSearch = [
@@ -13,15 +13,19 @@ export const suggestedSearch = [
   //   searchName: "Leads",
   //   link: "/leads",
   //   icon: SiGoogleadsense,
-  // }, 
- 
+  // },
 ];
 
 export const pagesSearch = [
   {
     searchName: "Dashboard",
     link: "/dashboard",
-    icon: LayoutDashboard,
+    icon: Home,
+  },
+  {
+    searchName: "Leads",
+    link: "/leads",
+    icon: ChartSpline,
   },
   {
     searchName: "Settings",
@@ -31,17 +35,21 @@ export const pagesSearch = [
   {
     searchName: "Menu Master",
     link: "/master/menus",
-    icon: BarChart,
+    icon: FilePenLine,
   },
   {
     searchName: "Category Master",
     link: "/master/category",
-    icon: FolderOpen,
+    icon: LayoutTemplate,
   },
   {
     searchName: "Item Master",
     link: "/master/items",
-    icon: FileText,
+    icon: Box,
   },
-
+  {
+    searchName: "Bundle Master",
+    link: "/master/bundles",
+    icon: FileBox,
+  },
 ];

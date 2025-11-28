@@ -1,25 +1,34 @@
 import React, { useRef, useState } from "react";
-import { Eye, Layers, Calendar, CheckCircle, XCircle } from "lucide-react";
+import { Eye, Layers, Calendar, Utensils } from "lucide-react";
 import VA_Sheet from "@/components/VAComponents/VA_Sheet";
 import VA_Button from "@/components/VAComponents/VA_Button";
 import VA_AlertDialog from "@/components/VAComponents/VA_AlertDialog";
 import VA_Switch from "@/components/VAComponents/VA_Switch";
-import { Card, CardContent } from "@/components/ui/card";
-import  Badge  from "@/components/ui/Badge";
+import Badge from "@/components/ui/Badge";
 import { useUpdateBundle } from "@/hooks/Master/useBundle";
 
 function VA_BundleViewSheet({ rowData }) {
   const updateMutation = useUpdateBundle();
   const [isPublished, setIsPublished] = useState(rowData?.isPublished === true);
   const [nextState, setNextState] = useState(null);
-  const triggerRef = useRef(null); // reference to open dialog
+  const triggerRef = useRef(null);
 
   if (!rowData) return null;
-  const { _id, name, description, durationDays, basePrice, currency, status, menus = [] } = rowData;
+
+  const {
+    _id,
+    name,
+    description,
+    durationDays,
+    basePrice,
+    currency,
+    status,
+    menus = [],
+  } = rowData;
 
   const handleSwitchChange = (checked) => {
     setNextState(checked);
-    triggerRef.current?.click(); // manually open dialog
+    triggerRef.current?.click();
   };
 
   const handleConfirm = async () => {
@@ -42,45 +51,46 @@ function VA_BundleViewSheet({ rowData }) {
         />
       }
     >
-      <div className="space-y-6 p-4">
-        <div>
-          <h2 className="text-2xl font-semibold flex items-center gap-3 justify-between">
-            <div className="flex gap-3 items-center">
-              <Layers className="h-5 w-5 text-primary" /> {name}
-            </div>
+      <div className="space-y-4 p-4">
+        {/* HEADER */}
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-xl font-semibold flex items-center gap-3">
+              <Layers className="h-5 w-5 text-primary" />{" "}
+              {name || "Unnamed Bundle"}
+              <Badge
+                variant={isPublished ? "success" : "secondary"}
+                text={isPublished ? "Published" : "Unpublished"}
+                badgeClassName="capitalize"
+              />
+            </h2>
+            <p className="text-muted-foreground mt-1 text-sm">
+              {description || "No Description Provided"}
+            </p>
+          </div>
 
-            <VA_Switch
-              id="publish-switch"
-              label="Publish"
-              checked={isPublished}
-              onCheckedChange={handleSwitchChange}
-            />
-          </h2>
-          <p className="text-muted-foreground mt-1">{description || "—"}</p>
+          <VA_Switch
+            id="publish-switch"
+            label="Publish"
+            checked={isPublished}
+            onCheckedChange={handleSwitchChange}
+          />
         </div>
 
-        <div className="flex gap-6 text-sm text-muted-foreground">
+        {/* META INFO */}
+        <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" /> Duration: {durationDays} days
           </div>
           <div>
             Price: ₹{basePrice} {currency}
           </div>
-          <div className="flex items-center gap-1">
-            {status === "active" ? (
-              <CheckCircle className="h-4 w-4 text-green-500" />
-            ) : (
-              <XCircle className="h-4 w-4 text-red-500" />
-            )}
-            <Badge variant={status === "active" ? "default" : "destructive"}>
-              {status}
-            </Badge>
-          </div>
         </div>
 
-        <div className="border-t border-border pt-4">
-          <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-            <Layers className="h-5 w-5 text-primary" /> Linked Menus
+        {/* LINKED MENUS */}
+        <div className="border-t border-border pt-3">
+          <h3 className="text-base font-semibold mb-3 flex items-center gap-2">
+            <Utensils className="h-5 w-5 text-primary" /> Menus
           </h3>
 
           {menus.length === 0 ? (
@@ -88,28 +98,91 @@ function VA_BundleViewSheet({ rowData }) {
               No menus linked to this bundle.
             </p>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {menus.map((m, i) => (
-                <Card
-                  key={i}
-                  className="border border-border hover:shadow-sm transition-all"
-                >
-                  <CardContent className="p-4">
-                    <p className="font-semibold">
-                      {m.menuId?.name || "Unnamed Menu"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Day Index: {m.dayIndex}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="space-y-4 grid grid-cols-2 gap-4">
+              {menus.map((menuWrapper, i) => {
+                const { dayIndex, menuId } = menuWrapper;
+                const {
+                  name,
+                  description,
+                  dayOfWeek,
+                  items = [],
+                  status,
+                } = menuId || {};
+
+                return (
+                  <div
+                    key={i}
+                    className="border border-border rounded-lg p-3 bg-card/50 hover:bg-muted/30 transition-all"
+                  >
+                    {/* Menu Header */}
+                    <div className="flex justify-between items-center mb-2">
+                      <div>
+                        <h3>{dayOfWeek}</h3>
+                        <p className="font-semibold text-sm text-muted-foreground">Menu: <span className="">{name}</span></p>
+                        {/* <p className="text-xs text-muted-foreground">
+                          {description || "No Description"}
+                        </p> */}
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <Badge
+                          variant={
+                            status === "active" ? "success" : "destructive"
+                          }
+                          text={status}
+                          badgeClassName="capitalize"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Items List */}
+                    {items.length === 0 ? (
+                      <p className="text-xs text-muted-foreground italic">
+                        No items in this menu.
+                      </p>
+                    ) : (
+                      <table className="w-full text-xs border-t border-border mt-2">
+                        <thead className="bg-muted/50 text-muted-foreground">
+                          <tr>
+                            <th className="text-left font-medium py-1 px-2">
+                              Item Name
+                            </th>
+                            <th className="text-left font-medium py-1 px-2">
+                              Qty
+                            </th>
+                            <th className="text-right font-medium py-1 px-2">
+                              Price (₹)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((item, idx) => (
+                            <tr
+                              key={idx}
+                              className="border-t border-border hover:bg-muted/30 transition-colors"
+                            >
+                              <td className="py-1.5 px-2 text-foreground font-medium">
+                                {item.itemName}
+                              </td>
+                              <td className="py-1.5 px-2 text-muted-foreground">
+                                {item.qty}
+                              </td>
+                              <td className="py-1.5 px-2 text-right text-muted-foreground">
+                                {item.itemPrice}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
       </div>
 
-      {/* Hidden AlertDialog trigger and modal */}
+      {/* Confirmation dialog */}
       <VA_AlertDialog
         trigger={<button ref={triggerRef} className="hidden" />}
         title={`Are you sure you want to ${

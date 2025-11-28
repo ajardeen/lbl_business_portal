@@ -11,6 +11,7 @@ import VA_Button from "@/components/VAComponents/VA_Button";
 import { useCreateItem, useUpdateItem } from "@/hooks/Master/useItem";
 import { useCategorys } from "@/hooks/Master/useCategory";
 import { Edit, Plus } from "lucide-react";
+import NutritionCollapse from "../Bundle/NutritionCollapse";
 
 // Define standard UOM options
 const uomOptions = [
@@ -48,10 +49,15 @@ const schema = z.object({
     .union([z.string(), z.number()])
     .optional()
     .transform((v) => (v === "" ? undefined : Number(v))),
-  tags: z.string().optional().transform((val) => {
-    if (!val) return [];
-    return val.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+  nutrition: z.object({
+    calories: z
+      .union([z.string(), z.number()])
+      .transform((v) => Number(v || 0)),
+    protein: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
+    carbs: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
+    fat: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
   }),
+
   images: z.string().optional(),
   isVegetarian: z.boolean().optional(),
   isActive: z.boolean().optional(),
@@ -77,6 +83,13 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
       parcelPrice: 0,
       deliveryPrice: 0,
       tags: "",
+      nutrition: {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      },
+
       images: "",
       isVegetarian: false,
       isActive: true,
@@ -96,10 +109,9 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
     <VA_Sheet
       triggerComponent={
         mode === "create" ? (
-          <VA_Button icon={<Plus/>}>Create Item</VA_Button>
+          <VA_Button icon={<Plus />}>Create Item</VA_Button>
         ) : (
-          <VA_Button icon={<Edit/>} variant="ghost" size="sm"/>
-          
+          <VA_Button icon={<Edit />} variant="ghost" size="sm" />
         )
       }
       open={sheetOpen}
@@ -228,7 +240,7 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
               label="Price"
               error={form.formState.errors.price?.message}
             >
-              <VA_Input type="number" placeholder="Price" {...field} />
+              <VA_Input type="number" min="1" placeholder="Price" {...field} />
             </VA_FieldWrapper>
           )}
         />
@@ -276,7 +288,7 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
         />
 
         {/* TAGS */}
-        <Controller
+        {/* <Controller
           name="tags"
           control={form.control}
           render={({ field }) => (
@@ -287,10 +299,10 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
               <VA_Input placeholder="Tags (comma separated)" {...field} />
             </VA_FieldWrapper>
           )}
-        />
+        /> */}
 
         {/* IMAGE URL */}
-        <Controller
+        {/* <Controller
           name="images"
           control={form.control}
           render={({ field }) => (
@@ -298,10 +310,10 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
               label="Image URL"
               error={form.formState.errors.images?.message}
             >
-              <VA_Input placeholder="https://..." {...field} />
+              <VA_Input type="string" placeholder="https://..." {...field} />
             </VA_FieldWrapper>
           )}
-        />
+        /> */}
 
         {/* IS VEGETARIAN */}
         <Controller
@@ -330,7 +342,7 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
           control={form.control}
           render={({ field }) => (
             <VA_FieldWrapper
-              label="Active"
+              label="Status"
               error={form.formState.errors.isActive?.message}
             >
               <VA_Select
@@ -355,9 +367,14 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
                 label="Description"
                 error={form.formState.errors.description?.message}
               >
-                <VA_TextArea placeholder="Enter item description" {...field} />
+                <VA_TextArea placeholder="Enter item description (optional)" {...field} />
               </VA_FieldWrapper>
             )}
+          />
+          {/* ⭐ NUTRITION — CALORIES */}
+          <NutritionCollapse
+            control={form.control}
+            errors={form.formState.errors}
           />
         </div>
       </form>
