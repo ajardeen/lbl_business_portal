@@ -1,7 +1,6 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 
-function AuthPage() {
+function AuthPage({children}) {
   return (
     <div className="flex min-h-screen bg-muted dark:bg-background text-foreground">
 
@@ -17,7 +16,7 @@ function AuthPage() {
 
       {/* Right Side — dynamic outlet */}
       <div className="flex flex-col justify-center items-center w-full lg:w-1/2 p-6 sm:p-12">
-        <Outlet />
+      {children}
       </div>
 
     </div>

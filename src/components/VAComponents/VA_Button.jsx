@@ -10,6 +10,7 @@ function VA_Button({
   iconPosition = "left",
   disabled = false,
   onClick,
+  className,
   ...props
 }) {
   const loadingIcon = <Loader className="animate-spin" />;
@@ -51,7 +52,7 @@ function VA_Button({
 
   try {
     return (
-      <Button {...props} disabled={loading || disabled} onClick={handleClick} className={"leading-0"}>
+      <Button {...props} disabled={loading || disabled} onClick={handleClick} className={`leading-0 ${className}`}>
         {renderContent()}
       </Button>
     );

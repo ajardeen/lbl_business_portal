@@ -9,23 +9,26 @@ import VA_AlertDialog from "@/components/VAComponents/VA_AlertDialog";
 import VA_Toast from "@/components/VAComponents/VA_Toast";
 
 // --- Hook ---
-import { useOrders } from "@/hooks/CloudKitchen/useOrder";
+import { useOrderApprove, useOrders } from "@/hooks/CloudKitchen/useOrder";
+import { toast } from "sonner";
 
 const columnHelper = createColumnHelper();
 
 const OrderTracker = () => {
   const { data: orders = [], isLoading } = useOrders();
+  const updateOrder = useOrderApprove();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
 
-  const handleApprove = (order) => {
-    setSelectedOrder(order);
-    setShowDialog(true);
-  };
+  // const handleApprove = (order) => {
+  //   setSelectedOrder(order);
+  //   setShowDialog(true);
+  // };
 
-  const confirmApprove = () => {
-    console.log("Approved Order:", selectedOrder);
-    VA_Toast.success(`Order ${selectedOrder?.orderNumber} approved!`);
+  const confirmApprove = (row) => {
+    const orderId = row._id;
+    console.log("Order ID:", orderId);
+    updateOrder.mutateAsync(orderId);
     setShowDialog(false);
   };
 
@@ -74,11 +77,11 @@ const OrderTracker = () => {
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-           <VA_AlertDialog
+          <VA_AlertDialog
             title="Approve Order"
             description={`Do you want to approve order #${row.original.orderNumber}?`}
             actionText="Approve"
-            onAction={() => handleApprove(row.original)}
+            onAction={() => confirmApprove(row.original)}
             trigger={
               <VA_Button
                 icon={<CheckCircle2 size={16} />}
@@ -97,14 +100,12 @@ const OrderTracker = () => {
       <VA_DataTable
         title="Orders"
         description="Approve your order to proceed to kitchen"
-        icon={<PackagePlus/>}
+        icon={<PackagePlus />}
         isLoading={isLoading}
         columns={columns}
         data={orders}
         emptyText="No orders found"
       />
-
-
     </div>
   );
 };

@@ -8,11 +8,12 @@ import {
 import { toast } from "sonner";
 
 // Fetch All
-export const useBranches = () =>
+export const useBranches = (enabled) =>
   useQuery({
     queryKey: ["branches"],
     queryFn: fetchBranches,
     staleTime: Infinity,
+    enabled,
   });
 
 // Create

@@ -16,24 +16,24 @@ import AuthPage from "./pages/Auth/AuthPage";
 import LoginForm from "./pages/Auth/LoginForm";
 import SignupForm from "./pages/Auth/SignupForm";
 import OrganizationRegister from "./pages/Organization/OrganizationRegister";
-import { OrganizationProvider } from "./context/OrganizationContext";
+import { AuthProvider } from "./context/AuthContext";
 import ItemMaster from "./pages/Master/Item/ItemMaster";
 import MenuMaster from "./pages/Master/Menu/MenuMaster";
 import BundleMaster from "./pages/Master/Bundle/BundleMaster";
 import VA_BundleFormScreen from "./pages/Master/Bundle/VA_BundleFormScreen";
 import OrderTracker from "./pages/CloudKitchen/OrderTracker";
+import RoleSelection from "./pages/Auth/RoleSelection";
+import KitchenDisplayScreen from "./pages/CloudKitchen/KDS/KitchenDisplayScreen";
 
 function App() {
   return (
     <Router>
-        <OrganizationProvider>
-      <Routes>
-        {/* Login page (no layout) */}
-        <Route path="/" element={<AuthPage />}>
-          <Route index element={<LoginForm />} />
-          <Route path="login" element={<LoginForm />} />
-          <Route path="signup" element={<SignupForm />} />
-        </Route>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<RoleSelection />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/signup" element={<SignupForm />} />
+
           {/* Protected app routes with layout */}
           <Route
             path="/organization/register"
@@ -58,8 +58,16 @@ function App() {
             element={
               <PrivateRoute>
                 <Layout>
-                  <OrderTracker  />
+                  <OrderTracker />
                 </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cloud-kitchen/kdn"
+            element={
+              <PrivateRoute>
+                <KitchenDisplayScreen />
               </PrivateRoute>
             }
           />
@@ -144,9 +152,8 @@ function App() {
               </PrivateRoute>
             }
           />
-
-      </Routes>
-        </OrganizationProvider>
+        </Routes>
+      </AuthProvider>
 
       <Toaster richColors expand={true} position="top-right" />
     </Router>

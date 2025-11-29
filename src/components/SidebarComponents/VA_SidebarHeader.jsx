@@ -14,37 +14,43 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { useOrganizationData } from "@/context/OrganizationContext";
-import { useBranches } from "@/hooks/Settings/useBranch";
+import { useAuth } from "@/context/AuthContext";   // ⬅️ updated
 
 export default function VA_SidebarHeader() {
-   const { data: branches = [], isLoading:branchLoading } = useBranches();
-  const {
-    organizationDetails,
-    isLoading,
-    branchIds,
-    selectedBranchId,
-    setSelectedBranchId,
-  } = useOrganizationData();
 
-  const headerConfig = React.useMemo(
-    () => ({
-      title: organizationDetails?.name || "Organization",
-      options: branches.map((branch) => ({
-        label: branch.branchName,
-        value: branch._id,
-      })),
-    }),
-    [organizationDetails?.name, branchIds]
-  );
 
-  const selectedOption = headerConfig.options.find(
-    (opt) => opt.value === selectedBranchId
-  );
-  const hasDropdown = headerConfig.options.length > 1;
+  // ⬅️ New values from AuthContext
+ const {
+  account,
+  organizationId,
+  branchId,
+  branches,
+  branchLoading,
+  setBranchId,
+} = useAuth();
+
+const organizationName = account?.name || "Organization";
+
+const headerConfig = React.useMemo(
+  () => ({
+    title: organizationName,
+    options: branches.map((branch) => ({
+      label: branch.branchName,
+      value: branch._id,
+    })),
+  }),
+  [organizationName, branches]
+);
+
+const selectedOption = headerConfig.options.find(
+  (opt) => opt.value === branchId
+);
+
+const hasDropdown = headerConfig.options.length > 1;
+
 
   return (
-    <SidebarMenu className="">
+    <SidebarMenu>
       <SidebarMenuItem>
         {hasDropdown ? (
           <DropdownMenu>
@@ -63,7 +69,7 @@ export default function VA_SidebarHeader() {
 
                 <div className="flex flex-col gap-0.5 leading-none text-left">
                   <span className="font-medium">
-                    {isLoading ? "Loading..." : headerConfig.title}
+                    {organizationId ? headerConfig.title : "Loading..."}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {selectedOption?.label || "Select Branch"}
@@ -81,10 +87,10 @@ export default function VA_SidebarHeader() {
               {headerConfig.options.map((opt) => (
                 <DropdownMenuItem
                   key={opt.value}
-                  onSelect={() => setSelectedBranchId(opt.value)}
+                  onSelect={() => setBranchId(opt.value)}
                 >
                   {opt.label}
-                  {opt.value === selectedBranchId && (
+                  {opt.value === branchId && (
                     <Check className="ml-auto size-4" />
                   )}
                 </DropdownMenuItem>

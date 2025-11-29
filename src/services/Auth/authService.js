@@ -4,7 +4,6 @@ const endpoint = "/auth";
 
 // SIGNUP
 export const signupAccount = async (payload) => {
-
   
   const { data } = await API.post(`${endpoint}/signup`, payload);
   return data;

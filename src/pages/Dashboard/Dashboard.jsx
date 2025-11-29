@@ -1,101 +1,117 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { HardHat } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { toast } from "sonner";
+import { HardHat, Users, ClipboardList } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const handleRedirect = () => {
-    navigate("/leads");
+  const kitchenOverview = {
+    totalOrders: 41,
+    pending: 10,
+    cooking: 6,
+    completed: 25,
   };
 
-  const promise = () =>
-    new Promise((resolve) =>
-      setTimeout(() => resolve({ name: "Sonner" }), 2000)
-    );
+  const staffList = [
+    { id: 1, name: "Ramesh", role: "Chef", status: "Active" },
+    { id: 2, name: "Suresh", role: "Assistant", status: "Active" },
+    { id: 3, name: "Mahesh", role: "Waiter", status: "Leave" },
+  ];
+
+  const otherStats = [
+    { label: "Items in Stock", value: 134 },
+    { label: "Low Stock Items", value: 6 },
+    { label: "Today's Revenue", value: "₹12,450" },
+  ];
 
   return (
-    <Empty className={"min-h-[85vh]"}>
-      <EmptyHeader>
-        <EmptyMedia>
-          <div className="flex flex-col items-center justify-center space-y-3">
-            {/* Icon and avatars */}
-            <HardHat className="w-12 h-12 text-yellow-500 mb-2" />
+    <div className="min-h-[85vh] ">
+      <div className="h-fit p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      {/* Kitchen Status */}
+      <Card
+        className="cursor-pointer transition-all shadow-sm hover:shadow-xl hover:scale-[1.02] border-none bg-gradient-to-br from-yellow-50 to-yellow-100"
+        onClick={() => navigate("/cloud-kitchen/kdn")}
+      >
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-yellow-700 text-lg font-semibold">
+            <HardHat className="w-6 h-6" />
+            Cloud Kitchen Overview
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 text-center gap-3">
+            <div>
+              <p className="text-3xl font-bold text-red-600">{kitchenOverview.pending}</p>
+              <span className="text-sm text-muted-foreground">Pending</span>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-yellow-600">{kitchenOverview.cooking}</p>
+              <span className="text-sm text-muted-foreground">Cooking</span>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-green-600">{kitchenOverview.completed}</p>
+              <span className="text-sm text-muted-foreground">Completed</span>
+            </div>
           </div>
-        </EmptyMedia>
+        </CardContent>
+      </Card>
 
-        <EmptyTitle>Dashboard Under Development</EmptyTitle>
-        <EmptyDescription className="max-w-md mx-auto">
-          We’re currently building an enhanced experience for your dashboard.
-          Please check back soon! In the meantime, you can view your leads
-          section.
-        </EmptyDescription>
-      </EmptyHeader>
+      {/* Staff List */}
+      <Card className="shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all border-none">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-700 text-lg font-semibold">
+            <Users className="w-6 h-6" />
+            Staff Availability
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {staffList.map((staff) => (
+              <div
+                key={staff.id}
+                className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-lg border hover:bg-gray-100 transition"
+              >
+                <span className="font-medium">{staff.name}</span>
+                <span className="text-sm text-muted-foreground">{staff.role}</span>
+                <span
+                  className={`text-sm font-semibold px-2 py-1 rounded ${
+                    staff.status === "Active"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {staff.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-      <EmptyContent>
-        <Button size="sm" onClick={handleRedirect}>
-          Go to Leads
-        </Button>
-        {/* <Button
-          size="sm"
-          onClick={() => {
-            toast.success(
-              "success")
-          }}
-        >
-          success toast
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => {
-            toast.warning("Coming Soon");
-          }}
-        >
-          warning toast
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => {
-            toast.error("Coming Soon");
-          }}
-        >
-          error toast
-        </Button>
-        <Button
-          size="sm"
-          onClick={() => {
-            toast.info("Coming Soon");
-          }}
-        >
-          info toast
-        </Button>
+      {/* Other Stats */}
+      <Card className="shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all border-none">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-purple-700 text-lg font-semibold">
+            <ClipboardList className="w-6 h-6" />
+            Kitchen Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 gap-6 text-center">
+            {otherStats.map((stat, i) => (
+              <div key={i}>
+                <p className="text-3xl font-bold">{stat.value}</p>
+                <span className="text-sm text-muted-foreground">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      </div>
 
-        <Button
-          size="sm"
-          onClick={() => {
-            toast.promise(promise, {
-              loading: "Loading...",
-              success: (data) => {
-                return `Toast for ${data.name} has been added`;
-              },
-              error: "Error",
-            });
-          }}
-        >
-          promise toast
-        </Button> */}
-      </EmptyContent>
-    </Empty>
+    </div>
   );
 };
 
