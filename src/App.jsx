@@ -24,6 +24,10 @@ import VA_BundleFormScreen from "./pages/Master/Bundle/VA_BundleFormScreen";
 import OrderTracker from "./pages/CloudKitchen/OrderTracker";
 import RoleSelection from "./pages/Auth/RoleSelection";
 import KitchenDisplayScreen from "./pages/CloudKitchen/KDS/KitchenDisplayScreen";
+import StaffMaster from "./pages/MyStaff/StaffMaster";
+import RiderOrderTracker from "./pages/CloudKitchen/RiderScreens/RiderOrderTracker";
+import Rider from "./pages/CloudKitchen/RiderScreens/Rider";
+import RiderOrderDetail from "./pages/CloudKitchen/RiderScreens/RiderOrderDetail";
 
 function App() {
   return (
@@ -68,6 +72,30 @@ function App() {
             element={
               <PrivateRoute>
                 <KitchenDisplayScreen />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cloud-kitchen/rider"
+            element={
+              <PrivateRoute>
+                <Rider />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cloud-kitchen/rider/order/:orderId"
+            element={
+              <PrivateRoute>
+                <RiderOrderDetail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cloud-kitchen/rider/order/:id/track"
+            element={
+              <PrivateRoute>
+                <RiderOrderTracker />
               </PrivateRoute>
             }
           />
@@ -148,6 +176,16 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <VA_BundleFormScreen />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/staff-master"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <StaffMaster />
                 </Layout>
               </PrivateRoute>
             }

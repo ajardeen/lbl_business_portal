@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { HardHat, Users, ClipboardList } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { PiBicycle } from "react-icons/pi";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-[85vh] ">
-      <div className="h-fit p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="h-fit p-6 grid grid-cols-1 lg:grid-cols-3 gap-6
+      ">
 
       {/* Kitchen Status */}
       <Card
@@ -59,35 +61,14 @@ const Dashboard = () => {
       </Card>
 
       {/* Staff List */}
-      <Card className="shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all border-none">
+      <Card onClick={() => navigate("/cloud-kitchen/rider")} className="shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all border-none">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-blue-700 text-lg font-semibold">
-            <Users className="w-6 h-6" />
-            Staff Availability
+            <PiBicycle className="w-6 h-6" />
+            Rider
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {staffList.map((staff) => (
-              <div
-                key={staff.id}
-                className="flex justify-between items-center bg-gray-50 px-4 py-3 rounded-lg border hover:bg-gray-100 transition"
-              >
-                <span className="font-medium">{staff.name}</span>
-                <span className="text-sm text-muted-foreground">{staff.role}</span>
-                <span
-                  className={`text-sm font-semibold px-2 py-1 rounded ${
-                    staff.status === "Active"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {staff.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
+       
       </Card>
 
       {/* Other Stats */}

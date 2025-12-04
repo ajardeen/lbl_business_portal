@@ -1,4 +1,4 @@
-import { Home, ChartSpline, Pen, ChefHat } from "lucide-react";
+import { Home, ChartSpline, Pen, ChefHat, Users } from "lucide-react";
 
 export const sidebarConfig = [
   {
@@ -38,6 +38,11 @@ export const sidebarConfig = [
           { submenuTitle: "Menu", url: "/master/menus" },
           { submenuTitle: "Bundles", url: "/master/bundles" },
         ],
+      },
+      {
+        menuTitle: "My Staff",
+        icon: Users,
+        url: "/staff-master",
       },
     ],
   },

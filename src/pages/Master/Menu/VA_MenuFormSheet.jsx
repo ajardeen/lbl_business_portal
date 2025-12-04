@@ -54,6 +54,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
       name: initialData?.name || "",
       description: initialData?.description || "",
       dayOfWeek: initialData?.dayOfWeek || "",
+      dayIndex: initialData?.dayIndex ?? null,
       status: initialData?.status || "active",
       items:
         initialData?.items?.map((i) =>
@@ -62,7 +63,6 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
     },
   });
   // console.log("items",items);
-  
 
   const itemOptions =
     items
@@ -72,9 +72,22 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
         value: i._id,
       })) || [];
 
+  const weekdayIndexMap = {
+    Monday: 0,
+    Tuesday: 1,
+    Wednesday: 2,
+    Thursday: 3,
+    Friday: 4,
+    Saturday: 5,
+    Sunday: 6,
+  };
+
   const onSubmit = async (data) => {
+    const dayIndex = weekdayIndexMap[data.dayOfWeek] ?? null;
+
     const payload = {
       ...data,
+      dayIndex, // ⭐ auto applied
       items: (data.items || []).map((id) => ({
         itemId: id,
         itemName: items.find((i) => i._id === id)?.name || "",
@@ -84,7 +97,6 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
       })),
     };
 
-    console.log("update", payload);
     if (mode === "create") {
       await createMutation.mutateAsync(payload);
       reset();

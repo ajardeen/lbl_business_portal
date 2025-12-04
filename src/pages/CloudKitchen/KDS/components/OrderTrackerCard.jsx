@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import VA_Button from "@/components/VAComponents/VA_Button";
+import API from "@/configs/axios";
 
 function OrderTrackerCard({ order }) {
-  
-  const [isCooking, setIsCooking] = useState(false);
+  const [isCooking, setIsCooking] = useState(order.status === "cooking");
+  const [isFinished, setIsFinished] = useState(order.status === "ready");
+  const [timeUp, setTimeUp] = useState(false);
+
   const [remainingSeconds, setRemainingSeconds] = useState(
     (order.totalPrepTime ?? 0) * 60
   );
 
-  const [isFinished, setIsFinished] = useState(false);
-  const [timeUp, setTimeUp] = useState(false);
-
-  // Countdown timer logic
+  // Countdown logic
   useEffect(() => {
     let timer;
     if (isCooking && remainingSeconds > 0) {
@@ -33,24 +33,40 @@ function OrderTrackerCard({ order }) {
     return `${mins}:${secs}`;
   };
 
-  const handleStart = () => {
+  // Start Cooking
+  const handleStart = async () => {
     setIsCooking(true);
     setIsFinished(false);
     setTimeUp(false);
     setRemainingSeconds(order.totalPrepTime * 60);
+
+    await API.put(`/kitchen/status/${order.id}`, { status: "cooking" });
+    order.status = "cooking";
   };
 
-  const handleFinish = () => {
+  // Finish Cooking -> mark as READY (not completed)
+  const handleFinish = async () => {
     setIsCooking(false);
     setIsFinished(true);
     setTimeUp(false);
+
+    await API.put(`/kitchen/status/${order.id}`, { status: "ready" });
+    order.status = "ready";
+  };
+  const handleComplete = async () => {
+    setIsFinished(true);
+    setIsCooking(false);
+    setTimeUp(false);
+
+    await API.put(`/kitchen/status/${order.id}`, { status: "completed" });
+    order.status = "completed";
   };
 
   return (
     <div
       className={` border-2 min-h-85 bg-white shadow-sm p-4 flex flex-col justify-between transition-all duration-300 ${
         isFinished
-          ? "border-green-500 bg-green-50"
+          ? "border-yellow-500 bg-yellow-50"
           : timeUp
           ? "border-red-500 bg-red-50"
           : isCooking
@@ -75,7 +91,7 @@ function OrderTrackerCard({ order }) {
             <span
               className={`text-xs font-medium px-2 py-0.5 rounded ${
                 isFinished
-                  ? "bg-green-100 text-green-600"
+                  ? "bg-yellow-100 text-yellow-600"
                   : timeUp
                   ? "bg-red-100 text-red-600"
                   : isCooking
@@ -83,8 +99,10 @@ function OrderTrackerCard({ order }) {
                   : "bg-gray-100 text-gray-600"
               }`}
             >
-              {isFinished
+              {isFinished && order.status === "completed"
                 ? "COMPLETED"
+                : isFinished
+                ? "READY"
                 : timeUp
                 ? "TIME'S UP"
                 : isCooking
@@ -101,10 +119,7 @@ function OrderTrackerCard({ order }) {
               className="border-b last:border-none pb-1 flex items-center justify-between"
             >
               {`${item.itemName} x ${item.qty}`}
-              <span>
-
-              {`${item.prepTimeMinutes} min`}
-              </span>
+              <span>{`${item.prepTimeMinutes} min`}</span>
             </li>
           ))}
         </ul>
@@ -120,7 +135,7 @@ function OrderTrackerCard({ order }) {
             onClick={handleFinish}
           >
             <span className="flex-1 text-left">Finish Cooking</span>
-            <span className="text-sm  text-right min-w-[50px]">
+            <span className="text-sm text-right min-w-[50px]">
               {formatTime(remainingSeconds)}
             </span>
           </VA_Button>
@@ -130,15 +145,25 @@ function OrderTrackerCard({ order }) {
             className="w-full h-full flex items-center justify-center text-white bg-red-600 hover:bg-red-700 font-semibold"
             onClick={handleFinish}
           >
-            Time’s Up — Mark Complete
+            Time’s Up — Mark Ready
+          </VA_Button>
+        ) : order.status === "completed" ? (
+          <VA_Button
+            size="sm"
+            variant="outline"
+            className="w-full h-full bg-green-600 text-white cursor-default"
+            disabled
+          >
+            Completed
           </VA_Button>
         ) : isFinished ? (
           <VA_Button
             size="sm"
             variant="outline"
-            className="w-full h-full !bg-muted-foreground  text-white cursor-default"
+            className="w-full h-full !bg-yellow-500 text-white"
+            onClick={handleComplete}
           >
-            Completed
+            Ready for Delivery
           </VA_Button>
         ) : (
           <VA_Button
@@ -147,7 +172,7 @@ function OrderTrackerCard({ order }) {
             onClick={handleStart}
           >
             <span className="flex-1 text-left">Start Cooking</span>
-            <span className="text-sm  text-right min-w-[50px]">
+            <span className="text-sm text-right min-w-[50px]">
               {formatTime(remainingSeconds)}
             </span>
           </VA_Button>

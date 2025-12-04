@@ -21,11 +21,13 @@ const itemSchema = z.object({
 
 const menuSchema = z.object({
   menuId: z
-    .string({
-      required_error: "Menu selection is required",
-      invalid_type_error: "Menu selection is required",
-    })
-    .min(1, "Menu selection is required"),
+    .string()
+    .min(1, "Menu selection is required")
+    .optional()
+    .refine((val) => val && val.length > 0, {
+      message: "Menu selection is required",
+    }),
+
   dayIndex: z.number().default(0),
   items: z.array(itemSchema).min(1).optional(),
 });
@@ -52,7 +54,7 @@ const daysOfWeek = [
 ];
 
 const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { data: menus = [] } = useMenus();
   const createMutation = useCreateBundle();
   const updateMutation = useUpdateBundle();
@@ -78,6 +80,11 @@ const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
       menus: [],
     },
   });
+  const menusValues = watch("menus");
+
+  useEffect(() => {
+    console.log("menusValues", menusValues);
+  }, [menusValues]);
 
   const bundleType = watch("bundleType");
   const fixedDays = watch("durationDays");
@@ -121,13 +128,28 @@ const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
     else await updateMutation.mutateAsync({ id: initialData._id, payload });
   };
 
-  // Update menu slots when Days Covered changes
-  useEffect(() => {
-    setValue(
-      "menus",
-      Array.from({ length: fixedDays }, () => ({}))
-    );
-  }, [fixedDays]);
+useEffect(() => {
+  // reset selected menu UI reference
+  setSelectedMenus({});
+
+  // reset menus array to empty fresh values
+  const newMenus = Array.from({ length: fixedDays }, () => ({
+    menuId: "",
+    dayIndex: 0,
+    items: [],
+  }));
+
+  setValue("menus", newMenus, { shouldValidate: true }); // 🔥 instantly validate menus on change
+}, [fixedDays, setValue]);
+useEffect(() => {
+  if (bundleType === "fixed") {
+    setValue("repeatWeeks", 1);
+  }
+  setSelectedMenus({});
+  setValue("menus", [], { shouldValidate: true });
+}, [bundleType]);
+
+
 
   const renderWeeklyFields = useMemo(() => {
     const count = fixedDays || 7;
@@ -148,6 +170,8 @@ const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
               label: m.name,
               value: m._id,
             }));
+            console.log("idx", idx);
+
             const selectedMenu = selectedMenus[idx];
 
             return (
@@ -167,7 +191,10 @@ const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
                           value={field.value ?? ""}
                           options={options}
                           placeholder="Select menu"
-                          onSelect={(val) => handleMenuSelect(idx, val)}
+                          onSelect={(val) => {
+                            field.onChange(val); // 🔥 triggers validation for menuId
+                            handleMenuSelect(idx, val);
+                          }}
                         />
                       )}
                     />
@@ -242,8 +269,10 @@ const VA_BundleFormScreen = ({ mode = "create", initialData }) => {
   return (
     <div className="w-full pb-0">
       <div className="mb-3">
-        <VA_Button variant="ghost" icon={<ArrowLeftToLine />}
-        onClick={()=>navigate("/master/bundles")}
+        <VA_Button
+          variant="ghost"
+          icon={<ArrowLeftToLine />}
+          onClick={() => navigate("/master/bundles")}
         >
           Bundle List
         </VA_Button>

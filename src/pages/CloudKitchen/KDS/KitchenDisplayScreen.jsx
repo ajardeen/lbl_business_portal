@@ -12,6 +12,7 @@ function KitchenDisplayScreen() {
     due: o.deliveryDate ? new Date(o.deliveryDate).toLocaleTimeString() : "--",
     items: o.items ?? [],
     totalPrepTime: o.totalPrepTime ?? 10,
+    status: o.status ?? "queue",
   }));
   return (
     <div className="min-h-screen bg-blue-50/95 flex flex-col">

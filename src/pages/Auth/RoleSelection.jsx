@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import VA_Button from "@/components/VAComponents/VA_Button";
 import VA_Toast from "@/components/VAComponents/VA_Toast";
-import { Shield, Users, Utensils } from "lucide-react";
+import { Bike, Shield, Users, Utensils } from "lucide-react";
 
 const roles = [
   { key: "admin", label: "Admin", icon: Shield, access: "allowed" },
   { key: "staff", label: "Staff", icon: Users, access: "denied" },
   { key: "kitchen", label: "Kitchen", icon: Utensils, access: "allowed" }, // temporarily disabled
+  { key: "delivery", label: "Delivery Boy", icon: Bike, access: "allowed" },
 ];
 
 const RoleSelect = () => {

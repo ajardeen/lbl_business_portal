@@ -84,10 +84,13 @@ const OrderTracker = () => {
             onAction={() => confirmApprove(row.original)}
             trigger={
               <VA_Button
-                icon={<CheckCircle2 size={16} />}
-                variant="ghost"
+                icon={<CheckCircle2 size={16} color="green" />}
+                disabled={row.original.status == "processing"}
+                variant="outline"
                 size="sm"
-              />
+              >
+                Approve
+              </VA_Button>
             }
           />
         </div>
