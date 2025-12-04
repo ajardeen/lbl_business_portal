@@ -9,8 +9,15 @@ import RoleSelection from "../pages/Auth/RoleSelection";
 import OrganizationRegister from "../pages/Organization/OrganizationRegister";
 
 import { protectedRoutes } from "./routeConfig";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AppRoutes() {
+   const { authLoading } = useAuth();
+
+  if (authLoading) {
+    return <div className="global-loading">Loading authentication...</div>; 
+  }
+
   return (
     <Routes>
       {/* Public routes */}
