@@ -18,7 +18,7 @@ import AuthPage from "./AuthPage";
 function LoginForm() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { login } = useAuth(); // ⬅️ new
+  const { login, role } = useAuth(); // ⬅️ new
 
   const [selectedRole, setSelectedRole] = useState(state?.role || null);
 
@@ -55,15 +55,19 @@ function LoginForm() {
 
     loginMutation.mutate(formData, {
       onSuccess: (res) => {
-        login(res);        // ⬅️ stores token, account, org, branch in context + localStorage
+        login(res); // ⬅️ stores token, account, org, branch in context + localStorage
 
         // Redirect logic
         if (!res.data.account.organizationId) {
           navigate("/organization/register");
           return;
         }
+         const r = res.data.account.role;
 
-        navigate("/dashboard");
+        if (r === "admin") return navigate("/dashboard");
+        if (r === "staff") return navigate("/cloud-kitchen/orders"); // or staff home
+        if (r === "chef") return navigate("/cloud-kitchen/kdn");
+        if (r === "rider") return navigate("/cloud-kitchen/rider");
       },
       onError: (err) => console.log(err),
     });
@@ -79,7 +83,9 @@ function LoginForm() {
           />
           <CardDescription>
             Sign in as {formData.role}
-            <VA_Button variant="link" onClick={() => navigate("/")}>Switch</VA_Button>
+            <VA_Button variant="link" onClick={() => navigate("/")}>
+              Switch
+            </VA_Button>
           </CardDescription>
         </CardHeader>
 
@@ -90,7 +96,9 @@ function LoginForm() {
                 icon={<User />}
                 placeholder="Enter email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </VA_FieldWrapper>
 
@@ -100,12 +108,18 @@ function LoginForm() {
                 icon={<Lock />}
                 placeholder="Enter password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
               />
             </VA_FieldWrapper>
 
             <div className="flex flex-col gap-3">
-              <VA_Button type="submit" loading={loginMutation.isPending} className="w-full">
+              <VA_Button
+                type="submit"
+                loading={loginMutation.isPending}
+                className="w-full"
+              >
                 {loginMutation.isPending ? "Logging in..." : "Login"}
               </VA_Button>
 
@@ -115,7 +129,11 @@ function LoginForm() {
                 <Separator className="max-w-[45%]" />
               </div>
 
-              <VA_Button variant="outline" className="w-full" onClick={() => navigate("/signup")}>
+              <VA_Button
+                variant="outline"
+                className="w-full"
+                onClick={() => navigate("/signup")}
+              >
                 Sign Up
               </VA_Button>
             </div>

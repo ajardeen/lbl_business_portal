@@ -1,15 +1,22 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function RoleRoute({ children, roles }) {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+export default function RoleRoute({ children, roles }) {
+  const { isLoggedIn, role } = useAuth();
 
-  if (!token) return <Navigate to="/" />;
+  if (!isLoggedIn) return <Navigate to="/" />;
 
-  // If role not allowed
-  if (roles && !roles.includes(role)) return <Navigate to="/dashboard" />;
+  // If user is logged in but is not allowed on this route
+  if (roles && !roles.includes(role)) {
+    const redirectPage = {
+      admin: "/dashboard",
+      staff: "/cloud-kitchen/orders",
+      chef: "/cloud-kitchen/kdn",
+      rider: "/cloud-kitchen/rider",
+    }[role] || "/";
+
+    return <Navigate to={redirectPage} replace />;
+  }
 
   return children;
 }
-
-export default RoleRoute;

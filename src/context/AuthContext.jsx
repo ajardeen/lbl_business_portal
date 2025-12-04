@@ -12,18 +12,23 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
+  const [role, setRole] = useState(null);
   const [organizationId, setOrganizationId] = useState(null);
   const [branchId, setBranchId] = useState(null);
   const [account, setAccount] = useState(null);
 
   // 🚀 Fetch branches only using organizationId header (branchId must NOT be sent yet)
- // Fetch branches ONLY after organizationId is available
-const shouldFetchBranches = !!organizationId;
-const {
-  data: branches = [],
-  isLoading: branchLoading,
-} = useBranches(shouldFetchBranches);
+  // Fetch branches ONLY after organizationId is available
+  const shouldFetchBranches = !!organizationId;
+  const { data: branches = [], isLoading: branchLoading } =
+    useBranches(shouldFetchBranches);
 
+    useEffect(()=>{
+      console.log("organizationId",organizationId);
+      console.log("branchId",branchId);
+      
+
+    },[organizationId,branchId])
 
   /** -------------------------------------
    🔄 Load saved login on first mount
@@ -51,6 +56,7 @@ const {
         "authData",
         JSON.stringify({
           token,
+          role,
           account,
           organizationId,
           branchId,
@@ -91,8 +97,9 @@ const {
 
     setToken(token);
     setAccount(account);
+    setRole(account.role);
     setOrganizationId(account.organizationId);
-    setBranchId(null); // wait until fetched
+    setBranchId(account.branchId || null); 
   };
 
   /** -------------------------------------
@@ -112,6 +119,7 @@ const {
   const value = useMemo(
     () => ({
       token,
+      role,
       account,
       organizationId,
       branchId,
