@@ -8,7 +8,7 @@ import SignupForm from "../pages/Auth/SignupForm";
 import RoleSelection from "../pages/Auth/RoleSelection";
 import OrganizationRegister from "../pages/Organization/OrganizationRegister";
 
-import { protectedRoutes } from "./routeConfig";
+import { protectedRoutes } from "./routeConfig.jsx";
 
 export default function AppRoutes() {
   return (
