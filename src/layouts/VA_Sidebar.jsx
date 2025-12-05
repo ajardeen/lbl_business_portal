@@ -67,14 +67,14 @@ export default function VA_Sidebar() {
                           <SidebarMenuButton
                             tooltip={menu.menuTitle}
                             onClick={() => {
-                            if(!open){
-                              toggleSidebar();
-                            }
-                          }}
-                            className={`${
+                              if (!open) {
+                                toggleSidebar();
+                              }
+                            }}
+                            className={`!text-black dark:!text-white ${
                               isActive
-                                ? "bg-primary/10 text-primary"
-                                : "hover:bg-muted"
+                                ? "!bg-primary !text-white !hover:bg-primary dark:hover:bg-primary"
+                                : ""
                             }`}
                           >
                             {menu.icon && <menu.icon className="h-5 w-5" />}
@@ -92,9 +92,9 @@ export default function VA_Sidebar() {
                                   <SidebarMenuSubButton asChild>
                                     <Link
                                       to={sub.url}
-                                      className={`flex items-center gap-2 ${
+                                      className={`flex items-center gap-2 rounded-none ${
                                         subActive
-                                          ? "text-primary font-medium"
+                                          ? "border-l !border-l-primary text-primary font-medium"
                                           : "text-muted-foreground hover:text-primary"
                                       }`}
                                     >
@@ -111,10 +111,10 @@ export default function VA_Sidebar() {
                       <SidebarMenuButton
                         tooltip={menu.menuTitle}
                         asChild // The onClick will be passed to the Link component
-                        className={`${
+                        className={`!text-black dark:!text-white ${
                           isActive
-                            ? "bg-primary/10 text-primary"
-                            : "hover:bg-muted"
+                            ? "bg-primary !text-white hover:bg-primary dark:hover:bg-primary"
+                            : ""
                         }`}
                       >
                         <Link
