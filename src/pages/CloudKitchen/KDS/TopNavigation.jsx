@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 export default function TopNavigation() {
-  const { account } = useAuth();
+  const { account ,logout} = useAuth();
 
   const navigate = useNavigate();
   const [name, setName] = useState("admin");
@@ -33,9 +33,7 @@ export default function TopNavigation() {
     }
   }, [account]);
   const handleLogout = async () => {
-    await signOut(auth);
-    localStorage.removeItem("user");
-    navigate("/");
+   logout()
   };
   const handleDropdownNavigation = (url) => {
     navigate(url);

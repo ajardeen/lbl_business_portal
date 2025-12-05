@@ -7,7 +7,7 @@ import Badge from "@/components/ui/Badge";
 
 const BranchCard = ({ branch, updateMutation }) => {
   return (
-    <div className="border border-border rounded-xl bg-card p-4 shadow-sm hover:shadow-md transition-colors">
+    <div className="border border-border min-w-md rounded-xl bg-card p-4 shadow-sm hover:shadow-md transition-colors">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-2">
         <h3 className="font-semibold text-base text-foreground">

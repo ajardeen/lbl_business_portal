@@ -7,15 +7,18 @@ import React, {
 } from "react";
 import { setupAxiosInterceptor } from "@/configs/axios";
 import { useBranches } from "@/hooks/Settings/useBranch";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const navigate = useNavigate();
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
   const [organizationId, setOrganizationId] = useState(null);
   const [branchId, setBranchId] = useState(null);
   const [account, setAccount] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   // 🚀 Fetch branches only using organizationId header (branchId must NOT be sent yet)
   // Fetch branches ONLY after organizationId is available
@@ -23,12 +26,10 @@ export function AuthProvider({ children }) {
   const { data: branches = [], isLoading: branchLoading } =
     useBranches(shouldFetchBranches);
 
-    useEffect(()=>{
-      console.log("organizationId",organizationId);
-      console.log("branchId",branchId);
-      
-
-    },[organizationId,branchId])
+  useEffect(() => {
+    console.log("organizationId", organizationId);
+    console.log("branchId", branchId);
+  }, [organizationId, branchId]);
 
   /** -------------------------------------
    🔄 Load saved login on first mount
@@ -39,11 +40,14 @@ export function AuthProvider({ children }) {
       if (saved) {
         setToken(saved.token);
         setAccount(saved.account);
+        setRole(saved.role);
         setOrganizationId(saved.organizationId);
         setBranchId(saved.branchId);
       }
     } catch (err) {
       console.error("Error parsing authData", err);
+    } finally {
+      setAuthLoading(false); // <-- important
     }
   }, []);
 
@@ -63,7 +67,7 @@ export function AuthProvider({ children }) {
         })
       );
     }
-  }, [token, account, organizationId, branchId]);
+  }, [token, account, role, organizationId, branchId]);
 
   /** -------------------------------------
    🧠 Auto-select first branch after branch fetch
@@ -99,7 +103,7 @@ export function AuthProvider({ children }) {
     setAccount(account);
     setRole(account.role);
     setOrganizationId(account.organizationId);
-    setBranchId(account.branchId || null); 
+    setBranchId(account.branchId || null);
   };
 
   /** -------------------------------------
@@ -109,8 +113,10 @@ export function AuthProvider({ children }) {
     setToken(null);
     setAccount(null);
     setOrganizationId(null);
+    setRole(null);
     setBranchId(null);
     localStorage.removeItem("authData");
+    navigate("/");
   };
 
   /** -------------------------------------
@@ -129,8 +135,18 @@ export function AuthProvider({ children }) {
       logout,
       setBranchId,
       isLoggedIn: !!token,
+      authLoading, // <-- add this
     }),
-    [token, account, organizationId, branchId, branches, branchLoading]
+    [
+      token,
+      role,
+      account,
+      organizationId,
+      branchId,
+      branches,
+      branchLoading,
+      authLoading,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

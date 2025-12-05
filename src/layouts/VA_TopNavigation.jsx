@@ -23,22 +23,21 @@ import { auth } from "@/configs/firebase";
 import { useNavigate } from "react-router-dom";
 import VA_ThemeToggle from "@/components/VAComponents/VA_ThemeToggle";
 import VA_NetworkStatusBadge from "@/components/VAComponents/VA_NetworkStatusBadge";
+import { useAuth } from "@/context/AuthContext";
 export default function VA_TopNavigation() {
+  const { account, logout } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState("admin");
-  const [email, setEmail] = useState("admin@example.com");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setName(user.name);
-      setEmail(user.email);
+    if (account) {
+      setName(account.name);
+      setEmail(account.email);
     }
-  }, []);
+  }, [account]);
   const handleLogout = async () => {
     await signOut(auth);
-    localStorage.removeItem("user");
-    navigate("/");
+    logout();
   };
   const handleDropdownNavigation = (url) => {
     navigate(url);
@@ -67,9 +66,8 @@ export default function VA_TopNavigation() {
           pagesSearch={pagesSearch}
         />
 
-
-        <VA_ThemeToggle/>
-        <VA_NetworkStatusBadge/>
+        <VA_ThemeToggle />
+        <VA_NetworkStatusBadge />
         {/* 👤 Avatar Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,7 +110,7 @@ export default function VA_TopNavigation() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <User className="h-4 w-4" />
-                Profile
+                Account
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard className="h-4 w-4" />

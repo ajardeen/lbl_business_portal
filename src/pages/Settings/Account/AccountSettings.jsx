@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 // ✅ VA Components
@@ -7,17 +7,31 @@ import VA_Input from "@/components/VAComponents/VA_Input";
 import VA_Select from "@/components/VAComponents/VA_Select";
 import VA_Button from "@/components/VAComponents/VA_Button";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/context/AuthContext";
 
 function AccountSettings() {
-  const { control, handleSubmit } = useForm({
+  const { account } = useAuth();
+ const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-      role: "admin",
-      status: "active",
+      role: "",
+      status: "",
     },
   });
+
+  useEffect(() => {
+    if (account) {
+      reset({
+        name: account.name || "",
+        email: account.email || "",
+        phone: account.phone || "",
+        role: account.role || "",
+        status: account.status || "active",
+      });
+    }
+  }, [account, reset]);
 
   const onSubmit = (data) => {
     console.log("🧩 Update Account Clicked:", data);
@@ -117,8 +131,8 @@ function AccountSettings() {
         />
 
         {/* Submit Button */}
-        <div className="pt-4">
-          <VA_Button type="submit" className="w-full">
+        <div className="pt-4 cursor-not-allowed">
+          <VA_Button disabled type="submit" className="w-full ">
             Update Account
           </VA_Button>
         </div>
