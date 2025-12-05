@@ -1,41 +1,77 @@
-import { useState } from "react";
-import VA_Button from "@/components/VAComponents/VA_Button";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MapPin, Phone, Package, Navigation } from "lucide-react";
 import RiderLayout from "./RiderLayout";
+import VA_Button from "@/components/VAComponents/VA_Button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useDeliveryStatus } from "@/hooks/CloudKitchen/useDeliveryStatus";
+import { useRiderTaskDetail } from "@/hooks/CloudKitchen/useRiderOrderDetail";
 
 const RiderOrderDetail = () => {
-  const { orderId: id } = useParams();
+  //   {
+  //     "taskId": "69308b869320e21246606295",
+  //     "orderId": "69308b789320e21246606274",
+  //     "orderNumber": "ORD-1764789112207-5817",
+  //     "bundleName": "5 days meal",
+  //     "menuName": "Mon",
+  //     "quantity": 1,
+  //     "price": 1000,
+  //     "deliveryStatus": "pending",
+  //     "deliveryAddress": "Domkur, 4G9V+889, Keelavadagarai, Tamil Nadu, 625601, India",
+  //     "deliveryLocation": {
+  //         "lat": 10.1182639,
+  //         "lng": 77.5433906,
+  //         "_id": "69308b789320e21246606275"
+  //     },
+  //     "customer": {
+  //         "name": "Ajardeen",
+  //         "phone": "1234567890",
+  //         "email": "azardevacc@gmail.com"
+  //     }
+  // }
+  const { taskId } = useParams();
   const navigate = useNavigate();
+  const { updateStatus, loading: updating } = useDeliveryStatus();
+  const { orderData, loading, refetch } = useRiderTaskDetail(taskId, false);
+  const [order, setOrder] = useState(null);
+
   const [isAccepted, setIsAccepted] = useState(false);
 
-  // Static order data for now
-  const order = {
-    _id: id,
-    orderNumber: "ORD12345",
-    customer: {
-      name: "John Doe",
-      phone: "+91 7041234567",
-      email: "john@example.com",
-    },
-    address: "Shop No.6/7, Arenja Corner, Sector 17, Vashi, Navi Mumbai",
-    bundleName: "Wrangler Men Jeans",
-    price: 2000,
-    quantity: 1,
-    paymentStatus: "paid",
-    deliveryStatus: "assigned",
+  useEffect(() => {
+    refetch();
+    orderData;
+    console.log("order", order);
+    if (!orderData) return;
+    console.log("orderData", orderData);
+
+    setOrder(orderData.data.data);
+  }, [loading]);
+
+  useEffect(() => {
+    if (!order) return;
+    setIsAccepted(order.deliveryStatus !== "pending");
+  }, [order]);
+
+  const handleAccept = async () => {
+    const ok = await updateStatus(taskId, "accept");
+    if (ok) {
+      setIsAccepted(true);
+      refetch(); // 🔥 unlock customer details after accept
+    }
   };
 
-  const handleAccept = () => {
-    // Here you would typically make an API call to update the order status
-    console.log("Order accepted");
-    setIsAccepted(true);
-  };
   const handleCancel = () => {
     navigate("/cloud-kitchen/rider");
   };
+
+  if (!order) {
+    return (
+      <RiderLayout>
+        <div className="p-4 text-gray-500">Loading...</div>
+      </RiderLayout>
+    );
+  }
 
   return (
     <RiderLayout>
@@ -46,51 +82,72 @@ const RiderOrderDetail = () => {
           <p className="text-sm text-gray-600 bg-yellow-100 w-fit font-bold">
             Order ID: {order.orderNumber}
           </p>
-          <Separator />
-          <h3 className="font-semibold text-base">Customer Details</h3>
-          <p className="font-semibold text-lg">{order.customer.name}</p>
 
-          <p className="flex flex-col items-start gap-1 text-base text-gray-700">
-            <span className="flex items-center gap-1">
-              <Phone className="h-4 w-4 text-black" />{" "}
-              <p className="text-black">Phone</p>
-            </span>
-            {order.customer.phone}
-          </p>
-          <p className="flex flex-col items-start gap-1 text-base text-gray-700">
-            <span className="flex items-center gap-1">
-              <MapPin className="h-4 w-4 text-black" />{" "}
-              <p className="text-black">Address</p>
-            </span>
-            {order.address}
-          </p>
           <Separator />
+
+          <h3 className="font-semibold text-base">Customer Details</h3>
+
+          {isAccepted ? (
+            <>
+              <p className="font-semibold text-lg">{order.customer.name}</p>
+
+              <a
+                href={`tel:${order.customer.phone}`}
+                className="flex flex-col items-start gap-1 text-base text-gray-700"
+              >
+                <span className="flex items-center gap-1">
+                  <Phone className="h-4 w-4 text-black" /> Phone
+                </span>
+                {order.customer.phone}
+              </a>
+            </>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Accept order to view customer details
+            </p>
+          )}
+          <p className="flex flex-col items-start gap-1 text-base text-gray-700">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-4 w-4 text-black" /> Address
+            </span>
+            {order.deliveryAddress}
+          </p>
+
+          <Separator />
+
           <div className="py-1">
             <h3 className="font-semibold text-base">Package Details</h3>
-            <p className="font-semibold text-base">{order.bundleName}</p>
+            <p className="font-semibold text-base">
+              bundle: {order.bundleName}
+            </p>
+            <p className="font-semibold text-base">Menu: {order.menuName}</p>
             <p className="text-sm">Qty: {order.quantity}</p>
-            <p className="flex flex-col items-start gap-1 text-base text-gray-700">
-              <span className="flex items-center gap-1">
-                <p className="text-black">Payment Status</p>
-              </span>
-              Paid
-            </p>
-            <p className="flex flex-col items-start gap-1 text-base text-gray-700">
-              <span className="flex items-center gap-1">
-                <p className="text-black">Order Status</p>
-              </span>
-              In Process
-            </p>
+            <div className="flex justify-between py-2">
+              <div>
+                <p className="text-sm">Payment: {order.paymentStatus}</p>
+                <p className="text-sm capitalize">{order.deliveryStatus}</p>
+              </div>
+              <div>
+                <p className="text-sm">Order Status: {order.paymentStatus}</p>
+                <p className="text-sm capitalize">Pending</p>
+              </div>
+            </div>
           </div>
         </Card>
 
-        {/* Action Buttons */}
-        <div className="min-h-20 border-t-1 shadow-2xl fixed bottom-0 right-0 px-5 w-full items-center flex justify-end bg-white  gap-3">
+        {/* Footer Action Buttons */}
+        <div className="min-h-20 border-t-1 shadow-2xl fixed bottom-0 right-0 px-5 w-full items-center flex justify-end bg-white gap-3">
           <VA_Button variant="outline" onClick={handleCancel}>
             Cancel
           </VA_Button>
+
           {!isAccepted ? (
-            <VA_Button onClick={handleAccept} className="p-6 rounded-full">
+            <VA_Button
+              onClick={handleAccept}
+              className="p-6 rounded-full"
+              loading={updating}
+            
+            >
               Accept Order
             </VA_Button>
           ) : (
@@ -99,7 +156,7 @@ const RiderOrderDetail = () => {
               iconPosition="right"
               className="p-6 rounded-full min-w-50"
               onClick={() =>
-                navigate(`/cloud-kitchen/rider/order/${order._id}/track`)
+                navigate(`/cloud-kitchen/rider/task/${taskId}/track`)
               }
             >
               Track Location

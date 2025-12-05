@@ -14,28 +14,92 @@ import Rider from "../pages/CloudKitchen/RiderScreens/Rider";
 import RiderOrderDetail from "../pages/CloudKitchen/RiderScreens/RiderOrderDetail";
 import RiderOrderTracker from "../pages/CloudKitchen/RiderScreens/RiderOrderTracker";
 import Settings from "../pages/Settings/Settings";
+import RiderProfile from "@/pages/CloudKitchen/RiderScreens/RiderProfile";
+import KitchenProfile from "@/pages/CloudKitchen/KDS/KitchenProfile";
 
 // ⬇ define allowed roles here
 export const protectedRoutes = [
   { path: "/dashboard", layout: true, component: Dashboard, roles: ["admin"] },
   { path: "/leads", layout: true, component: LeadGeneration, roles: ["admin"] },
   { path: "/settings", layout: true, component: Settings, roles: ["admin"] },
-  { path: "/master/branch", layout: true, component: BranchMaster, roles: ["admin"] },
-  { path: "/master/category", layout: true, component: CategoryMaster, roles: ["admin"] },
-  { path: "/master/items", layout: true, component: ItemMaster, roles: ["admin"] },
-  { path: "/master/menus", layout: true, component: MenuMaster, roles: ["admin"] },
-  { path: "/master/bundles", layout: true, component: BundleMaster, roles: ["admin"] },
-  { path: "/master/bundles/create", layout: true, component: VA_BundleFormScreen, roles: ["admin"] },
+  {
+    path: "/master/branch",
+    layout: true,
+    component: BranchMaster,
+    roles: ["admin"],
+  },
+  {
+    path: "/master/category",
+    layout: true,
+    component: CategoryMaster,
+    roles: ["admin"],
+  },
+  {
+    path: "/master/items",
+    layout: true,
+    component: ItemMaster,
+    roles: ["admin"],
+  },
+  {
+    path: "/master/menus",
+    layout: true,
+    component: MenuMaster,
+    roles: ["admin"],
+  },
+  {
+    path: "/master/bundles",
+    layout: true,
+    component: BundleMaster,
+    roles: ["admin"],
+  },
+  {
+    path: "/master/bundles/create",
+    layout: true,
+    component: VA_BundleFormScreen,
+    roles: ["admin"],
+  },
 
+  {
+    path: "/cloud-kitchen/orders",
+    layout: true,
+    component: OrderTracker,
+    roles: ["admin"],
+  },
   // Kitchen
-  { path: "/cloud-kitchen/orders", layout: true, component: OrderTracker, roles: ["admin"] },
-  { path: "/cloud-kitchen/kdn", component: KitchenDisplayScreen, roles: ["admin","chef"] },
+  {
+    path: "/cloud-kitchen/kdn",
+    component: KitchenDisplayScreen,
+    roles: ["admin", "chef"],
+  },
+  {
+    path: "/cloud-kitchen/kdn/profile",
+    component: KitchenProfile,
+    roles: ["admin", "chef"],
+  },
 
   // Rider
-  { path: "/cloud-kitchen/rider", component: Rider, roles: ["admin","rider"] },
-  { path: "/cloud-kitchen/rider/order/:orderId", component: RiderOrderDetail, roles: ["admin","rider"] },
-  { path: "/cloud-kitchen/rider/order/:id/track", component: RiderOrderTracker, roles: ["admin","rider"] },
+  { path: "/cloud-kitchen/rider", component: Rider, roles: ["admin", "rider"] },
+  {
+    path: "/cloud-kitchen/rider/profile",
+    component: RiderProfile,
+    roles: ["admin", "rider"],
+  },
+  {
+    path: "/cloud-kitchen/rider/order/:taskId",
+    component: RiderOrderDetail,
+    roles: ["admin", "rider"],
+  },
+  {
+    path: "/cloud-kitchen/rider/task/:taskId/track",
+    component: RiderOrderTracker,
+    roles: ["admin", "rider"],
+  },
 
   // Staff Management
-  { path: "/staff-master", layout: true, component: StaffMaster, roles: ["admin"] },
+  {
+    path: "/staff-master",
+    layout: true,
+    component: StaffMaster,
+    roles: ["admin"],
+  },
 ];

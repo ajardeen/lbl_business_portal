@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, LogOut, PackageSearch } from "lucide-react";
+import { User, LogOut, PackageSearch, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { signOut } from "firebase/auth";
@@ -22,7 +22,6 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function TopNavigation() {
   const { account } = useAuth();
-
 
   const navigate = useNavigate();
   const [name, setName] = useState("admin");
@@ -89,17 +88,19 @@ export default function TopNavigation() {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() =>
-                  handleDropdownNavigation("/cloud-kitchen/rider/profile")
+                  handleDropdownNavigation("/cloud-kitchen/kdn/profile")
                 }
               >
                 <User className="h-4 w-4" />
                 Profile
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleDropdownNavigation("/cloud-kitchen/rider")}
+                onClick={() =>
+                  handleDropdownNavigation("/cloud-kitchen/orders")
+                }
               >
-                <PackageSearch className="h-4 w-4" />
-                Orders
+                <ChefHat className="h-4 w-4" />
+                Kitchen Display
               </DropdownMenuItem>
             </DropdownMenuGroup>
 

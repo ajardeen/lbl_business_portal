@@ -5,7 +5,7 @@ function RiderLayout({ children }) {
   return (
     <div>
       <TopNavigation />
-      <div className="flex justify-center">{children}</div>;
+      <div className="flex justify-center max-w-md">{children}</div>;
     </div>
   );
 }
