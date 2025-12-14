@@ -16,38 +16,89 @@ const BundleMaster = () => {
   const deleteMutation = useDeleteBundle();
   const columnHelper = createColumnHelper();
 
-  const columns = [
-    columnHelper.accessor("name", { header: "Bundle Name" }),
-    columnHelper.accessor("description", { header: "Description" }),
-    columnHelper.accessor("durationDays", { header: "Duration (Days)" }),
-    columnHelper.accessor("basePrice", { header: "Base Price" }),
-    columnHelper.accessor("isPublished", {
-      header: "Published Status",
-      cell: ({ row }) =>
-        row.original.isPublished ? (
-          <Badge variant="success" text="Published" />
-        ) : (
-          <Badge variant="default" text="Unpublished" />
-        ),
-    }),
-    columnHelper.accessor("status", { header: "Status" }),
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <VA_BundleViewSheet rowData={row.original} />
-          <VA_AlertDialog
-            title="Delete Bundle"
-            description="This action cannot be undone."
-            variant="danger"
-            trigger={<VA_Button icon={<Trash2 />} variant="ghost" size="sm" />}
-            onAction={() => deleteMutation.mutate(row.original._id)}
-          />
-        </div>
+ const columns = [
+  columnHelper.accessor("name", {
+    header: "Bundle Name",
+    size: 30, // wider for text
+    meta: {
+      align: "left",
+      wrap: true,
+    },
+  }),
+
+  columnHelper.accessor("bundleMealType", {
+    header: "Meal Type",
+    size: 15,
+    meta: {
+      align: "center",
+      wrap: false,
+    },
+  }),
+
+  columnHelper.accessor("totalMealsCount", {
+    header: "Total Meals",
+    size: 10,
+    meta: {
+      align: "center",
+      wrap: false,
+    },
+  }),
+
+  columnHelper.accessor("price", {
+    header: "Price",
+    size: 15,
+    meta: {
+      align: "right",
+      wrap: false,
+    },
+    cell: ({ row }) => `₹ ${row.original.price}`,
+  }),
+
+  columnHelper.accessor("isPublished", {
+    header: "Published",
+    size: 15,
+    meta: {
+      align: "center",
+      wrap: false,
+    },
+    cell: ({ row }) =>
+      row.original.isPublished ? (
+        <Badge variant="success" text="Published" />
+      ) : (
+        <Badge variant="secondary" text="Unpublished" />
       ),
-    }),
-  ];
+  }),
+
+  columnHelper.display({
+    id: "actions",
+    header: "Actions",
+    size: 15,
+    meta: {
+      align: "center",
+      wrap: false,
+    },
+    cell: ({ row }) => (
+      <div className="flex justify-center ">
+        <VA_BundleViewSheet bundleId={row.original._id} />
+        <VA_AlertDialog
+          title="Delete Bundle"
+          description="This action cannot be undone."
+          variant="danger"
+          trigger={
+            <VA_Button
+              icon={<Trash2 className="text-destructive" />}
+              variant="ghost"
+              size="sm"
+            />
+          }
+          onAction={() => deleteMutation.mutate(row.original._id)}
+        />
+      </div>
+    ),
+  }),
+];
+
+
 
   return (
     <VA_DataTable

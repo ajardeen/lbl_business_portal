@@ -6,6 +6,7 @@ import {
   XCircle,
   Eye,
   Utensils,
+  Clock,
 } from "lucide-react";
 
 import VA_Sheet from "@/components/VAComponents/VA_Sheet";
@@ -18,8 +19,9 @@ function VA_MenuViewSheet({ rowData }) {
   const {
     name,
     description,
-    dayOfWeek,
-    status,
+    mealType,
+    suggestedDay,
+    isActive,
     createdAt,
     items = [],
   } = rowData;
@@ -37,37 +39,50 @@ function VA_MenuViewSheet({ rowData }) {
       }
     >
       <div className="space-y-6 p-4">
-        {/* Header Info */}
+        {/* Header */}
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-semibold flex items-center gap-2">
             <List className="h-5 w-5 text-primary" />
             {name}
             <Badge
-              variant={status === "active" ? "success" : "destructive"}
-              text={status}
+              variant={isActive ? "success" : "destructive"}
+              text={isActive ? "Active" : "Inactive"}
               badgeClassName="capitalize"
             />
           </h2>
-          <p className="text-muted-foreground">{description || "—"}</p>
 
-          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+          <p className="text-muted-foreground">
+            {description || "—"}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Clock className="h-4 w-4" />
+              Meal: <strong className="capitalize">{mealType}</strong>
+            </span>
+
             <span className="flex items-center gap-1">
               <CalendarDays className="h-4 w-4" />
-              {dayOfWeek || "No day specified"}
+              Day: {suggestedDay || "Any"}
             </span>
-            {status === "active" ? (
+
+            {isActive ? (
               <CheckCircle className="h-4 w-4 text-green-500" />
             ) : (
               <XCircle className="h-4 w-4 text-red-500" />
             )}
-            <span>Created on {new Date(createdAt).toLocaleDateString()}</span>
+
+            <span>
+              Created on{" "}
+              {new Date(createdAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border"></div>
+        <div className="border-t border-border" />
 
-        {/* Items Section */}
+        {/* Items */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Utensils className="h-5 w-5 text-primary" />
@@ -79,50 +94,65 @@ function VA_MenuViewSheet({ rowData }) {
               No items added to this menu.
             </p>
           ) : (
-            <table className="w-full text-xs border-t border-border mt-2">
-              <thead className="bg-muted/50 text-muted-foreground">
-                <tr>
-                  <th className="text-left font-medium py-1 px-2">Item Name</th>
-                  <th className="text-left font-medium py-1 px-2">Qty</th>
-                  <th className="text-left font-medium py-1 px-2">Price (₹)</th>
-                  <th className="text-left font-medium py-1 px-2">UOM</th>
-                  <th className="text-left font-medium py-1 px-2">
-                    Prep Time (min)
-                  </th>
-                  <th className="text-left font-medium py-1 px-2">Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((menuItem, idx) => {
-                  const item = menuItem.itemId || {};
-                  return (
-                    <tr
-                      key={idx}
-                      className="border-t border-border hover:bg-muted/30 transition-colors"
-                    >
-                      <td className="py-1.5 px-2 text-foreground font-medium">
-                        {item.name || "Unnamed Item"}
-                      </td>
-                      <td className="py-1.5 px-2 text-muted-foreground">
-                        {menuItem.qty || 1}
-                      </td>
-                      <td className="py-1.5 px-2 text-muted-foreground">
-                        ₹{item.price ?? "--"}
-                      </td>
-                      <td className="py-1.5 px-2 text-muted-foreground">
-                        {item.uom || "—"}
-                      </td>
-                      <td className="py-1.5 px-2 text-muted-foreground">
-                        {item.prepTimeMinutes || 0}
-                      </td>
-                      <td className="py-1.5 px-2 text-muted-foreground">
-                        {menuItem.notes || "—"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border border-border rounded-md">
+                <thead className="bg-muted/50 text-muted-foreground">
+                  <tr>
+                    <th className="text-left font-medium py-2 px-3">
+                      Item Name
+                    </th>
+                    <th className="text-left font-medium py-2 px-3">
+                      Qty
+                    </th>
+                    <th className="text-left font-medium py-2 px-3">
+                      Price (₹)
+                    </th>
+                    <th className="text-left font-medium py-2 px-3">
+                      UOM
+                    </th>
+                    <th className="text-left font-medium py-2 px-3">
+                      Veg
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {items.map((menuItem, idx) => {
+                    const item =
+                      typeof menuItem.itemId === "object"
+                        ? menuItem.itemId
+                        : {};
+
+                    return (
+                      <tr
+                        key={idx}
+                        className="border-t border-border hover:bg-muted/30 transition-colors"
+                      >
+                        <td className="py-2 px-3 font-medium">
+                          {menuItem.name || item.name || "Unnamed Item"}
+                        </td>
+
+                        <td className="py-2 px-3">
+                          {menuItem.qty}
+                        </td>
+
+                        <td className="py-2 px-3">
+                          ₹{item.price ?? "—"}
+                        </td>
+
+                        <td className="py-2 px-3">
+                          {item.uom || "—"}
+                        </td>
+
+                        <td className="py-2 px-3">
+                          {menuItem.isVegetarian ? "Yes" : "No"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

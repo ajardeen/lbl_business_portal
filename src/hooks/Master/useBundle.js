@@ -5,6 +5,7 @@ import {
   createBundle,
   updateBundle,
   deleteBundle,
+  fetchBundleById,
 } from "@/services/Master/bundleService";
 
 export const useBundles = () =>
@@ -13,6 +14,14 @@ export const useBundles = () =>
     queryFn: fetchBundles,
     staleTime: Infinity,
   });
+  export const useBundleById = (id) =>
+  useQuery({
+    queryKey: ["bundles", id],
+    queryFn: () => fetchBundleById(id),
+    // Only run the query if an ID is provided
+    enabled: !!id, 
+    staleTime: Infinity,
+  });
 
 export const useCreateBundle = () => {
   const queryClient = useQueryClient();

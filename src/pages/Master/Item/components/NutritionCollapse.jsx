@@ -36,7 +36,7 @@ export default function NutritionCollapse({
     <div className={cn("w-full mt-3 ", className)}>
       <Collapsible defaultOpen={defaultOpen}>
         <div className="border rounded-md overflow-hidden">
-          <CollapsibleTrigger className="w-full cursor-pointer flex items-start justify-between gap-3 p-3 hover:bg-slate-50">
+          <CollapsibleTrigger className="w-full cursor-pointer flex items-start justify-between gap-3 p-3 bg-accent">
             <div className="flex items-start gap-0">
               <div className="flex gap-2">
                 <div className="p-2 rounded-md bg-primary/10 text-primary">
@@ -44,14 +44,14 @@ export default function NutritionCollapse({
                 </div>
                 <div>
                   <div className="text-sm font-medium w-fit">Nutrition</div>
-                  <div className="text-xs text-slate-500">{summary}</div>
+                  <div className="text-xs text-slate-500 ">{summary}</div>
                 </div>
               </div>
             </div>
             <ChevronDown className="h-4 w-4" />
           </CollapsibleTrigger>
 
-          <CollapsibleContent className="p-4 bg-white">
+          <CollapsibleContent className="p-4 bg-background">
             <div className="grid grid-cols-2 gap-4">
               {/* Calories */}
               <Controller

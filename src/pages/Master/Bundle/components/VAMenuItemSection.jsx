@@ -5,16 +5,25 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import VA_Input from "@/components/VAComponents/VA_Input";
+// Removed VA_Input import since quantity is now read-only
 import { Info } from "lucide-react";
+import  Badge  from "@/components/ui/Badge";
+// Note: control and menuIndex are no longer strictly needed but kept for context if you expand form logic later
+const VAMenuItemSection = ({ menu }) => {
+  // Use optional chaining for safe access
+  const items = menu?.items;
+  if (!items || items.length === 0) return null;
 
-const VAMenuItemSection = ({ control, menuIndex, menu }) => {
-  if (!menu || !menu.items || menu.items.length === 0) return null;
-
-  const { errors } = useFormState({ control });
-  const totalMenuPrice = menu.items.reduce(
-    (total, item) =>
-      total + ((item.itemPrice || item.price || 0) * (item.qty || 1)),
+  // Calculate total price based on the structure provided in the prompt
+  const totalMenuPrice = items.reduce(
+    (total, item) => {
+      // Assuming item.itemPrice or item.itemId.price are not directly available 
+      // in the current shape and using 0 for price calculation for now.
+      // If a price field is available on the item object in production, replace 0.
+      const price = item.price || item.itemPrice || 0; 
+      const qty = item.qty || 1;
+      return total + (price * qty);
+    },
     0
   );
 
@@ -28,7 +37,9 @@ const VAMenuItemSection = ({ control, menuIndex, menu }) => {
             <Info size={14} className="text-muted-foreground cursor-pointer" />
           </TooltipTrigger>
           <TooltipContent>
-            Total Menu Cost ₹ {totalMenuPrice}
+            Total Menu Items: {items.length}
+            {/* If you have price on item, display it */}
+            {totalMenuPrice > 0 && ` | Total Menu Price: ₹ ${totalMenuPrice.toFixed(2)}`}
           </TooltipContent>
         </Tooltip>
       </div>
@@ -39,17 +50,18 @@ const VAMenuItemSection = ({ control, menuIndex, menu }) => {
           <tr>
             <th className="text-left py-1 px-2 font-medium">Item Name</th>
             <th className="text-left py-1 px-2 font-medium">Qty</th>
+            <th className="text-left py-1 px-2 font-medium">Veg/Non-Veg</th>
             <th className="text-left py-1 px-2 font-medium">Price (₹)</th>
-            <th className="text-left py-1 px-2 font-medium">UOM</th>
-            <th className="text-left py-1 px-2 font-medium">Prep Time (min)</th>
           </tr>
         </thead>
 
         <tbody>
-          {menu.items.map((item, itemIdx) => {
-            const qtyError =
-              errors?.menus?.[menuIndex]?.items?.[itemIdx]?.qty?.message;
-
+          {items.map((item, itemIdx) => {
+            // Safely get item details from the nested structure
+            const itemName = item.itemName || item.name || item.itemId?.name || "Unnamed";
+            const isVegetarian = item.isVegetarian; 
+            const price = item.price || item.itemPrice || "--";
+            
             return (
               <tr
                 key={itemIdx}
@@ -57,43 +69,27 @@ const VAMenuItemSection = ({ control, menuIndex, menu }) => {
               >
                 {/* Item name */}
                 <td className="py-1.5 px-2 font-medium text-foreground capitalize">
-                  {item.itemName || item.name || "Unnamed"}
+                  {itemName}
                 </td>
 
-                {/* Editable Qty */}
-                <td className="py-1.5 px-2 w-24">
-                  <Controller
-                    name={`menus.${menuIndex}.items.${itemIdx}.qty`}
-                    control={control}
-                    defaultValue={item.qty || 1}
-                    render={({ field }) => (
-                      <VA_Input
-                        {...field}
-                        type="number"
-                        min={1}
-                        className="h-7"
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    )}
-                  />
-                  {qtyError && (
-                    <div className="text-red-600 text-xs mt-1">{qtyError}</div>
-                  )}
-                </td>
-
-                {/* Price */}
+                {/* Fixed Qty */}
                 <td className="py-1.5 px-2 text-muted-foreground">
-                  ₹{item.itemPrice || item.price || "--"}
+                  {item.qty || 1}
                 </td>
 
-                {/* UOM */}
-                <td className="py-1.5 px-2 text-muted-foreground">
-                  {item.uom || "—"}
+                {/* Veg/Non-Veg */}
+                <td className="py-1.5 px-2">
+                  <Badge 
+                    variant={isVegetarian ? "success" : "destructive"} 
+                    text={isVegetarian ? "Veg" : "Non-Veg"} 
+                    className={`text-xs ${isVegetarian ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                 / >
+                
                 </td>
 
-                {/* Prep Time */}
+                {/* Price (Read-only) */}
                 <td className="py-1.5 px-2 text-muted-foreground">
-                  {item.prepTimeMinutes || item.prepTime || 0}
+                  {typeof price === 'number' ? `₹${price}` : price}
                 </td>
               </tr>
             );

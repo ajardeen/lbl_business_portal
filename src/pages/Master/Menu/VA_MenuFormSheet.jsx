@@ -1,7 +1,6 @@
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useMemo } from "react";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 
 import VA_Sheet from "@/components/VAComponents/VA_Sheet";
 import VA_FieldWrapper from "@/components/VAComponents/VA_FieldWrapper";
@@ -12,14 +11,23 @@ import VA_Button from "@/components/VAComponents/VA_Button";
 import { useItems } from "@/hooks/Master/useItem";
 import { useCreateMenu, useUpdateMenu } from "@/hooks/Master/useMenu";
 import { Edit, PlusCircle } from "lucide-react";
+import z from "zod";
 
-// ✅ Enhanced Zod validation schema
-const menuSchema = z.object({
-  name: z.string().min(1, "Menu name is required"),
-  description: z.string().optional(),
-  dayOfWeek: z
-    .enum(
-      [
+const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
+  const { data: items = [] } = useItems();
+  const createMutation = useCreateMenu();
+  const updateMutation = useUpdateMenu();
+
+  const menuSchema = z.object({
+    name: z.string().min(1, "Menu name is required"),
+    description: z.string().optional(),
+
+    mealType: z.enum(["breakfast", "lunch", "dinner", "snacks", "all_day"], {
+      required_error: "Meal type is required",
+    }),
+
+    suggestedDay: z
+      .enum([
         "Monday",
         "Tuesday",
         "Wednesday",
@@ -27,73 +35,78 @@ const menuSchema = z.object({
         "Friday",
         "Saturday",
         "Sunday",
-        "",
-      ],
-      { required_error: "Day of week is required" }
-    )
-    .optional(),
-  status: z.enum(["active", "inactive"], {
-    required_error: "Status is required",
-  }),
-  items: z.array(z.string()).min(1, "At least one menu item is required"),
-});
+        "Any",
+      ])
+      .optional(),
 
-const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
-  const createMutation = useCreateMenu();
-  const updateMutation = useUpdateMenu();
-  const { data: items = [] } = useItems();
+    isActive: z.boolean().default(true),
+
+    items: z
+      .array(
+        z.object({
+          itemId: z.string(),
+          qty: z.number().min(1),
+        })
+      )
+      .min(1, "Select at least one item"),
+  });
 
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(menuSchema),
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
-      dayOfWeek: initialData?.dayOfWeek || "",
-      dayIndex: initialData?.dayIndex ?? null,
-      status: initialData?.status || "active",
+      mealType: initialData?.mealType || "lunch",
+      suggestedDay: initialData?.suggestedDay || "Any",
+      isActive: initialData?.isActive ?? true,
       items:
-        initialData?.items?.map((i) =>
-          typeof i.itemId === "object" ? i.itemId._id : i.itemId
-        ) || [],
+        initialData?.items?.map((i) => ({
+          itemId: typeof i.itemId === "object" ? i.itemId._id : i.itemId,
+          qty: i.qty || 1,
+        })) || [],
     },
   });
-  // console.log("items",items);
 
-  const itemOptions =
-    items
-      ?.filter((i) => i.isActive === true)
-      .map((i) => ({
-        label: i.name,
-        value: i._id,
-      })) || [];
+  const selectedItems = useWatch({ control, name: "items" });
 
-  const weekdayIndexMap = {
-    Monday: 0,
-    Tuesday: 1,
-    Wednesday: 2,
-    Thursday: 3,
-    Friday: 4,
-    Saturday: 5,
-    Sunday: 6,
+  const itemOptions = items
+    .filter((i) => i.isActive)
+    .map((i) => ({
+      label: i.name,
+      value: i._id,
+    }));
+
+  const itemMap = useMemo(() => {
+    const map = {};
+    items.forEach((i) => (map[i._id] = i));
+    return map;
+  }, [items]);
+
+  const onItemsSelect = (ids) => {
+    const existing = selectedItems || [];
+
+    const updated = ids.map((id) => {
+      const found = existing.find((e) => e.itemId === id);
+      return found || { itemId: id, qty: 1 };
+    });
+
+    setValue("items", updated, { shouldValidate: true });
   };
 
   const onSubmit = async (data) => {
-    const dayIndex = weekdayIndexMap[data.dayOfWeek] ?? null;
-
     const payload = {
       ...data,
-      dayIndex, // ⭐ auto applied
-      items: (data.items || []).map((id) => ({
-        itemId: id,
-        itemName: items.find((i) => i._id === id)?.name || "",
-        itemPrice: items.find((i) => i._id === id)?.price || 0,
-        qty: 1,
-        notes: "",
+      items: data.items.map((i) => ({
+        itemId: i.itemId,
+        name: itemMap[i.itemId]?.name || "",
+        qty: i.qty,
+        isVegetarian: itemMap[i.itemId]?.isVegetarian ?? false,
       })),
     };
 
@@ -111,6 +124,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
   return (
     <VA_Sheet
       title={mode === "create" ? "Create Menu" : "Update Menu"}
+      className="min-w-[500px]"
       triggerComponent={
         mode === "create" ? (
           <VA_Button icon={<PlusCircle />}>Create Menu</VA_Button>
@@ -121,107 +135,141 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
       sheetFooterComponent={
         <>
           <VA_Button
-            type="submit"
             loading={createMutation.isPending || updateMutation.isPending}
             onClick={handleSubmit(onSubmit)}
           >
             {mode === "create" ? "Create" : "Update"}
           </VA_Button>
-          <VA_Button
-            type="button"
-            variant="outline"
-            onClick={() => reset(initialData)}
-          >
+          <VA_Button variant="outline" onClick={handleSubmit(onSubmit)}>
             Cancel
           </VA_Button>
         </>
       }
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Menu Name */}
+      <form className="space-y-4">
+        {/* Name */}
         <VA_FieldWrapper label="Menu Name" error={errors.name?.message}>
           <Controller
             name="name"
             control={control}
-            render={({ field }) => (
-              <VA_Input {...field} placeholder="Enter menu name" />
-            )}
+            render={({ field }) => <VA_Input {...field} />}
           />
         </VA_FieldWrapper>
 
         {/* Description */}
         <VA_FieldWrapper
-          label="Description"
+          label="Menu Description"
           error={errors.description?.message}
         >
           <Controller
             name="description"
             control={control}
             render={({ field }) => (
-              <VA_Input {...field} placeholder="Description (optional)" />
+              <VA_Input
+                {...field}
+                as="textarea"
+                rows={3}
+                placeholder="Describe this menu (optional)"
+              />
             )}
           />
         </VA_FieldWrapper>
 
-        {/* Day of Week */}
-        <VA_FieldWrapper label="Day of Week" error={errors.dayOfWeek?.message}>
+        {/* Meal Type */}
+        <VA_FieldWrapper label="Meal Type" error={errors.mealType?.message}>
           <Controller
-            name="dayOfWeek"
+            name="mealType"
             control={control}
             render={({ field }) => (
               <VA_Select
                 {...field}
-                onSelect={(value) => field.onChange(value)}
+                onSelect={field.onChange}
                 options={[
-                  { label: "Monday", value: "Monday" },
-                  { label: "Tuesday", value: "Tuesday" },
-                  { label: "Wednesday", value: "Wednesday" },
-                  { label: "Thursday", value: "Thursday" },
-                  { label: "Friday", value: "Friday" },
-                  { label: "Saturday", value: "Saturday" },
-                  { label: "Sunday", value: "Sunday" },
+                  { label: "Breakfast", value: "breakfast" },
+                  { label: "Lunch", value: "lunch" },
+                  { label: "Dinner", value: "dinner" },
+                  { label: "Snacks", value: "snacks" },
+                  { label: "All Day", value: "all_day" },
                 ]}
               />
             )}
           />
         </VA_FieldWrapper>
 
-        {/* Status */}
-        <VA_FieldWrapper label="Status" error={errors.status?.message}>
+        {/* Suggested Day */}
+        <VA_FieldWrapper label="Suggested Day">
           <Controller
-            name="status"
+            name="suggestedDay"
             control={control}
             render={({ field }) => (
               <VA_Select
                 {...field}
-                onSelect={(value) => field.onChange(value)}
+                onSelect={field.onChange}
                 options={[
-                  { label: "Active", value: "active" },
-                  { label: "Inactive", value: "inactive" },
-                ]}
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday",
+                  "Any",
+                ].map((d) => ({ label: d, value: d }))}
               />
             )}
           />
         </VA_FieldWrapper>
 
-        {/* Items Multi Select */}
+        {/* Item Select */}
         <VA_FieldWrapper label="Menu Items" error={errors.items?.message}>
-          <Controller
-            name="items"
-            control={control}
-            render={({ field }) => (
-              <VA_Select
-                {...field}
-                value={field.value}
-                onSelect={(value) => field.onChange(value)}
-                options={itemOptions}
-                placeholder="Select menu items"
-                searchable
-                multiSelect
-              />
-            )}
+          <VA_Select
+            multiSelect
+            searchable
+            options={itemOptions}
+            value={selectedItems?.map((i) => i.itemId)}
+            onSelect={onItemsSelect}
           />
         </VA_FieldWrapper>
+
+        {/* Qty Table */}
+        {selectedItems?.length > 0 && (
+          <div className="border rounded-md overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-muted">
+                <tr>
+                  <th className="p-2 text-left">Item</th>
+                  <th className="p-2 text-left">Qty</th>
+                  <th className="p-2 text-left">Price</th>
+                  <th className="p-2 text-left">UOM</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedItems.map((row, index) => {
+                  const item = itemMap[row.itemId] || {};
+                  return (
+                    <tr key={row.itemId} className="border-t">
+                      <td className="p-2">{item.name}</td>
+                      <td className="p-2 w-24">
+                        <VA_Input
+                          type="number"
+                          min={1}
+                          value={row.qty}
+                          onChange={(e) => {
+                            const updated = [...selectedItems];
+                            updated[index].qty = Number(e.target.value);
+                            setValue("items", updated);
+                          }}
+                        />
+                      </td>
+                      <td className="p-2">₹{item.price ?? "—"}</td>
+                      <td className="p-2">{item.uom ?? "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </form>
     </VA_Sheet>
   );

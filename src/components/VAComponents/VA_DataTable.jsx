@@ -24,7 +24,15 @@ import {
 
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Button } from "../ui/button";
-import { Check, ChevronDown, ChevronUp, Eye, X, FileDown, Loader } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  X,
+  FileDown,
+  Loader,
+} from "lucide-react";
 import {
   Command,
   CommandGroup,
@@ -110,8 +118,8 @@ function VA_DataTable({
         ),
         enableSorting: false,
         enableHiding: false,
-        size: "sm",
         width: "30px",
+        size: 5,
       });
     }
 
@@ -122,11 +130,22 @@ function VA_DataTable({
         cell: ({ row }) => row.index + 1,
         enableSorting: false,
         enableHiding: false,
+        size: 5,
       });
     }
 
     return [...baseCols, ...dynamicCols];
   }, [columns, rowSelectingOption, showSno]);
+
+  const getAlignClass = (column) => {
+    const align = column.columnDef.meta?.align || "left";
+
+    return align === "center"
+      ? "text-center justify-center"
+      : align === "right"
+      ? "text-right justify-end"
+      : "text-left justify-start";
+  };
 
   const table = useReactTable({
     data,
@@ -137,6 +156,7 @@ function VA_DataTable({
       sorting,
       rowSelection,
     },
+    columnResizeMode: "onChange",
     enableRowSelection: !!rowSelectingOption,
     onRowSelectionChange: setRowSelection,
     onColumnVisibilityChange: setColumnVisibility,
@@ -304,7 +324,7 @@ function VA_DataTable({
               {isLoading ? (
                 <Loader size={20} className="animate-spin text-primary" />
               ) : (
-                 icon 
+                icon
               )}
             </span>
           )}
@@ -402,13 +422,16 @@ function VA_DataTable({
       </div>
 
       <div className="overflow-hidden rounded-md border">
-        <Table>
+        <Table className="w-full table-fixed">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   const isSortable = header.column.getCanSort?.();
                   const sorted = header.column.getIsSorted();
+
+                  const alignClass = getAlignClass(header.column);
+
                   return (
                     <TableHead
                       key={header.id}
@@ -417,13 +440,15 @@ function VA_DataTable({
                           ? header.column.getToggleSortingHandler()
                           : undefined
                       }
-                      style={{ width: header.column.columnDef.width }}
+                      style={{ width: header.getSize() }}
                       className={cn(
-                        "capitalize bg-transparent font-medium select-none cursor-pointer",
-                        isSortable && ""
+                        alignClass,
+                        "capitalize bg-transparent font-medium select-none cursor-pointer"
                       )}
                     >
-                      <div className="flex items-center gap-1">
+                      <div
+                        className={cn("flex items-center gap-1", alignClass)}
+                      >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
@@ -455,7 +480,8 @@ function VA_DataTable({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      style={{ width: cell.column.columnDef.width }}
+                      style={{ width: cell.column.getSize() }}
+                      className={cn(getAlignClass(cell.column))}
                     >
                       {flexRender(
                         cell.column.columnDef.cell ??
@@ -490,7 +516,10 @@ function VA_DataTable({
                     const value = calculateValue(col.id);
 
                     return (
-                      <TableCell key={col.id} className="p-1">
+                      <TableCell
+                        key={col.id}
+                        className={cn("p-1", getAlignClass(col))}
+                      >
                         {footerCalcColumns.includes(col.id) ? (
                           <Popover>
                             <PopoverTrigger asChild>
@@ -553,6 +582,108 @@ function VA_DataTable({
             </TableFooter>
           )}
         </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 text-sm text-muted-foreground">
+        {/* Page Info */}
+        <div className="text-center sm:text-left mb-2 sm:mb-0 ">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </div>
+
+        {/* Centered Pagination Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
+          <Pagination>
+            <PaginationContent className="justify-center">
+              {/* Prev Button */}
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => table.previousPage()}
+                  className={cn(
+                    !table.getCanPreviousPage() &&
+                      "pointer-events-none opacity-50"
+                  )}
+                />
+              </PaginationItem>
+
+              {/* Page Numbers */}
+              {(() => {
+                const totalPages = table.getPageCount();
+                const current = table.getState().pagination.pageIndex;
+                const visiblePages = [];
+
+                // Minimum of 5 pages visible, adaptive range
+                let start = Math.max(current - 2, 0);
+                let end = Math.min(start + 4, totalPages - 1);
+
+                if (end - start < 4) {
+                  start = Math.max(end - 4, 0);
+                }
+
+                for (let i = start; i <= end; i++) {
+                  visiblePages.push(i);
+                }
+
+                // Add first page if not visible
+                if (start > 0) {
+                  visiblePages.unshift(0);
+                  if (start > 1) visiblePages.splice(1, 0, "ellipsis-start");
+                }
+
+                // Add last page if not visible
+                if (end < totalPages - 1) {
+                  if (end < totalPages - 2) visiblePages.push("ellipsis-end");
+                  visiblePages.push(totalPages - 1);
+                }
+
+                return visiblePages.map((page, idx) => {
+                  if (page === "ellipsis-start" || page === "ellipsis-end")
+                    return <PaginationEllipsis key={idx} />;
+
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        isActive={page === current}
+                        onClick={() => table.setPageIndex(page)}
+                      >
+                        {page + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                });
+              })()}
+
+              {/* Next Button */}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => table.nextPage()}
+                  className={cn(
+                    !table.getCanNextPage() && "pointer-events-none opacity-50"
+                  )}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+        {/* Page size dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm">
+              {table.getState().pagination.pageSize} / page
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {[5, 10, 25, 50].map((size) => (
+              <DropdownMenuItem
+                key={size}
+                onClick={() => table.setPageSize(size)}
+              >
+                {size} / page
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="text-center text-xs text-muted-foreground">
