@@ -12,7 +12,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, CreditCard, Bell, LogOut, Settings } from "lucide-react";
+import {
+  User,
+  CreditCard,
+  Bell,
+  LogOut,
+  Settings,
+  ChefHatIcon,
+  Bike,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // --- Sample global search config imports ---
@@ -24,8 +32,12 @@ import { useNavigate } from "react-router-dom";
 import VA_ThemeToggle from "@/components/VAComponents/VA_ThemeToggle";
 import VA_NetworkStatusBadge from "@/components/VAComponents/VA_NetworkStatusBadge";
 import { useAuth } from "@/context/AuthContext";
+import VA_Button from "@/components/VAComponents/VA_Button";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 export default function VA_TopNavigation() {
   const { account, logout } = useAuth();
+  const isMobile  = useIsMobile();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -60,6 +72,20 @@ export default function VA_TopNavigation() {
 
       {/* ✅ Right side tools */}
       <div className="flex items-center gap-3">
+        <VA_Button
+          size="sm"
+          onClick={() => navigate("/cloud-kitchen/kdn")}
+          icon={<Bike />}
+        >
+          {!isMobile && "Rider"}
+        </VA_Button>
+        <VA_Button
+          size="sm"
+          onClick={() => navigate("/cloud-kitchen/kdn")}
+          icon={<ChefHatIcon />}
+        >
+          {!isMobile && "Kitchen"}
+        </VA_Button>
         {/* Global Search */}
         <VA_GlobalSearchModel
           suggestedSearch={suggestedSearch}
@@ -108,18 +134,20 @@ export default function VA_TopNavigation() {
 
             {/* Main Actions */}
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleDropdownNavigation("/settings")}
+              >
                 <User className="h-4 w-4" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <CreditCard className="h-4 w-4" />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell className="h-4 w-4" />
                 Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onClick={() => handleDropdownNavigation("/settings")}
               >

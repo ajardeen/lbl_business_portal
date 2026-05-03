@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/api", //backend url
+  // baseURL: "http://localhost:3000/api", //backend url
+  baseURL : import.meta.env.VITE_API_URL,
 });
 
 let interceptorId = null;

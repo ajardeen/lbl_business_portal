@@ -35,12 +35,12 @@ export default function VA_Breadcrumb() {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="flex items-center gap-1 text-sm text-muted-foreground">
+      <BreadcrumbList className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
         {/* 🏠 Always start with Home */}
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link
-              to="/"
+              to="/dashboard"
               className="flex items-center gap-1 hover:text-foreground"
             >
               <Home className="h-4 w-4" />

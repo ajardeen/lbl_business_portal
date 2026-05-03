@@ -52,7 +52,7 @@ function VA_Button({
 
   try {
     return (
-      <Button {...props} disabled={loading || disabled} onClick={handleClick} className={`leading-0 ${className}`}>
+      <Button {...props} disabled={loading || disabled} onClick={handleClick} className={`leading-0 cursor-pointer ${className}`}>
         {renderContent()}
       </Button>
     );
