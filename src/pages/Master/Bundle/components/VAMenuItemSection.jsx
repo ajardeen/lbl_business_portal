@@ -10,6 +10,8 @@ import { Info } from "lucide-react";
 import  Badge  from "@/components/ui/Badge";
 // Note: control and menuIndex are no longer strictly needed but kept for context if you expand form logic later
 const VAMenuItemSection = ({ menu }) => {
+  console.log("menu",menu);
+  
   // Use optional chaining for safe access
   const items = menu?.items;
   if (!items || items.length === 0) return null;
@@ -60,7 +62,7 @@ const VAMenuItemSection = ({ menu }) => {
             // Safely get item details from the nested structure
             const itemName = item.itemName || item.name || item.itemId?.name || "Unnamed";
             const isVegetarian = item.isVegetarian; 
-            const price = item.price || item.itemPrice || "--";
+            const price = item.price || item.itemPrice || item.itemId?.price || "--";
             
             return (
               <tr

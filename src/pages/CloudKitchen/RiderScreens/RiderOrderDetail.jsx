@@ -50,7 +50,7 @@ const RiderOrderDetail = () => {
 
   useEffect(() => {
     if (!order) return;
-    setIsAccepted(order.deliveryStatus !== "pending");
+    setIsAccepted(order.deliveryStatus !== "ready_for_pickup");
   }, [order]);
 
   const handleAccept = async () => {
@@ -58,6 +58,7 @@ const RiderOrderDetail = () => {
     if (ok) {
       setIsAccepted(true);
       refetch(); // 🔥 unlock customer details after accept
+      setOrder(orderData.data.data);
     }
   };
 
@@ -72,6 +73,21 @@ const RiderOrderDetail = () => {
       </RiderLayout>
     );
   }
+  const formatAddress = (addr) => {
+    if (!addr) return "Address not available";
+
+    return [
+      addr.label && addr.label.toUpperCase(),
+      addr.street1,
+      addr.street2,
+      addr.city,
+      addr.state,
+      addr.pinCode,
+      addr.country,
+    ]
+      .filter(Boolean)
+      .join(", ");
+  };
 
   return (
     <RiderLayout>
@@ -87,7 +103,7 @@ const RiderOrderDetail = () => {
 
           <h3 className="font-semibold text-base">Customer Details</h3>
 
-          {isAccepted ? (
+          {isAccepted && order.customer != null ? (
             <>
               <p className="font-semibold text-lg">{order.customer.name}</p>
 
@@ -110,7 +126,16 @@ const RiderOrderDetail = () => {
             <span className="flex items-center gap-1">
               <MapPin className="h-4 w-4 text-black" /> Address
             </span>
-            {order.deliveryAddress}
+
+            <span className="leading-6">
+              {formatAddress(order.deliveryAddress)}
+            </span>
+
+            {order.deliveryAddress?.deliveryNotes && (
+              <span className="text-sm text-gray-500 mt-1">
+                Note: {order.deliveryAddress.deliveryNotes}
+              </span>
+            )}
           </p>
 
           <Separator />
@@ -124,12 +149,13 @@ const RiderOrderDetail = () => {
             <p className="text-sm">Qty: {order.quantity}</p>
             <div className="flex justify-between py-2">
               <div>
-                <p className="text-sm">Payment: {order.paymentStatus}</p>
-                <p className="text-sm capitalize">{order.deliveryStatus}</p>
+                <p className="text-sm">Payment: </p>
+               <p className="text-sm capitalize">{order.paymentStatus}</p>
+                
               </div>
               <div>
-                <p className="text-sm">Order Status: {order.paymentStatus}</p>
-                <p className="text-sm capitalize">Pending</p>
+                <p className="text-sm">Order Status:</p>
+               <p className="text-sm capitalize">{order.deliveryStatus}</p>
               </div>
             </div>
           </div>
@@ -146,7 +172,6 @@ const RiderOrderDetail = () => {
               onClick={handleAccept}
               className="p-6 rounded-full"
               loading={updating}
-            
             >
               Accept Order
             </VA_Button>

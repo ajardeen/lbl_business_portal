@@ -13,7 +13,7 @@ function KitchenDisplayScreen() {
     due: o.deliveryDate ? new Date(o.deliveryDate).toLocaleTimeString() : "--",
     items: o.items ?? [],
     totalPrepTime: o.totalPrepTime ?? 10,
-    status: o.status ?? "queue",
+    status: o.status,
   }));
   return (
     <KitchenLayout>

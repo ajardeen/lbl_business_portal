@@ -7,7 +7,7 @@ import ItemMaster from "../pages/Master/Item/ItemMaster";
 import MenuMaster from "../pages/Master/Menu/MenuMaster";
 import BundleMaster from "../pages/Master/Bundle/BundleMaster";
 import VA_BundleFormScreen from "../pages/Master/Bundle/VA_BundleFormScreen";
-import OrderTracker from "../pages/CloudKitchen/OrderTracker";
+import OrderTracker from "../pages/CloudKitchen/SubscriptionApproval";
 import KitchenDisplayScreen from "../pages/CloudKitchen/KDS/KitchenDisplayScreen";
 import StaffMaster from "../pages/MyStaff/StaffMaster";
 import Rider from "../pages/CloudKitchen/RiderScreens/Rider";
@@ -16,6 +16,7 @@ import RiderOrderTracker from "../pages/CloudKitchen/RiderScreens/RiderOrderTrac
 import Settings from "../pages/Settings/Settings";
 import RiderProfile from "@/pages/CloudKitchen/RiderScreens/RiderProfile";
 import KitchenProfile from "@/pages/CloudKitchen/KDS/KitchenProfile";
+import SubscriptionApproval from "../pages/CloudKitchen/SubscriptionApproval";
 
 // ⬇ define allowed roles here
 export const protectedRoutes = [
@@ -60,9 +61,9 @@ export const protectedRoutes = [
   },
 
   {
-    path: "/cloud-kitchen/orders",
+    path: "/cloud-kitchen/subscription-approval",
     layout: true,
-    component: OrderTracker,
+    component: SubscriptionApproval,
     roles: ["admin"],
   },
   // Kitchen

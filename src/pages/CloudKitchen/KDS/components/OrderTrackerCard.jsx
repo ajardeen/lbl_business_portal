@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import VA_Button from "@/components/VAComponents/VA_Button";
 import API from "@/configs/axios";
+import { useAuth } from "@/context/AuthContext";
 
 function OrderTrackerCard({ order }) {
+  const { account } = useAuth();
+  const chefId = account?._id;
+
   const [isCooking, setIsCooking] = useState(order.status === "cooking");
   const [isFinished, setIsFinished] = useState(order.status === "ready");
   const [timeUp, setTimeUp] = useState(false);
@@ -40,7 +44,7 @@ function OrderTrackerCard({ order }) {
     setTimeUp(false);
     setRemainingSeconds(order.totalPrepTime * 60);
 
-    await API.put(`/kitchen/status/${order.id}`, { status: "cooking" });
+    await API.put(`/kitchen/status/${order.id}`, { status: "cooking", chefId });
     order.status = "cooking";
   };
 
@@ -50,7 +54,7 @@ function OrderTrackerCard({ order }) {
     setIsFinished(true);
     setTimeUp(false);
 
-    await API.put(`/kitchen/status/${order.id}`, { status: "ready" });
+    await API.put(`/kitchen/status/${order.id}`, { status: "ready", chefId });
     order.status = "ready";
   };
   const handleComplete = async () => {
@@ -58,7 +62,10 @@ function OrderTrackerCard({ order }) {
     setIsCooking(false);
     setTimeUp(false);
 
-    await API.put(`/kitchen/status/${order.id}`, { status: "completed" });
+    await API.put(`/kitchen/status/${order.id}`, {
+      status: "completed",
+      chefId,
+    });
     order.status = "completed";
   };
 

@@ -26,7 +26,7 @@ export const sidebarConfig = [
         menuTitle: "Cloud Kitchen",
         icon: ChefHat,
         url: "/cloud-kitchen",
-        submenu: [{ submenuTitle: "Orders", url: "/cloud-kitchen/orders" }],
+        submenu: [{ submenuTitle: "Orders", url: "/cloud-kitchen/subscription-approval" }],
       },
       {
         menuTitle: "Master",
