@@ -7,8 +7,8 @@ export const createOrganization = async (payload) => {
   return data;
 };
 
-export const fetchOrganizationsById = async () => {
-  const { data } = await API.get(endpoint);
+export const fetchOrganizationsById = async (id) => {
+  const { data } = await API.get(`${endpoint}/${id}`);
   return data.data;
 };
 export const fetchOrganizations = async () => {

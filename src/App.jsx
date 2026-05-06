@@ -18,7 +18,7 @@ function App() {
         <AppRoutes />
       </AuthProvider>
 
-      <Toaster richColors expand={true} position="top-right" />
+      <Toaster richColors expand={true} position="top-right" closeButton duration={3000} />
     </Router>
   );
 }

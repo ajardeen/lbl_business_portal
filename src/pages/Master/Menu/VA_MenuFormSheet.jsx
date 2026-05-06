@@ -261,7 +261,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
                           }}
                         />
                       </td>
-                      <td className="p-2">₹{item.price ?? "—"}</td>
+                      <td className="p-2">₹{item.pricing[0].value ?? "—"}</td>
                       <td className="p-2">{item.uom ?? "—"}</td>
                     </tr>
                   );

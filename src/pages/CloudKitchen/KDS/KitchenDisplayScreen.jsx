@@ -1,4 +1,3 @@
-import { Menu } from "lucide-react";
 import OrderTrackerCard from "./components/OrderTrackerCard";
 import { useKitchens } from "@/hooks/CloudKitchen/useKitchen";
 import KitchenLayout from "./KitchenLayout";
@@ -15,19 +14,21 @@ function KitchenDisplayScreen() {
     totalPrepTime: o.totalPrepTime ?? 10,
     status: o.status,
   }));
+
   return (
     <KitchenLayout>
       <div className="min-h-screen bg-blue-50/95 flex flex-col">
-        {/* Orders Grid */}
         <main className="p-6 mt-2 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 overflow-y-auto scroll-smooth snap-y snap-mandatory h-[calc(100vh-80px)]">
           {isLoading ? (
             <div>Loading...</div>
-          ) : (
+          ) : formattedOrders.length > 0 ? (
             formattedOrders.map((order) => (
-              <div key={order.id} className="snap-start ">
+              <div key={order.id} className="snap-start">
                 <OrderTrackerCard order={order} isLoading={isLoading} />
               </div>
             ))
+          ) : (
+            <div className="text-black">No orders found.</div>
           )}
         </main>
       </div>

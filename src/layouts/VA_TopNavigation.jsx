@@ -74,7 +74,7 @@ export default function VA_TopNavigation() {
       <div className="flex items-center gap-3">
         <VA_Button
           size="sm"
-          onClick={() => navigate("/cloud-kitchen/kdn")}
+          onClick={() => navigate("/cloud-kitchen/rider")}
           icon={<Bike />}
         >
           {!isMobile && "Rider"}

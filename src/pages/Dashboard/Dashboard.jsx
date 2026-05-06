@@ -57,7 +57,7 @@ const CustomTooltip = ({ active, payload }) => {
     return (
       <div className="bg-gray-900 dark:bg-gray-800 text-white rounded-lg px-3 py-2 text-xs shadow-lg border border-gray-700">
         <div className="flex items-center gap-1.5 mb-0.5">
-          <span className="w-2 h-2 rounded-full bg-orange-500" />
+          <span className="w-2 h-2 rounded-full bg-primary" />
           <span>₹{payload[0].value}.00</span>
         </div>
       </div>
@@ -82,7 +82,9 @@ const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
 
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div className={"relative"}>
+      <div className="sticky -top-0 mb-5 rounded-sm p-1 w-full text-center bg-primary text-white">This dashboard displays sample data for demonstration. </div>
+
       <div className="min-h-screen  transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           
@@ -92,23 +94,16 @@ const Dashboard = () => {
               <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
               <p className="text-xs md:text-sm text-gray-500">Live store overview</p>
             </div>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={() => setDarkMode(!darkMode)}
-              className="rounded-full"
-            >
-              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </Button>
+           
           </div>
 
           {/* Top Stat Cards - 1 col on mobile, 3 on desktop */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm px-2 py-4">
+            <Card className=" px-2 py-4">
               <CardContent className="px-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2 text-gray-500 text-xs font-medium uppercase tracking-wider">
-                    <ShoppingBag className="w-4 h-4 text-orange-500" />
+                    <ShoppingBag className="w-4 h-4 text-primary" />
                     Pending Orders
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-gray-400" />
@@ -121,11 +116,11 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm px-2 py-4">
+            <Card className="px-2 py-4">
               <CardContent className="px-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2 text-gray-500 text-xs font-medium uppercase tracking-wider">
-                    <UtensilsCrossed className="w-4 h-4 text-orange-500" />
+                    <UtensilsCrossed className="w-4 h-4 text-primary" />
                     In Progress
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-gray-400" />
@@ -136,18 +131,18 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm px-2 py-4">
+            <Card className="] px-2 py-4">
               <CardContent className="px-4">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2 text-gray-500 text-xs font-medium uppercase tracking-wider">
-                    <Trophy className="w-4 h-4 text-orange-500" />
+                    <Trophy className="w-4 h-4 text-primary" />
                     Tables
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-gray-400" />
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-3xl font-bold">3/12</span>
-                  <span className="text-sm font-semibold text-orange-500">87%</span>
+                  <span className="text-sm font-semibold text-primary">87%</span>
                   <span className="text-xs text-gray-400">Booked</span>
                 </div>
               </CardContent>
@@ -157,7 +152,7 @@ const Dashboard = () => {
           {/* Revenue + Business Data */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             {/* Total Revenue Chart */}
-            <Card className="lg:col-span-2 bg-white dark:bg-gray-900 border-none shadow-sm">
+            <Card className="lg:col-span-2  ">
               <CardHeader className="flex flex-row items-center justify-between pb-6">
                 <div>
                   <CardTitle className="text-lg font-bold">Total Revenue</CardTitle>
@@ -176,7 +171,7 @@ const Dashboard = () => {
                       <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                       <Bar dataKey="value" radius={[4, 4, 4, 4]}>
                         {revenueData.map((entry, idx) => (
-                          <Cell key={idx} fill={entry.highlight ? "#f97316" : "#f3e8e0"} className="transition-all duration-300" />
+                          <Cell key={idx} fill={entry.highlight ? "#1447e6" : "#1447e691"} className="transition-all duration-300" />
                         ))}
                       </Bar>
                     </BarChart>
@@ -186,7 +181,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Business Stats Grid */}
-             <Card className="bg-white dark:bg-gray-900 border-none shadow-sm px-4">
+             <Card className=" px-4">
 
             <div className="flex flex-col gap-4">
               <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl flex justify-between items-start">
@@ -202,13 +197,13 @@ const Dashboard = () => {
 
               <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-2xl flex justify-between items-start">
                 <div>
-                  <p className="text-xs text-orange-600 dark:text-orange-400 font-medium mb-1">Total Orders</p>
+                  <p className="text-xs text-orange-600 dark:text-primary font-medium mb-1">Total Orders</p>
                   <div className="flex items-center gap-2">
                     <ClipboardList className="w-5 h-5 text-orange-600" />
                     <span className="text-2xl font-bold">270</span>
                   </div>
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-orange-400" />
+                <ArrowUpRight className="w-4 h-4 text-primary" />
               </div>
 
               <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-2xl flex justify-between items-start">
@@ -227,7 +222,7 @@ const Dashboard = () => {
 
           {/* Recent Activity + Top Dishes */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
+            <Card className="">
               <CardHeader>
                 <CardTitle className="text-lg font-bold">Recent Activity</CardTitle>
               </CardHeader>
@@ -250,7 +245,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-900 border-none shadow-sm">
+            <Card className="">
               <CardHeader>
                 <CardTitle className="text-lg font-bold">Top Dishes</CardTitle>
               </CardHeader>
@@ -261,7 +256,7 @@ const Dashboard = () => {
                     <span className="flex-1 text-sm font-medium truncate">{dish.name}</span>
                     <div className="text-right shrink-0">
                       <span className="text-sm font-bold">{dish.orders}</span>
-                      <span className="text-[10px] text-orange-500 ml-1 uppercase">Orders</span>
+                      <span className="text-[10px] text-primary ml-1 uppercase">Orders</span>
                     </div>
                   </div>
                 ))}

@@ -13,7 +13,7 @@ function BranchMaster() {
         <h2 className="text-xl font-semibold">Branch Master</h2>
         <VA_Sheet
         title="Create Branch"
-        className="min-w-[500px] "
+        className="md:min-w-[500px] "
         sheetContentClassName="px-4 py-2"
         description="Fill in the details to create a new branch."
         triggerComponent={<VA_Button>Create Branch</VA_Button>}

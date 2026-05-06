@@ -17,13 +17,14 @@ const staffSchema = z.object({
   position: z.string().optional(),
   department: z.string().optional(),
   role: z.enum(["staff", "chef", "rider"]),
-  password: z.string().min(6, "Min 4 characters").optional(),
+  password: z.string().min(6, "Min 6 characters").optional(),
 });
 
 export default function VA_StaffFormSheet({ mode = "create", initialData }) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const createMutation = useCreateStaff();
   const updateMutation = useUpdateStaff();
+
 
   const {
     control,
@@ -53,10 +54,10 @@ export default function VA_StaffFormSheet({ mode = "create", initialData }) {
     }
   };
   const staffOptions = [
-    {
-      label: "Staff",
-      value: "staff",
-    },
+    // {
+    //   label: "Staff",
+    //   value: "staff",
+    // },
    
     {
       label: "Chef",

@@ -14,6 +14,8 @@ import VA_Button from "@/components/VAComponents/VA_Button";
 import Badge from "@/components/ui/Badge";
 
 function VA_MenuViewSheet({ rowData }) {
+  console.log("rowData",rowData);
+  
   if (!rowData) return null;
 
   const {
@@ -28,8 +30,9 @@ function VA_MenuViewSheet({ rowData }) {
 
   return (
     <VA_Sheet
-      className="min-w-[800px]"
+      className="min-w-[900px]"
       title="Menu Details"
+      
       triggerComponent={
         <VA_Button
           variant="ghost"
@@ -38,7 +41,7 @@ function VA_MenuViewSheet({ rowData }) {
         />
       }
     >
-      <div className="space-y-6 p-4">
+      <div className="space-y-6 ">
         {/* Header */}
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-semibold flex items-center gap-2">
@@ -137,7 +140,7 @@ function VA_MenuViewSheet({ rowData }) {
                         </td>
 
                         <td className="py-2 px-3">
-                          ₹{item.price ?? "—"}
+                          ₹{menuItem.itemId.pricing[0].value ?? "—"}
                         </td>
 
                         <td className="py-2 px-3">

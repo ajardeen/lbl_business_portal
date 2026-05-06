@@ -101,7 +101,7 @@ const {
   return (
     <VA_Sheet
       title="Bundle Details"
-      className="min-w-[800px]"
+      className="min-w-[800px]! "
       isOpen={isOpen}
       setOpen={setIsOpen} // 💡 FIX: Use onOpenChange for better compatibility
       triggerComponent={
@@ -124,21 +124,30 @@ const {
           Failed to load bundle details. Please try again.
         </div>
       ) : (
-        <div className="space-y-4 p-4">
+        <div className="space-y-4 ">
           {/* HEADER */}
+ {bundleDetails.imgUrl &&
+      <div className="p-1">
+        {/* <p>Preview Image</p> */}
+        <div className="w-20 h-10">
+
+        <img src={bundleDetails.imgUrl}alt="bundle Img" className="object-contain"/>
+        </div>
+      </div>
+        }
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-xl font-semibold flex items-center gap-3">
                 <Layers className="h-5 w-5 text-primary" />
                 {name || "Unnamed Bundle"}
-                <Badge
+{/*                 <Badge
                   variant={isBundlePublished ? "success" : "secondary"}
                   text={isBundlePublished ? "Published" : "Unpublished"}
                   badgeClassName="capitalize"
-                />
+                /> */}
+                 <Badge variant="outline" text={bundleMealType?.toUpperCase()}></Badge>
               </h2>
               <p className="text-muted-foreground mt-1 text-sm">
-                Meal Type: <Badge variant="outline" text={bundleMealType?.toUpperCase()}></Badge>
               </p>
             </div>
 
@@ -152,9 +161,9 @@ const {
           </div>
 
           {/* META INFO */}
-          <div className="flex flex-wrap gap-6 text-sm text-foreground/80 font-medium">
+          <div className="flex flex-col gap-2 text-sm text-foreground/80 font-medium">
             <div className="flex items-center gap-1">
-              <CreditCard className="h-4 w-4 text-primary" /> Total Meals (Credits): <Badge text={totalMealsCount}></Badge>
+              <CreditCard className="h-4 w-4 text-primary" /> Total Meals: {totalMealsCount}
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4 text-primary" /> Price:
@@ -225,7 +234,7 @@ const {
                               // Use the local item name first, or fall back to the populated document name
                               const itemName = item.name || itemDoc?.name || "Unnamed Item";
                               const qty = item.qty || 1;
-                              const price = itemDoc?.price;
+                              const price = item.itemId.pricing[0].value || itemDoc?.pricing[0].value;
                               const uom = itemDoc?.uom;
                               const isVeg = item.isVegetarian;
 

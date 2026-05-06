@@ -131,6 +131,7 @@ function VA_DataTable({
         enableSorting: false,
         enableHiding: false,
         size: 5,
+        width: "50px",
       });
     }
 

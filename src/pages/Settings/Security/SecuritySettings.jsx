@@ -1,5 +1,5 @@
-import { Separator } from '@/components/ui/separator'
-import React from 'react'
+import { Separator } from "@/components/ui/separator";
+import React from "react";
 
 function SecuritySettings() {
   return (
@@ -7,8 +7,10 @@ function SecuritySettings() {
       <h2 className="text-2xl font-semibold text-accent-foreground">
         Security Settings
       </h2>
-      <Separator className="border-t border-border" /></div>
-  )
+      <Separator className="border-t border-border" />
+      <div>coming soon...</div>
+    </div>
+  );
 }
 
-export default SecuritySettings
+export default SecuritySettings;

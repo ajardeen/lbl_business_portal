@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -69,13 +69,17 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
   const createMutation = useCreateItem();
   const updateMutation = useUpdateItem();
   const [sheetOpen, setSheetOpen] = useState(false);
+console.log("initialData",initialData);
 
   const form = useForm({
+    
     resolver: zodResolver(schema),
     defaultValues:
       mode === "update"
         ? {
             ...initialData,
+            categoryId: initialData?.categoryId?._id,
+
             // map pricing array → { base: 100, online: 0, ... }
             pricing: pricingTypes.map((p) => {
               const found = initialData?.pricing?.find((x) => x.type === p.type);
@@ -124,7 +128,7 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
       open={sheetOpen}
       setOpen={setSheetOpen}
       title={mode === "create" ? "Create Item" : "Update Item"}
-      className="min-w-[450px]"
+      className="md:min-w-[450px]"
       description="Manage your item details here."
       sheetFooterComponent={
         <>

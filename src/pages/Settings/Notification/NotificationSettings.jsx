@@ -7,7 +7,11 @@ function NotificationSettings() {
       <h2 className="text-2xl font-semibold text-accent-foreground">
         Notification Settings
       </h2>
-      <Separator className="border-t border-border" /></div>
+      <Separator className="border-t border-border" />
+         <div>
+        coming soon...
+      </div>
+      </div>
   )
 }
 

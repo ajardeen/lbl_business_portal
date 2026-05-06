@@ -26,10 +26,11 @@ export function AuthProvider({ children }) {
   const { data: branches = [], isLoading: branchLoading } =
     useBranches(shouldFetchBranches);
 
-  useEffect(() => {
-    console.log("organizationId", organizationId);
-    console.log("branchId", branchId);
-  }, [organizationId, branchId]);
+    // debug 
+  // useEffect(() => {
+  //   console.log("organizationId", organizationId);
+  //   console.log("branchId", branchId);
+  // }, [organizationId, branchId]);
 
   /** -------------------------------------
    🔄 Load saved login on first mount

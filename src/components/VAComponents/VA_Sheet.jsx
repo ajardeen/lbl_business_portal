@@ -12,6 +12,8 @@ import {
 import { ChevronsDown, ExternalLink } from "lucide-react";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export default function VA_Sheet({
   title = "Sheet Title",
@@ -26,18 +28,21 @@ export default function VA_Sheet({
   children,
   sheetFooterComponent,
 }) {
+  const isMobile = useIsMobile();
   const scrollViewportRef = React.useRef(null);
   const [isScrollable, setIsScrollable] = React.useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = React.useState(false);
 
   const checkScrollable = React.useCallback(() => {
     // The actual scrolling element (viewport) inside the ScrollArea component
-    const viewport = scrollViewportRef.current?.getElementsByClassName('viewport')[0] || scrollViewportRef.current;
-    
+    const viewport =
+      scrollViewportRef.current?.getElementsByClassName("viewport")[0] ||
+      scrollViewportRef.current;
+
     if (viewport) {
       const scrollable = viewport.scrollHeight > viewport.clientHeight;
       setIsScrollable(scrollable);
-      
+
       if (scrollable && viewport.scrollTop < 10) {
         setShowScrollIndicator(true);
       } else {
@@ -48,17 +53,17 @@ export default function VA_Sheet({
 
   React.useEffect(() => {
     if (open) {
-        const timeout = setTimeout(checkScrollable, 50);
+      const timeout = setTimeout(checkScrollable, 50);
 
-        window.addEventListener("resize", checkScrollable);
-        
-        return () => {
-            clearTimeout(timeout);
-            window.removeEventListener("resize", checkScrollable);
-        };
+      window.addEventListener("resize", checkScrollable);
+
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener("resize", checkScrollable);
+      };
     } else {
-        setIsScrollable(false);
-        setShowScrollIndicator(false);
+      setIsScrollable(false);
+      setShowScrollIndicator(false);
     }
   }, [open, children, checkScrollable]);
 
@@ -74,7 +79,10 @@ export default function VA_Sheet({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{triggerComponent}</SheetTrigger>
 
-      <SheetContent side={side} className={`gap-0 ${className}`}>
+      <SheetContent
+        side={side}
+        className={cn("gap-0", `${className}`)}
+      >
         <SheetHeader className={"border-b-accent"}>
           <SheetTitle>
             {icon && <span className="mr-2"> {icon}</span>}
@@ -83,21 +91,21 @@ export default function VA_Sheet({
           <SheetDescription>{description}</SheetDescription>
           <Separator />
         </SheetHeader>
-        
+
         <div className="relative flex-grow overflow-hidden">
           <ScrollArea
-            className="h-full" 
+            className="h-full"
             onScroll={handleScroll}
-            ref={scrollViewportRef} 
+            ref={scrollViewportRef}
           >
             <div
               className={`mx-2 my-0 pb-10 px-4 rounded-md ${sheetContentClassName}`}
             >
               {children}
             </div>
-            <ScrollBar orientation="vertical" /> 
+            <ScrollBar orientation="vertical" />
           </ScrollArea>
-          
+
           {/* SCROLL INDICATOR ICON FIXED: Placed here, outside the ScrollArea, 
           but inside the relative content wrapper (div above) to ensure 
           it correctly positions at the bottom of the *visible* content area. */}

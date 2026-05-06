@@ -17,6 +17,7 @@ import { useMenus } from "@/hooks/Master/useMenu";
 import { useCreateBundle, useUpdateBundle } from "@/hooks/Master/useBundle";
 import VAMenuItemSection from "./components/VAMenuItemSection";
 import VA_TextArea from "@/components/VAComponents/VA_TextArea";
+import  VA_InputFile  from "@/components/VAComponents/VA_InputFile";
 
 /* =======================
    CONSTANTS
@@ -45,7 +46,10 @@ const MEAL_TYPES = [
 
 const bundleSchema = z.object({
   name: z.string().min(1, "Bundle name is required"),
-  description: z.string().optional(),
+  img: z
+    .instanceof(File, { message: "Image is required" })
+    .refine((file) => file.size > 0, "Image is required"),
+  description: z.string().min(1, "Description is required"),
   price: z.coerce.number().min(1, "Price is required"),
   bundleMealType: z.enum(
     MEAL_TYPES.map((t) => t.value),
@@ -103,6 +107,7 @@ setValue,
     resolver: zodResolver(bundleSchema),
     defaultValues: {
       name: initialData?.name || "",
+      img: initialData?.img || null,
       description: initialData?.description || "",
       price: initialData?.price || 0,
       bundleMealType: initialData?.bundleMealType || MEAL_TYPES[1].value, 
@@ -193,36 +198,45 @@ setValue,
   /* =======================
      SUBMIT HANDLER
   ======================= */
-  const onSubmit = async (data) => {
-    const payload = {
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      bundleMealType: data.bundleMealType,
-      totalMealsCount: data.totalMealsCount,
-      // Map back to dayIndex and menuId, filtering out empty entries
-      schedule: data.weeklySchedule
-        .map((s) => ({
-          dayIndex: s.dayIndex,
-          menuId: s.menuId || null,
-        }))
-        .filter((s) => s.menuId),
-    };
+const onSubmit = async (data) => {
+  const formData = new FormData();
 
-    if (mode === "create") {
-      console.log("payload",payload);
-      
-      await createMutation.mutateAsync(payload);
-      // navigate("/master/bundles");
-    } else {
-      await updateMutation.mutateAsync({
-        id: initialData._id,
-        payload,
-      });
-      navigate("/master/bundles");
-    }
-  };
+  // Append simple fields
+  formData.append("name", data.name);
+  formData.append("description", data.description || "");
+  formData.append("price", data.price);
+  formData.append("bundleMealType", data.bundleMealType);
+  formData.append("totalMealsCount", data.totalMealsCount);
 
+  // 1. Handle the Image File
+  // data.img is usually a FileList from react-hook-form; take the first file
+  const imageFile = data.img?.[0] || data.img; 
+  if (imageFile) {
+    formData.append("img", imageFile);
+  }
+
+  // 2. Handle the Schedule (Arrays must be stringified for FormData)
+  const schedule = data.weeklySchedule
+    .map((s) => ({
+      dayIndex: s.dayIndex,
+      menuId: s.menuId || null,
+    }))
+    .filter((s) => s.menuId);
+  
+  formData.append("schedule", JSON.stringify(schedule));
+
+
+  if (mode === "create") {
+    await createMutation.mutateAsync(formData);
+    navigate("/master/bundles");
+  } else {
+    await updateMutation.mutateAsync({
+      id: initialData._id,
+      payload: formData,
+    });
+    navigate("/master/bundles");
+  }
+};
   /* =======================
      RENDER
   ======================= */
@@ -242,7 +256,7 @@ setValue,
         <div className="flex gap-8">
           {/* LEFT PANEL: CONFIGURATION */}
           <div className="w-[300px] flex flex-col gap-5">
-            <Card className="p-4 bg-white border-dashed">
+            <Card className="p-4  border-dashed">
               <VA_FieldWrapper
                 label="Bundle Meal Type"
                 description={"This type is used to filter menus below."}
@@ -275,7 +289,20 @@ setValue,
                 )}
               />
             </VA_FieldWrapper>
-
+            <VA_FieldWrapper label="Bundle Image" error={errors.img?.message}>
+  <Controller
+    name="img"
+    control={control}
+    render={({ field: { onChange, value, ref } }) => (
+      <VA_InputFile
+        ref={ref}            // Connect the ref for RHF focus management
+        value={value}        // Pass value so the "reset" useEffect triggers
+        onChange={onChange}  // Pass the File object back to RHF
+        showPreview={true}
+      />
+    )}
+  />
+</VA_FieldWrapper>
             <VA_FieldWrapper
               label="Description"
               error={errors.description?.message}
@@ -318,7 +345,7 @@ setValue,
             </VA_FieldWrapper>
 
             {/* SUMMARY CARD (UPDATED with calculated price) */}
-            <Card className="p-4 bg-slate-50">
+            <Card className="p-4 ">
               <div className="font-semibold mb-2">Bundle Summary</div>
               <div className="text-sm space-y-2">
                 <div className="flex justify-between">
@@ -378,7 +405,7 @@ setValue,
                 return (
                   <div
                     key={scheduleItem.dayIndex}
-                    className="border bg-white rounded-md p-3 shadow-sm"
+                    className="border  rounded-md p-3 shadow-sm"
                   >
                     {/* Day Label & Selector */}
                     <div className="flex gap-4 items-center">

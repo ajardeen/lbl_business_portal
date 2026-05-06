@@ -52,7 +52,7 @@ const ItemMaster = () => {
       align: "right",
       wrap: false,
     },
-    cell: ({ row }) => `${row.original.price}`,
+    cell: ({ row }) => `${row.original.pricing[0].value}`,
   }),
 
   columnHelper.accessor("uom", {

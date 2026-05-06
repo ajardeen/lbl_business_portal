@@ -10,9 +10,9 @@ import VA_Button from "@/components/VAComponents/VA_Button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { useCreateOrganization } from "@/hooks/Organization/useOrganization";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useCreateOrganization, useOrganizations } from "@/hooks/Organization/useOrganization";
+import { Plus, ArrowLeft, Building2 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const schema = z.object({
   accountId: z.string().optional(),
@@ -37,15 +37,15 @@ const schema = z.object({
 
 function OrganizationRegister() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { accountId, holderName, email } = location.state || {};
+  
   const createMutation = useCreateOrganization();
+  const { data: orgsResponse } = useOrganizations();
+  const organizations = orgsResponse || [];
+
   const [showAddress, setShowAddress] = useState(false);
   const [hasGst, setHasGst] = useState(false);
-  const [accountId, setAccountId] = useState(null);
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    setAccountId(userData.account._id);
-  }, []);
-
 
   const {
     control,
@@ -61,7 +61,7 @@ function OrganizationRegister() {
       name: "",
       slug: "",
       description: "",
-      contactEmail: "",
+      contactEmail: email || "",
       contactPhone: "",
       location: "India",
       industry: "",
@@ -78,7 +78,6 @@ function OrganizationRegister() {
     },
   });
 
-  // Auto-generate slug from name
   const nameValue = watch("name");
   useEffect(() => {
     if (nameValue)
@@ -86,53 +85,62 @@ function OrganizationRegister() {
   }, [nameValue, setValue]);
 
   const onSubmit = (data) => {
+    // --- UNIQUENESS CHECK ---
+    const isDuplicateName = organizations.some(o => o.name.toLowerCase() === data.name.toLowerCase());
+    const isDuplicateEmail = organizations.some(o => o.contactEmail.toLowerCase() === data.contactEmail.toLowerCase());
+    const isDuplicatePhone = organizations.some(o => o.contactPhone === data.contactPhone);
 
-    data.accountId = accountId;
-    if (!hasGst) delete data.gstNumber;
-    createMutation.mutate(data, {
+    if (isDuplicateName) return toast.error("Organization name already exists");
+    if (isDuplicateEmail) return toast.error("Contact email already exists");
+    if (isDuplicatePhone) return toast.error("Contact phone already exists");
+
+    const payload = {
+      ...data,
+      accountId: accountId,
+      gstNumber: hasGst ? data.gstNumber : undefined,
+    };
+
+    createMutation.mutate(payload, {
       onSuccess: () => {
+        toast.success("Organization created successfully");
         reset();
-        setShowAddress(false);
-        setHasGst(false);
         navigate("/dashboard");
       },
-      onError: (error) => {
-        console.log(error);
-        
-      }
+      onError: (err) => toast.error(err?.response?.data?.message || "Failed to create organization"),
     });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f3f8fe] p-6">
-      <Card className="w-full max-w-3xl border border-border bg-background rounded-none shadow-none border-t-primary">
-        <CardHeader className="text-center space-y-1">
-          <CardTitle className="text-2xl font-semibold py-5 flex flex-col relative">
-            <VA_Button
-              variant="link"
-              onClick={() => navigate("/")}
-              className=" cursor-pointer"
+    <div className="min-h-screen w-full flex items-center justify-center bg-muted/30 dark:bg-background p-4 sm:p-6">
+      <Card className="w-full max-w-3xl border-t-4 border-t-primary shadow-lg overflow-hidden">
+        <CardHeader className="space-y-1 pb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <VA_Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/")} 
+              className="p-0 h-8 hover:bg-transparent text-muted-foreground hover:text-primary"
             >
-              Back to home
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back
             </VA_Button>
-            Set up your organization profile
+          </div>
+          <CardTitle className="text-xl sm:text-2xl font-bold text-center">
+            Set up Organization for <span className="text-primary">{holderName || "your account"}</span>
           </CardTitle>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 px-10">
-            {/* BASIC INFO */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="col-span-2">
+        <CardContent className="px-4 sm:px-10 pb-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            
+            {/* BASIC INFO SECTION */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <div className="md:col-span-2">
                 <Controller
                   name="name"
                   control={control}
                   render={({ field }) => (
-                    <VA_FieldWrapper
-                      label="Organization Name"
-                      error={errors.name?.message}
-                    >
-                      <VA_Input {...field} placeholder="Vision Action Foods" />
+                    <VA_FieldWrapper label="Organization Name" error={errors.name?.message} required>
+                      <VA_Input {...field} placeholder="e.g. Vision Action Foods" icon={<Building2 className="w-4 h-4"/>} />
                     </VA_FieldWrapper>
                   )}
                 />
@@ -142,15 +150,8 @@ function OrganizationRegister() {
                 name="contactEmail"
                 control={control}
                 render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Email"
-                    error={errors.contactEmail?.message}
-                  >
-                    <VA_Input
-                      type="email"
-                      {...field}
-                      placeholder="admin@visionaction.com"
-                    />
+                  <VA_FieldWrapper label="Email Address" error={errors.contactEmail?.message} required>
+                    <VA_Input type="email" disabled {...field} className="bg-muted/50" />
                   </VA_FieldWrapper>
                 )}
               />
@@ -159,32 +160,23 @@ function OrganizationRegister() {
                 name="contactPhone"
                 control={control}
                 render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Phone"
-                    error={errors.contactPhone?.message}
-                  >
-                    <VA_Input type="number" {...field} placeholder="989...." />
+                  <VA_FieldWrapper label="Phone Number" error={errors.contactPhone?.message} required>
+                    <VA_Input type="tel" {...field} placeholder="9876543210" />
                   </VA_FieldWrapper>
                 )}
               />
-              <div className="col-span-2">
+
+              <div className="md:col-span-2">
                 <Controller
                   name="industry"
                   control={control}
                   render={({ field }) => (
-                    <VA_FieldWrapper
-                      label="Industry"
-                      error={errors.industry?.message}
-                    >
+                    <VA_FieldWrapper label="Industry Type" error={errors.industry?.message} required>
                       <VA_Select
                         options={[
                           { label: "Cloud Kitchen", value: "Cloud Kitchen" },
                           { label: "Restaurant", value: "Restaurant" },
                           { label: "Food Delivery", value: "Food Delivery" },
-                          {
-                            label: "Catering Service",
-                            value: "Catering Service",
-                          },
                         ]}
                         value={field.value}
                         onSelect={field.onChange}
@@ -193,163 +185,94 @@ function OrganizationRegister() {
                   )}
                 />
               </div>
-              {/* ADDRESS SECTION */}
-              <div className="col-span-2">
-                <VA_Button
-                  type="button"
-                  variant="outline"
-                  icon={<Plus className="text-primary" />}
-                  onClick={() => setShowAddress(!showAddress)}
-                  className="mb-3"
-                >
-                  {showAddress
-                    ? "Hide Address Details"
-                    : "Add Organization Address"}
-                </VA_Button>
+            </div>
 
-                {showAddress && (
-                  <div className="mt-1 grid md:grid-cols-2 gap-4 border rounded-md p-4 bg-muted/20">
-                    <Controller
-                      name="street1"
-                      control={control}
-                      render={({ field }) => (
-                        <VA_FieldWrapper
-                          label="Street 1"
-                          error={errors.street1?.message}
-                        >
-                          <VA_Input {...field} placeholder="12th Cross Road" />
-                        </VA_FieldWrapper>
-                      )}
-                    />
+            {/* ADDRESS SECTION */}
+            <div className="space-y-4">
+              <VA_Button
+                type="button"
+                variant="secondary"
+                className="w-full md:w-auto"
+                onClick={() => setShowAddress(!showAddress)}
+              >
+                <Plus className={`w-4 h-4 mr-2 transition-transform ${showAddress ? 'rotate-45' : ''}`} />
+                {showAddress ? "Hide Address" : "Add Address Details"}
+              </VA_Button>
 
-                    <Controller
-                      name="street2"
-                      control={control}
-                      render={({ field }) => (
-                        <VA_FieldWrapper
-                          label="Street 2"
-                          error={errors.street2?.message}
-                        >
-                          <VA_Input {...field} placeholder="Sector 3" />
-                        </VA_FieldWrapper>
-                      )}
-                    />
+              {showAddress && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 rounded-lg border bg-muted/10 animate-in fade-in slide-in-from-top-2">
+                  <Controller
+                    name="street1"
+                    control={control}
+                    render={({ field }) => (
+                      <VA_FieldWrapper label="Street 1" error={errors.street1?.message}>
+                        <VA_Input {...field} placeholder="Street address" />
+                      </VA_FieldWrapper>
+                    )}
+                  />
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <VA_FieldWrapper label="City" error={errors.city?.message}>
+                        <VA_Input {...field} placeholder="City name" />
+                      </VA_FieldWrapper>
+                    )}
+                  />
+                  <Controller
+                    name="zipCode"
+                    control={control}
+                    render={({ field }) => (
+                      <VA_FieldWrapper label="Zip Code" error={errors.zipCode?.message}>
+                        <VA_Input {...field} placeholder="600001" />
+                      </VA_FieldWrapper>
+                    )}
+                  />
+                  <Controller
+                    name="country"
+                    control={control}
+                    render={({ field }) => (
+                      <VA_FieldWrapper label="Country" error={errors.country?.message}>
+                        <VA_Input {...field} disabled className="bg-muted/50" />
+                      </VA_FieldWrapper>
+                    )}
+                  />
+                </div>
+              )}
+            </div>
 
-                    <Controller
-                      name="city"
-                      control={control}
-                      render={({ field }) => (
-                        <VA_FieldWrapper
-                          label="City"
-                          error={errors.city?.message}
-                        >
-                          <VA_Input {...field} placeholder="Bangalore" />
-                        </VA_FieldWrapper>
-                      )}
-                    />
-
-                    <Controller
-                      name="zipCode"
-                      control={control}
-                      render={({ field }) => (
-                        <VA_FieldWrapper
-                          label="Postal Code"
-                          error={errors.zipCode?.message}
-                        >
-                          <VA_Input {...field} placeholder="560001" />
-                        </VA_FieldWrapper>
-                      )}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <Controller
-                name="currency"
-                control={control}
-                render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Currency"
-                    error={errors.currency?.message}
-                  >
-                    <VA_Select
-                      options={[{ label: "INR", value: "INR" }]}
-                      value={field.value}
-                      onSelect={field.onChange}
-                      disabled
-                    />
-                  </VA_FieldWrapper>
-                )}
-              />
-
+            {/* SETTINGS SECTION */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Controller
                 name="language"
                 control={control}
                 render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Language"
-                    error={errors.language?.message}
-                  >
+                  <VA_FieldWrapper label="Default Language" error={errors.language?.message}>
                     <VA_Select
-                      options={[
-                        { label: "English", value: "English" },
-                        { Label: "Tamil", value: "Tamil" },
-                        { label: "Hindi", value: "Hindi" },
-                      ]}
+                      options={[{ label: "English", value: "English" }, { label: "Tamil", value: "Tamil" }]}
                       value={field.value}
                       onSelect={field.onChange}
                     />
                   </VA_FieldWrapper>
                 )}
               />
-
               <Controller
                 name="timeZone"
                 control={control}
                 render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Time Zone"
-                    error={errors.timeZone?.message}
-                  >
-                    <VA_Input {...field} placeholder="Asia/Kolkata" />
-                  </VA_FieldWrapper>
-                )}
-              />
-
-              <Controller
-                name="location"
-                control={control}
-                render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="Location"
-                    error={errors.location?.message}
-                  >
-                    <VA_Input {...field} disabled />
+                  <VA_FieldWrapper label="Time Zone" error={errors.timeZone?.message}>
+                    <VA_Input disabled {...field} />
                   </VA_FieldWrapper>
                 )}
               />
             </div>
 
-            {/* DESCRIPTION */}
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <VA_FieldWrapper
-                  label="Description"
-                  error={errors.description?.message}
-                >
-                  <VA_TextArea
-                    {...field}
-                    placeholder="Premium meal bundle service"
-                  />
-                </VA_FieldWrapper>
-              )}
-            />
-
-            {/* GST TOGGLE */}
-            <div className="flex items-center justify-between border rounded-md p-3 bg-muted/30">
-              <span className="font-medium text-sm">Add GST Number?</span>
+            {/* GST SECTION */}
+            <div className="flex items-center justify-between p-4 rounded-lg border border-dashed border-primary/30 bg-primary/5">
+              <div className="space-y-0.5">
+                <p className="text-sm font-medium">GST Registration</p>
+                <p className="text-xs text-muted-foreground">Toggle if you have a GST number</p>
+              </div>
               <Switch checked={hasGst} onCheckedChange={setHasGst} />
             </div>
 
@@ -358,23 +281,21 @@ function OrganizationRegister() {
                 name="gstNumber"
                 control={control}
                 render={({ field }) => (
-                  <VA_FieldWrapper
-                    label="GST Number"
-                    error={errors.gstNumber?.message}
-                  >
-                    <VA_Input {...field} placeholder="22AAAAA0000A1Z5" />
+                  <VA_FieldWrapper label="GST Number" error={errors.gstNumber?.message} required>
+                    <VA_Input {...field} placeholder="22............5" />
                   </VA_FieldWrapper>
                 )}
               />
             )}
 
-            <div className="flex justify-end pt-6">
+            <div className="pt-4 border-t">
               <VA_Button
                 type="submit"
                 loading={createMutation.isPending}
-                className="min-w-80 h-40"
+                className="w-full md:w-48 ml-auto block"
+                size="lg"
               >
-                {createMutation.isPending ? "Submitting..." : "Get Started"}
+                {createMutation.isPending ? "Registering..." : "Create Profile"}
               </VA_Button>
             </div>
           </form>
