@@ -6,7 +6,7 @@ import { Bike, Shield, Users, Utensils } from "lucide-react";
 
 const roles = [
   { key: "admin", label: "Admin", icon: Shield, access: "allowed" },
-  { key: "staff", label: "Staff", icon: Users, access: "denied" },
+  // { key: "staff", label: "Staff", icon: Users, access: "denied" },
   { key: "chef", label: "Chef", icon: Utensils, access: "allowed" }, // temporarily disabled
   { key: "rider", label: "Rider", icon: Bike, access: "allowed" },
 ];
