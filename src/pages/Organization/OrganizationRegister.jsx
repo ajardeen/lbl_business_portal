@@ -161,7 +161,7 @@ function OrganizationRegister() {
                 control={control}
                 render={({ field }) => (
                   <VA_FieldWrapper label="Phone Number" error={errors.contactPhone?.message} required>
-                    <VA_Input type="tel" {...field} placeholder="9876543210" />
+                    <VA_Input type="tel" {...field} placeholder="987......." />
                   </VA_FieldWrapper>
                 )}
               />

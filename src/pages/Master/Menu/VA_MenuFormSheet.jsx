@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo,useState } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -17,7 +17,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
   const { data: items = [] } = useItems();
   const createMutation = useCreateMenu();
   const updateMutation = useUpdateMenu();
-
+  const [sheetOpen, setSheetOpen] = useState(false);
   const menuSchema = z.object({
     name: z.string().min(1, "Menu name is required"),
     description: z.string().optional(),
@@ -46,7 +46,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
         z.object({
           itemId: z.string(),
           qty: z.number().min(1),
-        })
+        }),
       )
       .min(1, "Select at least one item"),
   });
@@ -119,12 +119,15 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
         payload,
       });
     }
+    setSheetOpen(false);
   };
 
   return (
     <VA_Sheet
       title={mode === "create" ? "Create Menu" : "Update Menu"}
-      className="min-w-[500px]"
+      className="min-w-[400px]"
+      open={sheetOpen}
+      setOpen={setSheetOpen}
       triggerComponent={
         mode === "create" ? (
           <VA_Button icon={<PlusCircle />}>Create Menu</VA_Button>
@@ -140,7 +143,13 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
           >
             {mode === "create" ? "Create" : "Update"}
           </VA_Button>
-          <VA_Button variant="outline" onClick={handleSubmit(onSubmit)}>
+          <VA_Button
+            variant="outline"
+            onClick={() => {
+              reset();
+              setSheetOpen(false);
+            }}
+          >
             Cancel
           </VA_Button>
         </>
@@ -183,6 +192,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
             render={({ field }) => (
               <VA_Select
                 {...field}
+                value={field.value}
                 onSelect={field.onChange}
                 options={[
                   { label: "Breakfast", value: "breakfast" },
@@ -204,6 +214,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
             render={({ field }) => (
               <VA_Select
                 {...field}
+                value={field.value}
                 onSelect={field.onChange}
                 options={[
                   "Monday",
@@ -225,6 +236,8 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
           <VA_Select
             multiSelect
             searchable
+            variant="badge"
+            placeholder="Select"
             options={itemOptions}
             value={selectedItems?.map((i) => i.itemId)}
             onSelect={onItemsSelect}
@@ -248,7 +261,7 @@ const VA_MenuFormSheet = ({ mode = "create", initialData }) => {
                   const item = itemMap[row.itemId] || {};
                   return (
                     <tr key={row.itemId} className="border-t">
-                      <td className="p-2">{item.name}</td>
+                      <td className="p-2 w-10">{item.name}</td>
                       <td className="p-2 w-24">
                         <VA_Input
                           type="number"

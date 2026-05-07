@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -11,6 +15,7 @@ import {
   CommandEmpty,
 } from "@/components/ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
+import Badge from "../ui/Badge";
 
 // Helper for merging classNames
 const cn = (...classes) => classes.filter(Boolean).join(" ");
@@ -23,6 +28,7 @@ export default function VA_Select({
   searchable = false,
   disabled = false,
   multiSelect = false,
+  variant = "default",
 }) {
   const [open, setOpen] = useState(false);
 
@@ -33,7 +39,7 @@ export default function VA_Select({
       const newValues = values.includes(val)
         ? values.filter((v) => v !== val)
         : [...values, val];
-      onSelect(newValues);
+    onSelect(newValues);
     } else {
       onSelect(val);
       setOpen(false);
@@ -42,26 +48,44 @@ export default function VA_Select({
 
   const selectedLabels = options
     .filter((opt) => values.includes(opt.value))
-    .map((opt) => opt.label)
-    .join(", ");
+    .map((opt) => opt.label);
 
   return (
     <div className="w-full space-y-1">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            disabled={disabled}
-            className="w-full justify-between"
-          >
-            {selectedLabels ? (
-              <span className="truncate">{selectedLabels}</span>
-            ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
-            )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+          {variant === "badge" ? (
+            <Button
+              variant="outline"
+              role="combobox"
+              disabled={disabled}
+              className="w-full justify-between h-fit"
+            >
+              <div className="flex flex-wrap gap-1 ">
+                {selectedLabels.length > 0 &&
+                  selectedLabels.map((label, index) => (
+                  <Badge text={label} />
+                )) || (
+                  <span className="text-muted-foreground">{placeholder}</span>
+                )}
+              </div>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              role="combobox"
+              disabled={disabled}
+              className="w-full justify-between"
+            >
+              {selectedLabels && selectedLabels.length > 0? (
+                <span className="truncate">{selectedLabels}</span>
+              ) : (
+                <span className="text-muted-foreground">{placeholder}</span>
+              )}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          )}
         </PopoverTrigger>
 
         <PopoverContent
@@ -89,7 +113,7 @@ export default function VA_Select({
                         "h-4 w-4 text-primary transition-opacity",
                         values.includes(opt.value)
                           ? "opacity-100"
-                          : "opacity-0"
+                          : "opacity-0",
                       )}
                     />
                   </CommandItem>
@@ -109,7 +133,7 @@ VA_Select.propTypes = {
       label: PropTypes.string.isRequired,
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
-    })
+    }),
   ),
   value: PropTypes.oneOfType([
     PropTypes.string,

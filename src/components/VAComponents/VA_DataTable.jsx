@@ -144,8 +144,8 @@ function VA_DataTable({
     return align === "center"
       ? "text-center justify-center"
       : align === "right"
-      ? "text-right justify-end"
-      : "text-left justify-start";
+        ? "text-right justify-end"
+        : "text-left justify-start";
   };
 
   const table = useReactTable({
@@ -170,7 +170,7 @@ function VA_DataTable({
     globalFilterFn: (row, columnId, filterValue) => {
       const searchValue = filterValue.toLowerCase();
       return Object.values(row.original).some((value) =>
-        String(value).toLowerCase().includes(searchValue)
+        String(value).toLowerCase().includes(searchValue),
       );
     },
   });
@@ -267,7 +267,7 @@ function VA_DataTable({
         }
 
         return String(val ?? "");
-      })
+      }),
     );
 
     if (!rows.length) {
@@ -371,7 +371,7 @@ function VA_DataTable({
                           <Check
                             className={cn(
                               "h-4 w-4 text-primary transition-opacity",
-                              col.getIsVisible() ? "opacity-100" : "opacity-0"
+                              col.getIsVisible() ? "opacity-100" : "opacity-0",
                             )}
                           />
                         </CommandItem>
@@ -444,7 +444,7 @@ function VA_DataTable({
                       style={{ width: header.getSize() }}
                       className={cn(
                         alignClass,
-                        "capitalize bg-transparent font-medium select-none cursor-pointer"
+                        "capitalize bg-transparent font-medium select-none cursor-pointer",
                       )}
                     >
                       <div
@@ -452,7 +452,7 @@ function VA_DataTable({
                       >
                         {flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                         {sorted === "asc" && <ChevronUp className="h-3 w-3" />}
                         {sorted === "desc" && (
@@ -475,7 +475,7 @@ function VA_DataTable({
                   className={cn(
                     "transition-colors hover:bg-accent/0",
                     row.getIsSelected() &&
-                      "bg-accent/60 border-l-2 border-primary"
+                      "bg-accent/60 border-l-2 border-primary",
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -483,12 +483,15 @@ function VA_DataTable({
                       key={cell.id}
                       style={{ width: cell.column.getSize() }}
                       className={cn(getAlignClass(cell.column))}
+                      
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell ??
-                          cell.column.columnDef.header,
-                        cell.getContext()
-                      )}
+                      <div title={String(cell.getValue() ?? "")} className="line-clamp-2 overflow-hidden text-ellipsis break-words">
+                        {flexRender(
+                          cell.column.columnDef.cell ??
+                            cell.column.columnDef.header,
+                          cell.getContext(),
+                        )}
+                      </div>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -533,7 +536,7 @@ function VA_DataTable({
                                   className={cn(
                                     current === "none"
                                       ? "opacity-30 hover:opacity-70"
-                                      : "opacity-100"
+                                      : "opacity-100",
                                   )}
                                 >
                                   {current === "none"
@@ -603,7 +606,7 @@ function VA_DataTable({
                   onClick={() => table.previousPage()}
                   className={cn(
                     !table.getCanPreviousPage() &&
-                      "pointer-events-none opacity-50"
+                      "pointer-events-none opacity-50",
                   )}
                 />
               </PaginationItem>
@@ -660,7 +663,7 @@ function VA_DataTable({
                 <PaginationNext
                   onClick={() => table.nextPage()}
                   className={cn(
-                    !table.getCanNextPage() && "pointer-events-none opacity-50"
+                    !table.getCanNextPage() && "pointer-events-none opacity-50",
                   )}
                 />
               </PaginationItem>

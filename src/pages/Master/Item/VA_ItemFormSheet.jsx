@@ -47,7 +47,9 @@ const schema = z.object({
     .array(pricingTierSchema)
     .min(1, "At least one pricing tier is required"),
   nutrition: z.object({
-    calories: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
+    calories: z
+      .union([z.string(), z.number()])
+      .transform((v) => Number(v || 0)),
     protein: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
     carbs: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
     fat: z.union([z.string(), z.number()]).transform((v) => Number(v || 0)),
@@ -69,11 +71,11 @@ const VA_ItemFormSheet = ({ mode = "create", initialData }) => {
   const createMutation = useCreateItem();
   const updateMutation = useUpdateItem();
   const [sheetOpen, setSheetOpen] = useState(false);
-console.log("initialData",initialData);
+  // console.log("initialData", initialData);
 
   const form = useForm({
-    
     resolver: zodResolver(schema),
+    
     defaultValues:
       mode === "update"
         ? {
@@ -82,7 +84,9 @@ console.log("initialData",initialData);
 
             // map pricing array → { base: 100, online: 0, ... }
             pricing: pricingTypes.map((p) => {
-              const found = initialData?.pricing?.find((x) => x.type === p.type);
+              const found = initialData?.pricing?.find(
+                (x) => x.type === p.type,
+              );
               return { type: p.type, value: found?.value || 0 };
             }),
           }
@@ -108,8 +112,7 @@ console.log("initialData",initialData);
       value: Number(p.value),
     }));
 
-    if (mode === "create")
-      await createMutation.mutateAsync(data);
+    if (mode === "create") await createMutation.mutateAsync(data);
     else
       await updateMutation.mutateAsync({ id: initialData._id, payload: data });
 
@@ -139,24 +142,39 @@ console.log("initialData",initialData);
           >
             {mode === "create" ? "Create" : "Update"}
           </VA_Button>
-          <VA_Button onClick={() => setSheetOpen(false)} variant="outline">
+          <VA_Button
+            onClick={() => {
+              form.reset();
+              setSheetOpen(false);
+            }}
+            variant="outline"
+          >
             Cancel
           </VA_Button>
         </>
       }
     >
-      <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="grid grid-cols-2 gap-4"
+      >
         {/* CATEGORY */}
         <Controller
           name="categoryId"
           control={form.control}
           render={({ field }) => (
-            <VA_FieldWrapper label="Category" error={form.formState.errors.categoryId?.message}>
+            <VA_FieldWrapper
+              label="Category"
+              error={form.formState.errors.categoryId?.message}
+            >
               <VA_Select
                 options={
                   loadingCategory
                     ? []
-                    : categorys.map((cat) => ({ label: cat.name, value: cat._id }))
+                    : categorys.map((cat) => ({
+                        label: cat.name,
+                        value: cat._id,
+                      }))
                 }
                 placeholder="Select Category"
                 value={field.value}
@@ -171,7 +189,10 @@ console.log("initialData",initialData);
           name="sku"
           control={form.control}
           render={({ field }) => (
-            <VA_FieldWrapper label="SKU" error={form.formState.errors.sku?.message}>
+            <VA_FieldWrapper
+              label="SKU"
+              error={form.formState.errors.sku?.message}
+            >
               <VA_Input placeholder="SKU" {...field} />
             </VA_FieldWrapper>
           )}
@@ -182,7 +203,10 @@ console.log("initialData",initialData);
           name="name"
           control={form.control}
           render={({ field }) => (
-            <VA_FieldWrapper label="Name" error={form.formState.errors.name?.message}>
+            <VA_FieldWrapper
+              label="Name"
+              error={form.formState.errors.name?.message}
+            >
               <VA_Input placeholder="Item name" {...field} />
             </VA_FieldWrapper>
           )}
@@ -193,8 +217,15 @@ console.log("initialData",initialData);
           name="uom"
           control={form.control}
           render={({ field }) => (
-            <VA_FieldWrapper label="Unit of Measure" error={form.formState.errors.uom?.message}>
-              <VA_Select options={uomOptions} value={field.value} onSelect={field.onChange} />
+            <VA_FieldWrapper
+              label="Unit of Measure"
+              error={form.formState.errors.uom?.message}
+            >
+              <VA_Select
+                options={uomOptions}
+                value={field.value}
+                onSelect={field.onChange}
+              />
             </VA_FieldWrapper>
           )}
         />
@@ -236,7 +267,10 @@ console.log("initialData",initialData);
           render={({ field }) => (
             <VA_FieldWrapper label="Vegetarian">
               <VA_Select
-                options={[{ label: "Yes", value: true }, { label: "No", value: false }]}
+                options={[
+                  { label: "Yes", value: true },
+                  { label: "No", value: false },
+                ]}
                 value={field.value}
                 onSelect={field.onChange}
               />
@@ -251,7 +285,10 @@ console.log("initialData",initialData);
           render={({ field }) => (
             <VA_FieldWrapper label="Status">
               <VA_Select
-                options={[{ label: "Active", value: true }, { label: "Inactive", value: false }]}
+                options={[
+                  { label: "Active", value: true },
+                  { label: "Inactive", value: false },
+                ]}
                 value={field.value}
                 onSelect={field.onChange}
               />
@@ -272,7 +309,10 @@ console.log("initialData",initialData);
           />
 
           {/* NUTRITION */}
-          <NutritionCollapse control={form.control} errors={form.formState.errors} />
+          <NutritionCollapse
+            control={form.control}
+            errors={form.formState.errors}
+          />
         </div>
       </form>
     </VA_Sheet>

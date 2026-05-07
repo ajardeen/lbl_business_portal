@@ -35,6 +35,8 @@ const CategoryMaster = () => {
 
     columnHelper.accessor("sortOrder", {
       header: "Sort Order",
+      cell: (info) =><div className="text-center w-[50%]">{info.getValue()}</div>,
+  
     }),
 
     columnHelper.accessor("status", {

@@ -43,7 +43,7 @@ const CategoryFormSheet = ({
         // The IDs are now automatically added via the Axios interceptor in the header
         // We only send the form data in the body
         data,
-        { onSuccess: () => reset() }
+        { onSuccess: () => reset() },
       );
     } else {
       mutate(
@@ -51,7 +51,7 @@ const CategoryFormSheet = ({
           id: initialData._id,
           payload: data,
         },
-        { onSuccess: () => {} }
+        { onSuccess: () => {} },
       );
     }
   };
@@ -64,11 +64,20 @@ const CategoryFormSheet = ({
       setOpen={setSheetOpen}
       sheetFooterComponent={
         <>
-          <VA_Button loading={mutate.isPending} onClick={handleSubmit(onSubmit)}>
+          <VA_Button
+            loading={mutate.isPending}
+            onClick={handleSubmit(onSubmit)}
+          >
             {mode === "create" ? "Create" : "Update"}
           </VA_Button>
 
-          <VA_Button onClick={() => setSheetOpen(false)} variant="outline">
+          <VA_Button
+            onClick={() => {
+              form.reset();
+              setSheetOpen(false);
+            }}
+            variant="outline"
+          >
             Cancel
           </VA_Button>
         </>
@@ -106,7 +115,11 @@ const CategoryFormSheet = ({
         </VA_FieldWrapper>
 
         {/* Sort Order */}
-        <VA_FieldWrapper label="Sort Order" required error={errors.sortOrder?.message}>
+        <VA_FieldWrapper
+          label="Sort Order"
+          required
+          error={errors.sortOrder?.message}
+        >
           <Controller
             name="sortOrder"
             control={control}
